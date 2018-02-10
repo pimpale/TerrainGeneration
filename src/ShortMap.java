@@ -1,4 +1,5 @@
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.WritableRaster;
@@ -35,7 +36,14 @@ public class ShortMap {
 		ySize = ysize;
 		map = new short[xSize][ySize];
 	}
-
+	
+	public ShortMap(BufferedImage img)
+	{
+		map = getValues(img);
+		xSize = map.length;
+		ySize = map[0].length;
+	}
+	
 	public ShortMap(String filelocation)
 	{
 		BufferedImage img = null;
@@ -77,64 +85,52 @@ public class ShortMap {
 		return scaledImage;
 	}
 
-	public void blur(int radius)
-	{
-		short[][] nmap = new short[xSize][ySize];
-		for(int x = 0; x < xSize; x++)
-		{
-			for(int y = 0; y < ySize; y++)
-			{
-				double av = 0;
-				double count = 0;
-				for(int x1 = -radius; x1 <= radius; x1++)
-				{
-					for(int y1 = -radius; y1 <= radius; y1++)
-					{
-						int rx = x+x1, ry = y+y1;
-						if(rx>-1&&rx<xSize&&ry>-1&&ry<ySize)
-						{
-							count++;
-							av+=map[rx][ry];
-						}
-					}
-				}
-				av = av/count;
-				nmap[x][y] = (short)av;
-			}
-		}
-		for(int x = 0; x < xSize; x++)
-		{
-			for(int y = 0; y < ySize; y++)
-			{
-				map[x][y] = nmap[x][y];
-			}
-		}
+	public ShortMap blur(int radius)
+	{	
+		return new ShortMap(ProcessImage(getImage(), radius));
 	}
 	
-
-	public BufferedImage ProcessImage(BufferedImage image) {
+	public static BufferedImage ProcessImage(BufferedImage image, int radius) {
 	    int width = image.getWidth();
 	    int height = image.getHeight();
 
 	    int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
 	    int[] changedPixels = new int[pixels.length];
 
-	    FastGaussianBlur(pixels, changedPixels, width, height, 12);
+	    FastGaussianBlur(pixels, changedPixels, width, height, radius);
 
 	    BufferedImage newImage = new BufferedImage(width, height, image.getType());
 	    newImage.setRGB(0, 0, width, height, changedPixels, 0, width);
 
 	    return newImage;
 	}
+	
+	public ShortMap scale(int newxsize, int newysize)
+	{
+		return new ShortMap(getValues(scale(getImage(), newxsize, newysize)));
+	}
 
-	private void FastGaussianBlur(int[] source, int[] output, int width, int height, int radius) {
+	public void Export(String filelocation)
+	{
+		try
+		{
+			File f = new File(filelocation);
+			ImageIO.write(getImage(), "png", f);
+		}
+		catch(Throwable e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void FastGaussianBlur(int[] source, int[] output, int width, int height, int radius) {
 	    ArrayList<Integer> gaussianBoxes = CreateGausianBoxes(radius, 3);
 	    BoxBlur(source, output, width, height, (gaussianBoxes.get(0) - 1) / 2);
 	    BoxBlur(output, source, width, height, (gaussianBoxes.get(1) - 1) / 2);
 	    BoxBlur(source, output, width, height, (gaussianBoxes.get(2) - 1) / 2);
 	}
 
-	private ArrayList<Integer> CreateGausianBoxes(double sigma, int n) {
+	public static ArrayList<Integer> CreateGausianBoxes(double sigma, int n) {
 	    double idealFilterWidth = Math.sqrt((12 * sigma * sigma / n) + 1);
 
 	    int filterWidth = (int) Math.floor(idealFilterWidth);
@@ -157,13 +153,13 @@ public class ShortMap {
 	    return result;
 	}
 
-	private void BoxBlur(int[] source, int[] output, int width, int height, int radius) {
+	private static void BoxBlur(int[] source, int[] output, int width, int height, int radius) {
 	    System.arraycopy(source, 0, output, 0, source.length);
 	    BoxBlurHorizontal(output, source, width, height, radius);
 	    BoxBlurVertical(source, output, width, height, radius);
 	}
 
-	private void BoxBlurHorizontal(int[] sourcePixels, int[] outputPixels, int width, int height, int radius) {
+	private static void BoxBlurHorizontal(int[] sourcePixels, int[] outputPixels, int width, int height, int radius) {
 	    int resultingColorPixel;
 	    float iarr = 1f / (radius + radius);
 	    for (int i = 0; i < height; i++) {
@@ -199,7 +195,7 @@ public class ShortMap {
 	    }
 	}
 
-	private void BoxBlurVertical(int[] sourcePixels, int[] outputPixels, int width, int height, int radius) {
+	private static void BoxBlurVertical(int[] sourcePixels, int[] outputPixels, int width, int height, int radius) {
 	    int resultingColorPixel;
 	    float iarr = 1f / (radius + radius + 1);
 	    for (int i = 0; i < width; i++) {
@@ -238,32 +234,6 @@ public class ShortMap {
 	        }
 	    }
 	}
-	
-	public ShortMap scale(int newxsize, int newysize)
-	{
-		return new ShortMap(getValues(scale(getImage(map), newxsize, newysize)));
-	}
-
-	
-
-	//	public short[][] getMap()
-	{
-
-	}
-
-	public void Export(String filelocation)
-	{
-		try
-		{
-			File f = new File(filelocation);
-			ImageIO.write(getImage(map), "png", f);
-		}
-		catch(Throwable e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
 
 	//65536 is the numbers in a short
 	public static short DoubleToShort(double doub)
@@ -291,7 +261,6 @@ public class ShortMap {
 	public static short BytesToShort(byte b1, byte b2)
 	{
 		return (short) (b1*255 + b2);
-		//(short) ((b1 << 8) | b2);
 	}
 
 	public static byte[] ShortToBytes(short s)
@@ -316,6 +285,11 @@ public class ShortMap {
 			}
 		}
 		return img;
+	}
+	
+	public BufferedImage getImage()
+	{
+		return getImage(map);
 	}
 	
 	public static short[][] getValues(BufferedImage img)

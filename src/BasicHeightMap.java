@@ -170,6 +170,9 @@ public class BasicHeightMap {
 		short[][] map = makeContinentDigestArray(xsize, ysize, seed);
 		int xsizem = map.length;
 		int ysizem = map[0].length;
+		ShortMap srt = new ShortMap(map);
+		srt = srt.blur(0);
+		map = srt.getMap();
 		draw(1,map);
 		//Temperature.illuminance(2048, 2048);
 		//Temperature.getTemperature(map,seed,sealevel);
@@ -445,8 +448,8 @@ public class BasicHeightMap {
 
 		
 		Color[][] colormap = new Color[xsizem][ysizem];
-		/*
-		Temperature.getTemperature(map, seed, sealevel);
+		
+		/*Temperature.getTemperature(map, seed, sealevel);
 		ShortMap rmap = new ShortMap("./WorldSave/Temperature.png");
 		for(int x = 0; x < xsizem; x++)
 		{
