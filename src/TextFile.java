@@ -1,70 +1,51 @@
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class TextFile {
-	private final String fileName;
+	private final String filePath;
 	private final File file;
 	
 	public TextFile(String filename)
 	{
-		fileName = filename;
-		file = new File(fileName);
+		filePath = filename;
+		file = new File(filePath);
 	}
 	
-	
-	public void Replace(String s)
+	public TextFile(File file)
 	{
-		try(BufferedWriter w = new BufferedWriter(new FileWriter(file))
-		{
-			w.write(s);
-		}
-		catch()
+		this.file = file;
+		filePath = file.getAbsolutePath();
 	}
 	
-	public void SetFile(String[] newText)
-	{
-		erase();
-		
-		try(BufferedWriter w = new BufferedWriter(new FileWriter(new File(fileName))))
-		{
-			for(int i = 0; i < newText.length; i++)
-			{
-				w.write(newText[i]);
-				w.newLine();
-			}
+	public void append(String s)
+	{	
+		try {
+			FileWriter w = new FileWriter(file);
+			w.append(s);
 			w.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		catch(Throwable t)
-		{
-			
-		}	
 	}
 
-	public String[] getFile()
+	public String getContent()
 	{
-		try(Scanner sc= new Scanner(new File(fileName))) {
-			ArrayList<String> s = new ArrayList<String>();
-			while(sc.hasNextLine())
-			{
-				s.add(sc.nextLine());
-			}
-			return s.toArray(new String[]{});
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+		try {
+			byte[] content = Files.readAllBytes(Paths.get(filePath));
+			return new String(content);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-
+	
 	public void erase()
 	{
-		try(RandomAccessFile f = new RandomAccessFile(fileName, "rw")) {
+		try(RandomAccessFile f = new RandomAccessFile(filePath, "rw")) {
 			f.setLength(0);
 			f.close();
 		} catch (IOException e) {
