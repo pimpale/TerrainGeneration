@@ -110,6 +110,11 @@ public class ShortMap {
 		return new ShortMap(getValues(scale(getImage(), newxsize, newysize)));
 	}
 
+	public ShortMap truncate(int x, int y, int width, int height)
+	{	
+		return new ShortMap(getImage().getSubimage(x, y, width, height));
+	}
+	
 	public void Export(String filelocation)
 	{
 		try

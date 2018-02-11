@@ -139,7 +139,7 @@ public class Main extends JPanel  implements  MouseListener, MouseMotionListener
 		WorldTemplate t = new WorldTemplate("./Resources/Templates/2PoleContinental");
 		System.out.println(t.getName());
 		System.out.println(t.getDescription());
-		WorldScript s = new WorldScript(t.getMain(),null);
+		WorldScript s = new WorldScript(t.getMain(),null, 5);
 		s.run();
 		//double[][][] maps = BasicHeightMap.getBasicHeightMap(3000000, 3000000, 0.2);
 		//double[][][] maps = BasicHeightMap.getBasicHeightMap(2<<20, 2<<20, 0.1);

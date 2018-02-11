@@ -1,4 +1,5 @@
-x_size = window.getWidth();
-y_size = window.getHeight();
+var x_size = window.getWidth();
+var y_size = window.getHeight();
 
-java.1
+var g2d = (java.awt.Graphics2D)window.createGraphics();
+
