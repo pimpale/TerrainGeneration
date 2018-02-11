@@ -4,44 +4,30 @@ public class WorldTemplate {
 	
 	private final File parentDirectory;
 	
-	private File mainJS;
+	private final File mainJS;
 	
-	private String name;
+	private final String name;
 	
-	private String description = "";
+	private final String description;
+	
+	public WorldTemplate(String parentDirectory)
+	{
+		this(new File(parentDirectory));
+	}
 	
 	public WorldTemplate(File parentDirectory)
 	{
 		this.parentDirectory = parentDirectory;
-		name = parentDirectory.getName();
-		File[] children = parentDirectory.listFiles();
-		for(int i = 0; i < 0; i++)
-		{
-			File child = children[i];
-			if(child.isFile())
-			{
-				String fileName = child.getName();
-				if(fileName.equals("main.js"))
-				{
-					mainJS = child;
-				}
-				else if(fileName.equals("name"))
-				{
-					this.name = new TextFile(child).getContent();
-				}
-				else if(fileName.equals("name"))
-				{
-					this.description = new TextFile(child).getContent();
-				}
-			}
-		}
+		name = new TextFile(parentDirectory.getAbsolutePath()+"/name").getContent();
+		description = new TextFile(parentDirectory.getAbsolutePath()+"/description").getContent();;
+		mainJS = new File(parentDirectory.getAbsolutePath()+"/main.js");
 	}
 	
 	public String getPath()
 	{
 		return parentDirectory.getAbsolutePath();
 	}
-	
+
 	public String getName()
 	{
 		return name;

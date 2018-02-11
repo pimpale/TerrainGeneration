@@ -136,11 +136,15 @@ public class Main extends JPanel  implements  MouseListener, MouseMotionListener
 	double[][] FeatureMap = new double[0][0];
 	void initialize()
 	{	
-		
+		WorldTemplate t = new WorldTemplate("./Resources/Templates/2PoleContinental");
+		System.out.println(t.getName());
+		System.out.println(t.getDescription());
+		WorldScript s = new WorldScript(t.getMain(),null);
+		s.run();
 		//double[][][] maps = BasicHeightMap.getBasicHeightMap(3000000, 3000000, 0.2);
-		double[][][] maps = BasicHeightMap.getBasicHeightMap(2<<20, 2<<20, 0.1);
-		Map = maps[0];
-		FeatureMap = maps[1];
+		//double[][][] maps = BasicHeightMap.getBasicHeightMap(2<<20, 2<<20, 0.1);
+		//Map = maps[0];
+		//FeatureMap = maps[1];
 	}
 
 	void functions()
