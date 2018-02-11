@@ -2,6 +2,8 @@ import java.io.File;
 
 public class WorldTemplate {
 	
+	private final File parentDirectory;
+	
 	private File mainJS;
 	
 	private String name;
@@ -10,6 +12,7 @@ public class WorldTemplate {
 	
 	public WorldTemplate(File parentDirectory)
 	{
+		this.parentDirectory = parentDirectory;
 		name = parentDirectory.getName();
 		File[] children = parentDirectory.listFiles();
 		for(int i = 0; i < 0; i++)
@@ -34,6 +37,11 @@ public class WorldTemplate {
 		}
 	}
 	
+	public String getPath()
+	{
+		return parentDirectory.getAbsolutePath();
+	}
+	
 	public String getName()
 	{
 		return name;
@@ -48,4 +56,5 @@ public class WorldTemplate {
 	{
 		return mainJS;
 	}
+
 }
