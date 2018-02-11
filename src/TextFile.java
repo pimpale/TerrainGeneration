@@ -8,23 +8,34 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TextFile {
-	final String fileName;
+	private final String fileName;
+	private final File file;
 	
 	public TextFile(String filename)
 	{
 		fileName = filename;
+		file = new File(fileName);
 	}
 	
 	
-	public void SetFile(String[] file)
+	public void Replace(String s)
+	{
+		try(BufferedWriter w = new BufferedWriter(new FileWriter(file))
+		{
+			w.write(s);
+		}
+		catch()
+	}
+	
+	public void SetFile(String[] newText)
 	{
 		erase();
 		
 		try(BufferedWriter w = new BufferedWriter(new FileWriter(new File(fileName))))
 		{
-			for(int i = 0; i < file.length; i++)
+			for(int i = 0; i < newText.length; i++)
 			{
-				w.write(file[i]);
+				w.write(newText[i]);
 				w.newLine();
 			}
 			w.close();
