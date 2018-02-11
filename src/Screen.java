@@ -68,7 +68,6 @@ public class Screen
 		String s = "./Resources/Templates/2PoleContinental/";
 		xm.blur(8);
 		ym.blur(8);
-		//ym.blur(10);
 		try {
 			xm.Export(s+"WindX.png");
 			ym.Export(s+"WindY.png");
@@ -86,7 +85,7 @@ public class Screen
 
 	static volatile double[][] rain;
 
-	static int ThreadCount = 4;
+	static int ThreadCount = Runtime.getRuntime().availableProcessors();
 
 	static int xSize;
 	static int ySize;
@@ -196,7 +195,6 @@ public class Screen
 			}
 		}
 		wxm.blur(8);
-		//wym.blur(16);
 		wxm.Export("./WorldSave/WindX.png");
 		wym.Export("./WorldSave/WindY.png");
 		System.out.println("wind generated");
@@ -220,7 +218,7 @@ public class Screen
 		gravXvector = new double[xSize][ySize];
 		gravYvector = new double[xSize][ySize];
 		rain = new double[xSize][ySize];
-		hpm = new double[xSize][ySize];
+		hpm =  new double[xSize][ySize];
 		for(int x = 0; x < xSize; x+=1)
 		{
 			for(int y = 0; y < ySize; y+=1)
@@ -278,7 +276,10 @@ public class Screen
 		{
 			final int begin, end;
 			public AffectEntities(int Begin, int End)
-			{begin = Begin;	end = End;}
+			{
+				begin = Begin;	end = End;
+			}
+			
 			@Override
 			public void run()
 			{
@@ -341,13 +342,13 @@ public class Screen
 					}
 				}
 				ShortMap m = new ShortMap(rainmap);
-				m.blur(8);
 				System.out.println("ok... plz wait");
-				m.blur(4);
+				m.blur(16);
 				m.Export("./WorldSave/RainMap.png");
 				System.out.println("rain complete");
 				return 0;
 			}
+			else
 			{
 				for(int i =0; i < ThreadCount; i++)
 				{

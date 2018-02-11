@@ -1,6 +1,3 @@
-/BasicHeightMap.class
-/Biome.class
-/Main.class
 /OpenSimplexNoise.class
 /RawObject.class
 /River.class
@@ -12,3 +9,4 @@
 /ShortMap.class
 /Temperature.class
 /TextFile.class
+/WorldTemplate.class

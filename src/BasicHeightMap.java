@@ -105,14 +105,12 @@ public class BasicHeightMap {
 			}
 			System.out.println(x);
 		}
-		draw(1,map);
 		return map;
 	}	
 	private static void draw(Color[][] colors)
 	{
 		int xsizem = colors.length;
 		int ysizem = colors[0].length;
-
 		BufferedImage img = new BufferedImage(xsizem, ysizem, BufferedImage.TYPE_INT_ARGB);
 		for(int x = 0; x < xsizem; x+=1)
 		{
@@ -254,7 +252,6 @@ public class BasicHeightMap {
 			}
 		}
 		ShortMap b = new ShortMap(map);
-		//b.blur(1);
 		map = b.getMap();
 		for(int x = 0; x < map.length; x++)
 		{
