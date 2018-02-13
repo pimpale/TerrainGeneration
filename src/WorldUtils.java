@@ -1,8 +1,11 @@
 import java.util.Random;
+import com.flowpowered.noise.*;
+import com.flowpowered.noise.module.source.Perlin;
+
 
 public class WorldUtils {
 	//inshortform
-	private static double makecontintentmappoint(int x, int y,
+	public static double makecontintentmappoint(int x, int y,
 			OpenSimplexNoise rangeNoise, OpenSimplexNoise shapeNoise, OpenSimplexNoise baseNoise)
 	{
 		double scale = 2<<19;
@@ -96,6 +99,7 @@ public class WorldUtils {
 		}
 		return new ShortMap(oldmap);
 	}
+	
 	/**
 	 * 
 	 * @param value the level of the surface
@@ -105,6 +109,9 @@ public class WorldUtils {
 	 */
 	public static ShortMap constantValue(double value, int xSize, int ySize)
 	{
+		Perlin n;
+		n.
+		
 		short[][] map = new short[xSize][ySize]; 
 		for(int x = 0; x < xSize; x++)
 		{
