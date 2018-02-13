@@ -16,7 +16,6 @@
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
-                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -35,9 +34,4 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="Main">
-        <java classname="Main" failonerror="true" fork="yes">
-            <classpath refid="terrain-generation.classpath"/>
-        </java>
-    </target>
 </project>
