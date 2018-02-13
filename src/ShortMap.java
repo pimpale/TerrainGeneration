@@ -105,6 +105,20 @@ public class ShortMap {
 		return newImage;
 	}
 
+	
+	public ShortMap clone()
+	{
+		short[][] newMap = new short[xSize][ySize];
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				newMap[x][y] = map[x][y];
+			}
+		}
+		return new ShortMap(newMap);
+	}
+	
 	public ShortMap scale(int newxsize, int newysize)
 	{
 		return new ShortMap(getValues(scale(getImage(), newxsize, newysize)));

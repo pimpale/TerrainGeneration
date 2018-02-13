@@ -61,35 +61,85 @@ public class WorldUtils {
 		return new ShortMap(map);		
 	}
 	
-	
-	public static short[][] makeContinentDigestArray(int xsize, int ysize, int seed)
+	public static ShortMap absSimplexNoise(OpenSimplexNoise noise, double scale, int xSize, int ySize)
 	{
-		Random r = new Random(seed);
-		OpenSimplexNoise Noise1 = new OpenSimplexNoise(r.nextInt()); 
-		OpenSimplexNoise Noise2 = new OpenSimplexNoise(r.nextInt()); 
-		OpenSimplexNoise Noise3 = new OpenSimplexNoise(r.nextInt()); 
-		int digestxsize = 700;
-		int digestysize = 700;
-		System.out.println("In the beginning, the world was drawn forth from the ether...");
-		short[][] map = new short[digestxsize][digestysize];
-		for(int x = 0; x < digestxsize; x+=1)
+		short[][] map = new short[xSize][ySize]; 
+		for(int x = 0; x < xSize; x++)
 		{
-			for(int y = 0; y < digestysize; y+=1)
+			for(int y = 0; y < ySize; y++)
 			{
-				//long startTime = System.nanoTime();
-				double rawheight  = makecontintentmappoint(
-						(xsize/digestxsize)*x,
-						(ysize/digestysize)*y,
-						Noise1,Noise2,Noise3
-						);
-				short height = ShortMap.DoubleToShort(rawheight);
-				map[x][y] = height;
-				//	System.out.println(System.nanoTime() - startTime);
+				map[x][y] = ShortMap.DoubleToShort(Math.abs(noise.eval(x/scale, x/scale)));
 			}
-			System.out.println(x);
 		}
-		return map;
-	}	
+		return new ShortMap(map);	
+	}
+	
+	/**
+	 * 
+	 * @param map the map to be processed
+	 * @return returns a map that has been flipped. All 1s are 0s, all 0.7s are 0.3s, and so on
+	 */
+	public static ShortMap flip(ShortMap map)
+	{
+		int xSize = map.getXSize();
+		int ySize = map.getYSize();
+		short[][] oldmap = map.getMap();
+		short[][] newmap = new short[xSize][ySize];
+		double value;
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				value = ShortMap.ShortToDouble(oldmap[x][y]);
+				newmap[x][y] = ShortMap.DoubleToShort(1 -value);
+			}
+		}
+		return new ShortMap(oldmap);
+	}
+	/**
+	 * 
+	 * @param value the level of the surface
+	 * @param xSize the x size of the ShortMap
+	 * @param ySize the y size of the ShortMap
+	 * @return a ShortMap which is flat
+	 */
+	public static ShortMap constantValue(double value, int xSize, int ySize)
+	{
+		short[][] map = new short[xSize][ySize]; 
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				map[x][y] = ShortMap.DoubleToShort(value);
+			}
+		}
+		return new ShortMap(map);
+	}
+	
+	/**
+	 * Raise all values on the map by a certain amount;
+	 * @param map The map to perform the operation on
+	 * @param pow
+	 * @return
+	 */
+	public static ShortMap pow(ShortMap map, double pow)
+	{
+		int xSize = map.getXSize();
+		int ySize = map.getYSize();
+		short[][] oldmap = map.getMap();
+		short[][] newmap = new short[xSize][ySize]; 
+		double value;
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				value = ShortMap.ShortToDouble(oldmap[x][y]);
+				newmap[x][y] = ShortMap.DoubleToShort(Math.pow(value, pow));
+			}
+		}
+		return new ShortMap(oldmap);
+	}
+		
 	
 	public static ShortMap scale(ShortMap map, double multiplier)
 	{
@@ -110,6 +160,63 @@ public class WorldUtils {
 		return new ShortMap(newMap);
 	}
 	
+	public static ShortMap add(ShortMap map1, ShortMap map2)
+	{
+		return add(new ShortMap[] {map1,map2});
+	}
+	
+	public static ShortMap subtract(ShortMap map1, ShortMap map2)
+	{
+		return subtract(map1, map2, 0, 0);
+	}
+	
+	public static ShortMap subtract(ShortMap map1, ShortMap map2, int xOffset, int yOffset)
+	{
+		int xSize = map1.getXSize();
+		int ySize = map1.getYSize();
+		
+		short[][] m1 = map1.getMap();
+		short[][] m2 = map2.getMap();
+		
+		short[][] mapSum = new short[xSize][ySize];
+		double sum = 0;
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				sum = ShortMap.ShortToDouble(m1[x][y]) - ShortMap.ShortToDouble(m2[x][y]);
+				mapSum[x][y] = ShortMap.DoubleToShort(sum);
+			}
+		}
+		return new ShortMap(mapSum);
+	}
+	
+	/**
+	 * 
+	 * @param maps the maps to add (must be same size) 
+	 * @return The sum of the maps (will be clamped between 1 and 0)
+	 */
+	public static ShortMap add(ShortMap[] maps)
+	{
+		int xSize = maps[0].getXSize();
+		int ySize = maps[0].getYSize();
+		
+		short[][] mapSum = new short[xSize][ySize];
+		int sum = 0;
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				sum = 0;
+				for(int i = 0; i < maps.length; i++)
+				{
+					sum += ShortMap.ShortToDouble(maps[i].get(x, y));
+				}
+				mapSum[x][y] = ShortMap.DoubleToShort(sum);
+			}
+		}
+		return new ShortMap(mapSum);
+	}
 	
 	/**
 	 * 
