@@ -254,19 +254,6 @@ public class ShortMap {
 		}
 	}
 
-	//65536 is the numbers in a short
-	public static short DoubleToShort(double doub)
-	{
-		//return (short)(doub*Short.MAX_VALUE);
-		return (short)(doub*65536 + Short.MIN_VALUE);
-	}
-
-	public static double ShortToDouble(short shor)
-	{
-		//return ((double)shor)/Short.MAX_VALUE;
-		return (((double)shor)-Short.MIN_VALUE)/(65536);
-	}
-
 	public static long Offset(int x, int y, int xsize, int ysize)
 	{
 		return (x*ysize + y);
@@ -300,7 +287,7 @@ public class ShortMap {
 		{
 			for (int x = 0; x < xSize; x++) 
 			{
-				r.setPixel(x, y, new int[] {map[x][y]-Short.MAX_VALUE});
+				r.setPixel(x, y, new int[] {map[x][y]});
 			}
 		}
 		return img;
