@@ -21,7 +21,7 @@ public class Temperature {
 		int ysize = height[0].length;
 		ShortMap ilmn = new ShortMap("./Resources/Templates/2PoleContinental/Temperature.png").scale(xsize, ysize);
 		short[][] ilmnMap = ilmn.getMap();
-		OpenSimplexNoise snoise = new OpenSimplexNoise(seed+1);
+		//also sum up a random
 		for(int x = 0; x < xsize; x++)
 		{
 			for(int y = 0; y < ysize; y++)
@@ -31,7 +31,7 @@ public class Temperature {
 				{
 					val = sealevel;
 				}
-				ilmnMap[x][y] += (short)(-60*val+ 10+20*snoise.eval(x/200.0, y/200.0));
+				ilmnMap[x][y] += (short)(-60*val+ 10+20);//plus random
 			}
 		}
 		ilmn = new ShortMap(ilmnMap);
