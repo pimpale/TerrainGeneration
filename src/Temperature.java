@@ -3,12 +3,12 @@ public class Temperature {
 	
 	public static short TemperatureDoubleToShort(double doub)
 	{
-		return ShortMap.DoubleToShort(0.2+doub/2);
+		return WorldUtils.DoubleToShort(doub/2);
 	}
 	
 	public static double TemperatureShortToDouble(short shor)
 	{
-		return (ShortMap.ShortToDouble(shor)-0.2)*2;
+		return (WorldUtils.ShortToDouble(shor))*2;
 	}
 
 	
@@ -26,7 +26,7 @@ public class Temperature {
 		{
 			for(int y = 0; y < ysize; y++)
 			{
-				double val = ShortMap.ShortToDouble(height[x][y]);
+				double val = WorldUtils.ShortToDouble(height[x][y]);
 				if(val  < sealevel)
 				{
 					val = sealevel;
@@ -42,7 +42,6 @@ public class Temperature {
 	public static void illuminance(int xsize, int ysize)
 	{
 		short[][] imap = new short[xsize][ysize];
-		OpenSimplexNoise n = new OpenSimplexNoise(1);
 		for(int x = 0; x < xsize; x++)
 		{
 			for(int y = 0; y < ysize; y++)
@@ -53,7 +52,6 @@ public class Temperature {
 			}
 		}
 		new ShortMap(imap).Export("./Resources/Templates/2PoleContinental/Temperature.png");
-		BasicHeightMap.draw(1,imap);
 	}
 	
 }

@@ -14,12 +14,12 @@ public class Screen
 
 	public static short WindDoubleToShort(double doub)
 	{
-		return ShortMap.DoubleToShort(0.5+16*doub);
+		return WorldUtils.DoubleToShort(0.5+16*doub);
 	}
 
 	public static double WindShortToDouble(short shor)
 	{
-		return (ShortMap.ShortToDouble(shor)-0.5)/16;
+		return (WorldUtils.ShortToDouble(shor)-0.5)/16;
 	}
 
 	public static void drawWinds(int xsizem, int ysizem)
@@ -162,7 +162,7 @@ public class Screen
 		{
 			for(int y = 0; y < ySize; y+=16)
 			{
-				val = ShortMap.ShortToDouble(hmap.get(x, y));
+				val = WorldUtils.ShortToDouble(hmap.get(x, y));
 				if(val > 0.2)
 				{
 					System.out.println(x);
@@ -234,7 +234,7 @@ public class Screen
 		{
 			for(int y = 0; y < hpm[0].length; y++)
 			{
-				value = ShortMap.ShortToDouble(hmap.get(x, y));
+				value = WorldUtils.ShortToDouble(hmap.get(x, y));
 				hpm[x][y] = value;
 				if(value < 0.2)
 				{
@@ -338,7 +338,7 @@ public class Screen
 						{
 							val = 0;
 						}
-						rainmap[x][y] = ShortMap.DoubleToShort(val);
+						rainmap[x][y] = WorldUtils.DoubleToShort(val);
 					}
 				}
 				ShortMap m = new ShortMap(rainmap);
