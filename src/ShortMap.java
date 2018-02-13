@@ -105,21 +105,6 @@ public class ShortMap {
 		return newImage;
 	}
 
-	public ShortMap scale(double multiplier)
-	{
-		short[][] newMap = new short[xSize][ySize]; 
-		for(int x = 0; x < xSize; x++)
-		{
-			for(int y = 0; y < ySize; y++)
-			{
-				double newVal = ShortMap.ShortToDouble(map[x][y]) * multiplier;
-				newMap[x][y] =  ShortMap.DoubleToShort(clamp(newVal, 0, 1));
-			}
-		}
-		return new ShortMap(newMap);
-	}
-
-
 	public ShortMap scale(int newxsize, int newysize)
 	{
 		return new ShortMap(getValues(scale(getImage(), newxsize, newysize)));
@@ -333,15 +318,5 @@ public class ShortMap {
 	{
 		return Math.max(min, Math.min(max, val));
 	}
-	/**
-	 * 
-	 * @param maps the maps to average (must be same size)
-	 * @param weights the weights of each map (Should all add up to 1, with each individual weight being in between 1 and 0)
-	 * @return The average of the maps
-	 */
-	public static ShortMap weightedAverage(ShortMap[] maps, double[] weights)
-	{
-		double[][] mapSum = new double[]
-	}
-
+	
 }

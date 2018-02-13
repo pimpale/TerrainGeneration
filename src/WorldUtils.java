@@ -90,6 +90,60 @@ public class WorldUtils {
 		}
 		return map;
 	}	
-
+	
+	public static ShortMap scale(ShortMap map, double multiplier)
+	{
+		int xSize = map.getXSize();
+		int ySize = map.getYSize();
+		short[][] oldmap = map.getMap();
+		short[][] newMap = new short[xSize][ySize];
+		
+		double newVal = 0;
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				newVal = ShortMap.ShortToDouble(oldmap[x][y]) * multiplier;
+				newMap[x][y] =  ShortMap.DoubleToShort(ShortMap.clamp(newVal, 0, 1));
+			}
+		}
+		return new ShortMap(newMap);
+	}
+	
+	
+	/**
+	 * 
+	 * @param maps the maps to average (must be same size)
+	 * @param weights the weights of each map (Should all add up to 1, with each individual weight being in between 1 and 0)
+	 * @return The average of the maps
+	 */
+	public static ShortMap weightedAverage(ShortMap[] maps, double[] weights)
+	{
+		int xSize = maps[0].getXSize();
+		int ySize = maps[0].getYSize();
+		
+		double weightSum = 0;
+		for(int i = 0; i < weights.length; i++)
+		{
+			weightSum += weights[i];
+		}
+		
+		short[][] average = new short[xSize][ySize];
+		
+		double mapSum = 0;
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				mapSum = 0;
+				for(int i = 0; i < maps.length; i++)
+				{
+					mapSum += ShortMap.ShortToDouble(maps[i].get(x, y));
+				}
+				average[x][y] = ShortMap.DoubleToShort(mapSum/weightSum);
+			}
+		}
+		return new ShortMap(average);
+	}
 }
 
