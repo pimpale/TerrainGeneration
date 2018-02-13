@@ -130,7 +130,7 @@ public class WorldUtils {
 	 * @return
 	 */
 	public static ShortMap pow(ShortMap map, double pow)
-	{
+	{ 
 		int xSize = map.getXSize();
 		int ySize = map.getYSize();
 		short[][] oldmap = map.getMap();
