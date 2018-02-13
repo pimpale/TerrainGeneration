@@ -54,12 +54,12 @@ public class BasicHeightMap {
 			for(int y = 0; y < digestysize; y+=1)
 			{
 				//long startTime = System.nanoTime();
-				double rawheight  = makecontintentmappoint(
+		/*		double rawheight  = makecontintentmappoint(
 						(xsize/digestxsize)*x,
 						(ysize/digestysize)*y,
 						Noise1,Noise2,Noise3
-						);
-				short height = ShortMap.DoubleToShort(rawheight);
+						);*/
+				short height = ShortMap.DoubleToShort(Math.random());
 				map[x][y] = height;
 				//	System.out.println(System.nanoTime() - startTime);
 			}
