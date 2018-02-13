@@ -154,21 +154,43 @@ public class WorldUtils {
 		short[][] oldmap = map.getMap();
 		short[][] newMap = new short[xSize][ySize];
 
-		double newVal = 0;
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
 			{
-				newVal = ShortToDouble(oldmap[x][y]) * multiplier;
-				newMap[x][y] =  DoubleToShort(ShortMap.clamp(newVal, -1, 1));
+				newMap[x][y] =  (short)ShortMap.clamp(oldmap[x][y]*multiplier, Short.MIN_VALUE, Short.MAX_VALUE);
 			}
 		}
 		return new ShortMap(newMap);
 	}
-
-	public static ShortMap add(ShortMap map1, ShortMap map2)
+	
+	public static ShortMap addOffset(ShortMap map1, ShortMap map2, int xoff, int yoff)
 	{
-		return add(new ShortMap[] {map1,map2});
+		int xSize1 = map1.getXSize();
+		int ySize1 = map1.getYSize();
+
+		int xSize2 = map2.getXSize();
+		int ySize2 = map2.getYSize();
+		
+		short[][] mapSum = new short[xSize1][ySize1];
+		
+		int sum = 0;
+		int x2,y2; //the coordinates on the second map
+		for(int x = 0; x < xSize1; x++)
+		{
+			for(int y = 0; y < ySize1; y++)
+			{
+				sum = map1.get(x, y);
+				x2 = x-xoff;
+				y2 = y-yoff;
+				if(x2 >= 0 && y2 >= 0 && x2 < xSize2 && y2 < ySize2)
+				{
+					sum += map2.get(x,y);
+				}
+				mapSum[x][y] = (short)ShortMap.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
+			}
+		}
+		return new ShortMap(mapSum);
 	}
 	
 	
@@ -185,7 +207,7 @@ public class WorldUtils {
 		int ySize = maps[0].getYSize();
 
 		short[][] mapSum = new short[xSize][ySize];
-		int sum = 0;
+		long sum = 0;
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -193,9 +215,9 @@ public class WorldUtils {
 				sum = 0;
 				for(int i = 0; i < maps.length; i++)
 				{
-					sum += ShortToDouble(maps[i].get(x, y));
+					sum += maps[i].get(x, y);
 				}
-				mapSum[x][y] = DoubleToShort(sum);
+				mapSum[x][y] = (short)ShortMap.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
 			}
 		}
 		return new ShortMap(mapSum);
@@ -209,31 +231,11 @@ public class WorldUtils {
 	 */
 	public static ShortMap weightedAverage(ShortMap[] maps, double[] weights)
 	{
-		int xSize = maps[0].getXSize();
-		int ySize = maps[0].getYSize();
-
-		double weightSum = 0;
 		for(int i = 0; i < weights.length; i++)
 		{
-			weightSum += weights[i];
+			maps[i] = scale(maps[i],weights[i]);
 		}
-
-		short[][] average = new short[xSize][ySize];
-
-		double mapSum = 0;
-		for(int x = 0; x < xSize; x++)
-		{
-			for(int y = 0; y < ySize; y++)
-			{
-				mapSum = 0;
-				for(int i = 0; i < maps.length; i++)
-				{
-					mapSum += ShortToDouble(maps[i].get(x, y));
-				}
-				average[x][y] = DoubleToShort(mapSum/weightSum);
-			}
-		}
-		return new ShortMap(average);
+		return add(maps);
 	}
 }
 
