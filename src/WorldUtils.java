@@ -5,7 +5,7 @@ import com.flowpowered.noise.module.source.Perlin;
 
 
 public class WorldUtils {
-	//inshortform
+	/*//inshortform
 	public static double makecontintentmappoint(int x, int y,
 			OpenSimplexNoise rangeNoise, OpenSimplexNoise shapeNoise, OpenSimplexNoise baseNoise)
 	{
@@ -43,7 +43,7 @@ public class WorldUtils {
 		float height = mheight*0.2f  + fheight*0.1f + rheight*0.45f + cheight*0.45f;
 		//height = fheight;
 		return Math.pow(height, 4);
-	}
+	}*/
 
 	//65536 is the numbers in a short
 	public static short DoubleToShort(double doub)
