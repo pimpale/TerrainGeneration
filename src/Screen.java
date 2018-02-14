@@ -271,7 +271,7 @@ public class Screen
 		AtomicInteger threadcount = new AtomicInteger(ThreadCount);
 		Executor exe = Executors.newFixedThreadPool(ThreadCount);
 		ArrayList<Entity> replacementList = new ArrayList<Entity>();
-		Main.g2d.setPaint(new Color(0,0,255,10));
+		//Main.g2d.setPaint(new Color(0,0,255,10));
 		class AffectEntities implements Runnable
 		{
 			final int begin, end;
