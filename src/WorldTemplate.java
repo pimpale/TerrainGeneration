@@ -10,13 +10,12 @@ public class WorldTemplate {
 	
 	private final String description;
 	
-	public WorldTemplate(String parentDirectory)
-	{
-		this(new File(parentDirectory));
-	}
-	
 	public WorldTemplate(File parentDirectory)
 	{
+		if(!parentDirectory.isDirectory())
+		{
+			throw new IllegalArgumentException("Not a directory");
+		}
 		this.parentDirectory = parentDirectory;
 		name = new TextFile(parentDirectory.getAbsolutePath()+"/name").getContent();
 		description = new TextFile(parentDirectory.getAbsolutePath()+"/description").getContent();;
@@ -42,5 +41,19 @@ public class WorldTemplate {
 	{
 		return mainJS;
 	}
-
+	
+	public static boolean isTemplate(File f)
+	{
+		//I'm a genius, aren't I?
+		try
+		{
+			new WorldTemplate(f);
+			return true;
+		}
+		catch(Exception e)//God knows what could happen
+		{
+			return false;
+		}
+	}
+	
 }

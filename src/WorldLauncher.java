@@ -1,5 +1,9 @@
+import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,16 +15,40 @@ import javax.swing.ListSelectionModel;
 
 public class WorldLauncher {
 	
+	private JFrame frame;
 	
-	
-	public WorldLauncher()
+	private static WorldTemplate[] getWorldTemplates(File parentDirectory)
 	{
+		ArrayList<File> files = new ArrayList<File>();
+		
+		
+		File[] children = parentDirectory.listFiles();
+		for(int i = 0; i < children.length; i++)
+		{
+			File child = children[i];
+			if(child.exists() && child.isDirectory())
+			{
+					
+			}
+		}
+		
+		
+		
+	}
+	
+	
+	
+	public WorldLauncher(File parentDirectory)
+	{
+		
+		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		String[] s = new String[] {"hola", "hi", "ok"};
 		
 		JList<String> list = new JList<String>(s);
+		
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setSelectedIndex(0);
 		
@@ -29,7 +57,11 @@ public class WorldLauncher {
 		picture.setFont(picture.getFont().deriveFont(Font.ITALIC));
 		picture.setHorizontalAlignment(JLabel.CENTER);
 
-		JScrollPane pictureScrollPane = new JScrollPane(picture);
+		Canvas c = new Canvas();
+		
+		c.setBackground(Color.BLACK);
+		
+		JScrollPane pictureScrollPane = new JScrollPane(c);
 
 		//Create a split pane with the two scroll panes in it.
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -38,9 +70,8 @@ public class WorldLauncher {
 		splitPane.setDividerLocation(150);
 
 		//Provide minimum sizes for the two components in the split pane.
-		Dimension minimumSize = new Dimension(100, 50);
-		listScrollPane.setMinimumSize(minimumSize);
-		pictureScrollPane.setMinimumSize(minimumSize);
+		listScrollPane.setMinimumSize(new Dimension(100, 50));
+		pictureScrollPane.setMinimumSize(new Dimension(100, 50));
 
 		//Provide a preferred size for the split pane.
 		splitPane.setPreferredSize(new Dimension(400, 200));

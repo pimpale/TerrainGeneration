@@ -17,6 +17,7 @@ public class TextFile {
 	
 	public TextFile(File file)
 	{
+		if(file.is)
 		this.file = file;
 		filePath = file.getAbsolutePath();
 	}
