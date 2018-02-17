@@ -19,21 +19,36 @@ public class WorldLauncher {
 	
 	private static WorldTemplate[] getWorldTemplates(File parentDirectory)
 	{
-		ArrayList<File> files = new ArrayList<File>();
+		ArrayList<File> possibleTemplates = new ArrayList<File>();
 		
+		if(!parentDirectory.isDirectory())
+		{
+			throw new IllegalArgumentException("Directory not valid");
+		}
+		
+		possibleTemplates.add(parentDirectory);
 		
 		File[] children = parentDirectory.listFiles();
 		for(int i = 0; i < children.length; i++)
 		{
 			File child = children[i];
-			if(child.exists() && child.isDirectory())
+			if(child.isDirectory())
 			{
-					
+				possibleTemplates.add(child);	
 			}
 		}
 		
+		ArrayList<WorldTemplate> templates = new ArrayList<WorldTemplate>();
 		
+		for(int i = 0; i < possibleTemplates.size(); i++)
+		{
+			if(WorldTemplate.isTemplate(possibleTemplates.get(i)))
+			{
+				templates.add(new WorldTemplate(possibleTemplates.get(i)));
+			}
+		}
 		
+		return templates.toArray(new WorldTemplate[templates.size()]);
 	}
 	
 	

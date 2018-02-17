@@ -11,13 +11,15 @@ public class TextFile {
 	
 	public TextFile(String filename)
 	{
-		filePath = filename;
-		file = new File(filePath);
+		this(new File(filename));
 	}
 	
 	public TextFile(File file)
 	{
-		if(file.is)
+		if(!file.canRead())
+		{
+			throw new IllegalArgumentException("File is not readable");
+		}
 		this.file = file;
 		filePath = file.getAbsolutePath();
 	}
