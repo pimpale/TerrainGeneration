@@ -1,14 +1,17 @@
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class WorldTemplate {
 	
+	//mandatory
 	private final File parentDirectory;
-	
 	private final File mainJS;
-	
 	private final String name;
-	
 	private final String description;
+	
+	private BufferedImage thumbnail = null;
+
+	
 	
 	public WorldTemplate(File parentDirectory)
 	{
@@ -40,6 +43,11 @@ public class WorldTemplate {
 	public File getMain()
 	{
 		return mainJS;
+	}
+	
+	public BufferedImage getThumbnail()
+	{
+		return thumbnail;
 	}
 	
 	public static boolean isTemplate(File f)

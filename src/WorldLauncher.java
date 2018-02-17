@@ -12,10 +12,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class WorldLauncher {
+public class WorldLauncher implements ListSelectionListener{
 	
-	private JFrame frame;
+	private final JFrame frame;
+	private WorldTemplate[] templates;
+	private JList<String> templateList;
+	private JScrollPane listScrollPane;
+	private JScrollPane descriptionScrollPane;
+	private JSplitPane infoSplitPane;
+	private JLabel thumbnail;
+	private JSplitPane splitPane;
 	
 	private static WorldTemplate[] getWorldTemplates(File parentDirectory)
 	{
@@ -53,24 +62,42 @@ public class WorldLauncher {
 	
 	
 	
+	
+	private String[] getNames(WorldTemplate[] temps)
+	{
+		String[] s = new String[temps.length];
+		for(int i = 0; i < temps.length; i++)
+		{
+			s[i] = temps[i].getName();
+		}
+		return s;
+	}
+	
+	
+	private JList<String> getJList(WorldTemplate[] temps)
+	{
+		JList<String> templateList = new JList<String>(getNames(temps));
+		
+		templateList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		templateList.setSelectedIndex(0);
+		templateList.addListSelectionListener(this);
+		return templateList;
+	}
+	
 	public WorldLauncher(File parentDirectory)
 	{
+		templates = getWorldTemplates(parentDirectory);
+		templateList = getJList(templates);
+		listScrollPane = new JScrollPane(templateList);
 		
 		
-		JFrame frame = new JFrame();
+		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		String[] s = new String[] {"hola", "hi", "ok"};
 		
-		JList<String> list = new JList<String>(s);
+
 		
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setSelectedIndex(0);
-		
-		JScrollPane listScrollPane = new JScrollPane(list);
 		JLabel picture = new JLabel();
-		picture.setFont(picture.getFont().deriveFont(Font.ITALIC));
-		picture.setHorizontalAlignment(JLabel.CENTER);
 
 		Canvas c = new Canvas();
 		
@@ -95,4 +122,11 @@ public class WorldLauncher {
 		frame.pack();
 		frame.setVisible(true);
 	}
+	
+	@Override
+	public void valueChanged(ListSelectionEvent arg0) {
+		arg0.getFirstIndex();
+	}
+	
+	
 }
