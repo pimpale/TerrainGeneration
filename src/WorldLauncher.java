@@ -84,7 +84,7 @@ public class WorldLauncher implements Runnable, ListSelectionListener{
 	
 	private static void runWorld(WorldTemplate t)
 	{
-		WorldScript ws = new WorldScript(t.getMain();
+		new WorldHistoryDisplay(t).run();;
 	}
 	
 	
