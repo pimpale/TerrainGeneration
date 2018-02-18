@@ -8,11 +8,6 @@ public class WorldScript implements Runnable{
 	private BufferedImage window;
 	private int seed;
 	
-	public WorldScript(File script, BufferedImage window, int seed)
-	{
-		this(new TextFile(script).getContent(), window, seed);
-	}
-	
 	public WorldScript(String script, BufferedImage window, int seed)
 	{
 		this.seed = seed;

@@ -20,9 +20,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class WorldLauncher implements ListSelectionListener{
+public class WorldLauncher implements Runnable, ListSelectionListener{
 	
-	private final JFrame frame;
+	private JFrame frame;
 	private WorldTemplate[] templates;
 	private JList<String> templateList;
 	private JScrollPane listScrollPane;
@@ -84,7 +84,7 @@ public class WorldLauncher implements ListSelectionListener{
 	
 	private static void runWorld(WorldTemplate t)
 	{
-		
+		WorldScript ws = new WorldScript(t.getMain();
 	}
 	
 	
@@ -98,6 +98,8 @@ public class WorldLauncher implements ListSelectionListener{
 		return templateList;
 	}
 	
+	
+	
 	public WorldLauncher(File parentDirectory)
 	{
 		templates = getWorldTemplates(parentDirectory);
@@ -107,7 +109,7 @@ public class WorldLauncher implements ListSelectionListener{
 		runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	
+            	runWorld(templates[selectedIndex]);
             }
         });
 		leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listScrollPane, runButton);
@@ -116,16 +118,6 @@ public class WorldLauncher implements ListSelectionListener{
 		descriptionScrollPane = new JScrollPane(descriptionArea);
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				leftSplitPane, descriptionScrollPane);
-		
-		
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-				
-	
-		frame.getContentPane().add(splitPane);
-		frame.pack();
-		frame.setVisible(true);
 	}
 	
 	public void destroy()
@@ -138,6 +130,19 @@ public class WorldLauncher implements ListSelectionListener{
 		selectedIndex = arg0.getFirstIndex();
 		WorldTemplate selectedTemplate = templates[selectedIndex];
 		descriptionArea.setText(selectedTemplate.getDescription());
+	}
+
+
+
+
+	@Override
+	public void run() {
+		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frame.getContentPane().add(splitPane);
+		frame.pack();
+		frame.setVisible(true);
 	}
 	
 	
