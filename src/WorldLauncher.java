@@ -2,6 +2,8 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -28,8 +30,9 @@ public class WorldLauncher implements ListSelectionListener{
 	private JSplitPane leftSplitPane;
 	private JTextArea descriptionArea;
 	private JScrollPane descriptionScrollPane;
-	
 	private JSplitPane splitPane;
+	
+	private int selectedIndex = 0;
 	
 	private static WorldTemplate[] getWorldTemplates(File parentDirectory)
 	{
@@ -79,6 +82,12 @@ public class WorldLauncher implements ListSelectionListener{
 	}
 	
 	
+	private static void runWorld(WorldTemplate t)
+	{
+		
+	}
+	
+	
 	private JList<String> getJList(WorldTemplate[] temps)
 	{
 		JList<String> templateList = new JList<String>(getNames(temps));
@@ -95,6 +104,12 @@ public class WorldLauncher implements ListSelectionListener{
 		templateList = getJList(templates);
 		listScrollPane = new JScrollPane(templateList);
 		runButton = new JButton("Run World");
+		runButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	
+            }
+        });
 		leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listScrollPane, runButton);
 		descriptionArea = new JTextArea(templates[0].getDescription());
 		descriptionArea.setEditable(false);
@@ -113,9 +128,15 @@ public class WorldLauncher implements ListSelectionListener{
 		frame.setVisible(true);
 	}
 	
+	public void destroy()
+	{
+		frame.dispose();
+	}
+	
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
-		WorldTemplate selectedTemplate = templates[arg0.getFirstIndex()];
+		selectedIndex = arg0.getFirstIndex();
+		WorldTemplate selectedTemplate = templates[selectedIndex];
 		descriptionArea.setText(selectedTemplate.getDescription());
 	}
 	
