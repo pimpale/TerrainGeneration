@@ -20,7 +20,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class WorldLauncher implements Runnable, ListSelectionListener{
+public class WorldTemplateChooser implements Runnable, ListSelectionListener{
 	
 	private JFrame frame;
 	private WorldTemplate[] templates;
@@ -68,9 +68,6 @@ public class WorldLauncher implements Runnable, ListSelectionListener{
 		return templates.toArray(new WorldTemplate[templates.size()]);
 	}
 	
-	
-	
-	
 	private String[] getNames(WorldTemplate[] temps)
 	{
 		String[] s = new String[temps.length];
@@ -80,13 +77,6 @@ public class WorldLauncher implements Runnable, ListSelectionListener{
 		}
 		return s;
 	}
-	
-	
-	private static void runWorld(WorldTemplate t)
-	{
-		new WorldHistoryDisplay(t).run();;
-	}
-	
 	
 	private JList<String> getJList(WorldTemplate[] temps)
 	{
@@ -98,18 +88,23 @@ public class WorldLauncher implements Runnable, ListSelectionListener{
 		return templateList;
 	}
 	
+	public WorldTemplate getSelected()
+	{
+		return templates[selectedIndex];
+	}
 	
 	
-	public WorldLauncher(File parentDirectory)
+	
+	public WorldTemplateChooser(File parentDirectory)
 	{
 		templates = getWorldTemplates(parentDirectory);
 		templateList = getJList(templates);
 		listScrollPane = new JScrollPane(templateList);
-		runButton = new JButton("Run World");
+		runButton = new JButton("Select World");
 		runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	runWorld(templates[selectedIndex]);
+            	return;
             }
         });
 		leftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listScrollPane, runButton);

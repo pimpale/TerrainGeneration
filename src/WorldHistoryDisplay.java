@@ -1,4 +1,5 @@
 import java.io.PipedOutputStream;
+import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,8 +19,7 @@ public class WorldHistoryDisplay implements Runnable{
 	public static final int WIDTH = 700;
 	public static final int HEIGHT = 700;
 	private JFrame frame;
-	private ImageIcon image;
-	private JLabel imageLabel;
+	private Canvas window;
 	private JTextArea status;
 	private JScrollPane statusScroll;
 	private JButton startButton;
@@ -27,8 +27,8 @@ public class WorldHistoryDisplay implements Runnable{
 	private JSplitPane splitPane;
 
 	private WorldTemplate template;
-	private BufferedImage window;
 	private PipedOutputStream out;
+	private WorldScript script;
 	private boolean paused;
 
 	public boolean isPaused()
@@ -36,27 +36,18 @@ public class WorldHistoryDisplay implements Runnable{
 		return paused;
 	}
 
-	public void repaint()
-	{
-		image.setImage(window);
-	}
-
-
 	public WorldHistoryDisplay(WorldTemplate t)
 	{
 		template = t;
-		window = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_4BYTE_ABGR);
-		image = new ImageIcon(window);
-		imageLabel = new JLabel(image);
+		window = new Canvas();
 		status = new JTextArea("");
 		statusScroll = new JScrollPane(status);
-
 		startButton = new JButton("Start");
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(isPaused())
-				{
+				{ 
 					startButton.setText("Stop");
 					paused = false;
 				}
@@ -72,7 +63,7 @@ public class WorldHistoryDisplay implements Runnable{
 				statusScroll, startButton);
 		
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				leftSplitPane, imageLabel);
+				leftSplitPane, window);
 
 	}
 
@@ -83,6 +74,11 @@ public class WorldHistoryDisplay implements Runnable{
 		frame.getContentPane().add(splitPane);
 		frame.pack();
 		frame.setVisible(true);
+
+		while(true)
+		{
+			
+		}
 	}
 
 }

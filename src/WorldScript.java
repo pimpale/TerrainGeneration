@@ -1,3 +1,4 @@
+import java.awt.Canvas;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.PrintStream;
@@ -7,18 +8,18 @@ import javax.script.*;
 public class WorldScript implements Runnable{
 
 	private final String script;
-	private BufferedImage window;
+	private Canvas window;
 	private PrintStream out;
 	private int seed;
 	
-	public WorldScript(String script, BufferedImage window, PrintStream out, int seed)
+	public WorldScript(String script, Canvas window, PrintStream out, int seed)
 	{
 		this.out = out;
 		this.seed = seed;
 		this.script = script;
 		this.window = window;
 	}
-
+	
 	@Override
 	public void run() {
 	try {
