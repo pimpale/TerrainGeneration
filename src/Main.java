@@ -9,7 +9,8 @@ public class Main
 		WorldTemplateChooser w = new WorldTemplateChooser(new File("./Resources/Templates"));
 		w.run();
 		WorldTemplate selected = w.getSelected();
-		
+		WorldHistoryDisplay d = new WorldHistoryDisplay(selected);
+		d.run();
 		
 	}
 

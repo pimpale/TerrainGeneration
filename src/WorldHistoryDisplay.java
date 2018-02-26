@@ -1,4 +1,6 @@
+import java.io.ByteArrayOutputStream;
 import java.io.PipedOutputStream;
+import java.io.PrintStream;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -27,7 +29,8 @@ public class WorldHistoryDisplay implements Runnable{
 	private JSplitPane splitPane;
 
 	private WorldTemplate template;
-	private PipedOutputStream out;
+	private ByteArrayOutputStream baos;
+	private PrintStream out;
 	private WorldScript script;
 	private boolean paused;
 
@@ -36,10 +39,18 @@ public class WorldHistoryDisplay implements Runnable{
 		return paused;
 	}
 
+	public void updateText()
+	{
+		status.setText(new String(baos.toByteArray()));
+	}
+	
 	public WorldHistoryDisplay(WorldTemplate t)
 	{
 		template = t;
 		window = new Canvas();
+		baos = new ByteArrayOutputStream();
+		out = new PrintStream(baos);
+		script = new WorldScript(new TextFile(t.getMain()).getContent(), window, out, 0);
 		status = new JTextArea("");
 		statusScroll = new JScrollPane(status);
 		startButton = new JButton("Start");
@@ -77,7 +88,13 @@ public class WorldHistoryDisplay implements Runnable{
 
 		while(true)
 		{
-			
+			try {
+				script.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			updateText();
 		}
 	}
 
