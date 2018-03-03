@@ -39,7 +39,7 @@ public class Temperature {
 			}
 		}
 		ilmn = new ShortMap(ilmnMap);
-		ilmn.blur(3);
+		ilmn = WorldUtils.blur(ilmn, 3);
 		ilmn.Export("./WorldSave/Temperature.png");
 	}
 	

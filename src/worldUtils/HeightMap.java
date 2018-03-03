@@ -1,6 +1,8 @@
 package worldUtils;
 
 import java.awt.Rectangle;
+
+//TODO this whole thing is todo at a low priority, everything should work for now
 /**
  * implements a heightmap between 1 and 0.
  * @author fidgetsinner

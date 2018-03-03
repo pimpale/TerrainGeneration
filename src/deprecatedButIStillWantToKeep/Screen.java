@@ -72,8 +72,8 @@ public class Screen
 		ShortMap xm = new ShortMap(xvec);
 		ShortMap ym = new ShortMap(yvec);
 		String s = "./Resources/Templates/2PoleContinental/";
-		xm.blur(8);
-		ym.blur(8);
+		xm = WorldUtils.blur(xm, 8);
+		ym = WorldUtils.blur(ym, 8);
 		try {
 			xm.Export(s+"WindX.png");
 			ym.Export(s+"WindY.png");
@@ -203,7 +203,8 @@ public class Screen
 				wym.set(x, y, WindDoubleToShort(ywind));
 			}
 		}
-		wxm.blur(8);
+		wxm = WorldUtils.blur(wxm, 8);
+		wym = WorldUtils.blur(wym, 8);
 		wxm.Export("./WorldSave/WindX.png");
 		wym.Export("./WorldSave/WindY.png");
 		System.out.println("wind generated");
@@ -352,7 +353,7 @@ public class Screen
 				}
 				ShortMap m = new ShortMap(rainmap);
 				System.out.println("ok... plz wait");
-				m.blur(16);
+				m = WorldUtils.blur(m, 16);
 				m.Export("./WorldSave/RainMap.png");
 				System.out.println("rain complete");
 				return 0;
