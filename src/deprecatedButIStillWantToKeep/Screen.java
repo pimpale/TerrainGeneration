@@ -11,8 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.awt.image.BufferedImage;
 
 public class Screen
-{	
-
+{
 	public static short WindDoubleToShort(double doub)
 	{
 		return WorldUtils.DoubleToShort(0.5+16*doub);
