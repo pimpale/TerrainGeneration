@@ -1,3 +1,4 @@
+package deprecatedButIStillWantToKeep;
 
 public class Temperature {
 	

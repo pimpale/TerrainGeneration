@@ -1,3 +1,4 @@
+package WorldBuilder;
 import java.awt.Canvas;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

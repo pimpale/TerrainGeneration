@@ -1,3 +1,4 @@
+package deprecatedButIStillWantToKeep;
 import java.io.ByteArrayOutputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;

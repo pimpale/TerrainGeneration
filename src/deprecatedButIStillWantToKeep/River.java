@@ -1,3 +1,4 @@
+package deprecatedButIStillWantToKeep;
 import java.util.ArrayList;
 
 public class River {
