@@ -16,6 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 
+import WorldBuilder.WorldScript;
+import WorldBuilder.WorldTemplate;
+
 
 public class WorldHistoryDisplay implements Runnable{
 

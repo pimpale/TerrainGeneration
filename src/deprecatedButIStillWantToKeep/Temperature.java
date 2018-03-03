@@ -1,5 +1,8 @@
 package deprecatedButIStillWantToKeep;
 
+import worldUtils.ShortMap;
+import worldUtils.WorldUtils;
+
 public class Temperature {
 	
 	public static short TemperatureDoubleToShort(double doub)

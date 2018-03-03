@@ -2,12 +2,18 @@ package deprecatedButIStillWantToKeep;
 
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import worldUtils.ShortMap;
+import worldUtils.WorldUtils;
+
 import java.awt.image.BufferedImage;
 
 public class Screen
@@ -95,6 +101,9 @@ public class Screen
 
 	public static void wind()
 	{	
+		
+		Rectangle r = new Rectangle();
+		
 		ShortMap hmap = new ShortMap("./WorldSave/Elevation.png");
 		xSize = hmap.getXSize();
 		ySize = hmap.getYSize();

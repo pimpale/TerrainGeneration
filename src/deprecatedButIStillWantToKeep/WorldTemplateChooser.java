@@ -21,6 +21,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import WorldBuilder.WorldTemplate;
+
 public class WorldTemplateChooser implements Runnable, ListSelectionListener{
 	
 	private JFrame frame;
