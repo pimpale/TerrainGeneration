@@ -48,19 +48,6 @@ public class WorldUtils {
 		return Math.pow(height, 4);
 	}*/
 
-	//65536 is the numbers in a short
-	public static short DoubleToShort(double doub)
-	{
-		return (short)(doub*Short.MAX_VALUE);
-		//return (short)(doub*65536 + Short.MIN_VALUE);
-	}
-
-	public static double ShortToDouble(short shor)
-	{
-		return ((double)shor)/Short.MAX_VALUE;
-		//return (((double)shor)-Short.MIN_VALUE)/(65536);
-	}
-
 	/**
 	 * 
 	 * @param noise
@@ -76,33 +63,10 @@ public class WorldUtils {
 		{
 			for(int y = 0; y < ySize; y++)
 			{
-				map[x][y] = DoubleToShort(noise.getValue(x, y, 0));
+				map[x][y] = OtherUtils.DoubleToShort(noise.getValue(x, y, 0));
 			}
 		}
 		return new ShortMap(map);		
-	}
-
-	
-	
-	/**
-	 * 
-	 * @param map the map to be processed
-	 * @return returns a map that has been negated
-	 */
-	public static ShortMap negate(ShortMap map)
-	{
-		int xSize = map.getXSize();
-		int ySize = map.getYSize();
-		short[][] oldmap = map.getMap();
-		short[][] newmap = new short[xSize][ySize];
-		for(int x = 0; x < xSize; x++)
-		{
-			for(int y = 0; y < ySize; y++)
-			{
-				newmap[x][y] = (short) -oldmap[x][y];
-			}
-		}
-		return new ShortMap(oldmap);
 	}
 
 	/**
@@ -119,11 +83,32 @@ public class WorldUtils {
 		{
 			for(int y = 0; y < ySize; y++)
 			{
-				map[x][y] = DoubleToShort(value);
+				map[x][y] = OtherUtils.DoubleToShort(value);
 			}
 		}
 		return new ShortMap(map);
 	}
+	
+	/**
+	 * 
+	 * @param map the map to be processed
+	 * @return returns a map that has been negated
+	 */
+	public static ShortMap negate(ShortMap map, int startX, int startY, int endX, int endY)
+	{
+		short[][] oldmap = map.getMap();
+		short[][] newmap = new short[endX-startX][endY-startY];
+		for(int x = startX; x < endX; x++)
+		{
+			for(int y = startY; y < endY; y++)
+			{
+				newmap[x][y] = (short) -oldmap[x][y];
+			}
+		}
+		return new ShortMap(oldmap);
+	}
+
+	
 
 	/**
 	 * Raise all values on the map by a certain amount;
@@ -131,37 +116,33 @@ public class WorldUtils {
 	 * @param pow
 	 * @return
 	 */
-	public static ShortMap pow(ShortMap map, double pow)
+	public static ShortMap pow(ShortMap map, double pow, int startX, int startY, int endX, int endY)
 	{ 
-		int xSize = map.getXSize();
-		int ySize = map.getYSize();
 		short[][] oldmap = map.getMap();
-		short[][] newmap = new short[xSize][ySize]; 
+		short[][] newmap = new short[endX-startX][endY-startY]; 
 		double value;
-		for(int x = 0; x < xSize; x++)
+		for(int x = startX; x < endX; x++)
 		{
-			for(int y = 0; y < ySize; y++)
+			for(int y = startY; y < endY; y++)
 			{
-				value = ShortToDouble(oldmap[x][y]);
-				newmap[x][y] = DoubleToShort(Math.pow(value, pow));
+				value = OtherUtils.ShortToDouble(oldmap[x][y]);
+				newmap[x][y] = OtherUtils.DoubleToShort(Math.pow(value, pow));
 			}
 		}
 		return new ShortMap(oldmap);
 	}
 
 
-	public static ShortMap scale(ShortMap map, double multiplier)
+	public static ShortMap scale(ShortMap map, double scalar, int startX, int startY, int endX, int endY)
 	{
-		int xSize = map.getXSize();
-		int ySize = map.getYSize();
 		short[][] oldmap = map.getMap();
-		short[][] newMap = new short[xSize][ySize];
+		short[][] newMap = new short[endX-startX][endY-startY];
 
-		for(int x = 0; x < xSize; x++)
+		for(int x = 0; x < endX; x++)
 		{
-			for(int y = 0; y < ySize; y++)
+			for(int y = startY; y < endY; y++)
 			{
-				newMap[x][y] =  (short)ShortMap.clamp(oldmap[x][y]*multiplier, Short.MIN_VALUE, Short.MAX_VALUE);
+				newMap[x][y] =  (short)OtherUtils.clamp(oldmap[x][y]*scalar, Short.MIN_VALUE, Short.MAX_VALUE);
 			}
 		}
 		return new ShortMap(newMap);
@@ -190,7 +171,7 @@ public class WorldUtils {
 				{
 					sum += map2.get(x,y);
 				}
-				mapSum[x][y] = (short)ShortMap.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
+				mapSum[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
 			}
 		}
 		return new ShortMap(mapSum);
@@ -220,7 +201,7 @@ public class WorldUtils {
 				{
 					sum += maps[i].get(x, y);
 				}
-				mapSum[x][y] = (short)ShortMap.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
+				mapSum[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
 			}
 		}
 		return new ShortMap(mapSum);
@@ -243,37 +224,6 @@ public class WorldUtils {
 	
 	
 	
-	
-	public static void FastGaussianBlur(int[] source, int[] output, int width, int height, int radius) {
-		ArrayList<Integer> gaussianBoxes = CreateGausianBoxes(radius, 3);
-		BoxBlur(source, output, width, height, (gaussianBoxes.get(0) - 1) / 2);
-		BoxBlur(output, source, width, height, (gaussianBoxes.get(1) - 1) / 2);
-		BoxBlur(source, output, width, height, (gaussianBoxes.get(2) - 1) / 2);
-	}
-
-	public static ArrayList<Integer> CreateGausianBoxes(double sigma, int n) {
-		double idealFilterWidth = Math.sqrt((12 * sigma * sigma / n) + 1);
-
-		int filterWidth = (int) Math.floor(idealFilterWidth);
-
-		if (filterWidth % 2 == 0) {
-			filterWidth--;
-		}
-
-		int filterWidthU = filterWidth + 2;
-
-		double mIdeal = (12 * sigma * sigma - n * filterWidth * filterWidth - 4 * n * filterWidth - 3 * n) / (-4 * filterWidth - 4);
-		double m = Math.round(mIdeal);
-
-		ArrayList<Integer> result = new ArrayList<>();
-
-		for (int i = 0; i < n; i++) {
-			result.add(i < m ? filterWidth : filterWidthU);
-		}
-
-		return result;
-	}
-
 	
 	public static ShortMap blur(ShortMap map, int radius)
 	{
@@ -376,4 +326,37 @@ public class WorldUtils {
 			}
 		}
 	}
+
+	public static void FastGaussianBlur(int[] source, int[] output, int width, int height, int radius) {
+		ArrayList<Integer> gaussianBoxes = CreateGausianBoxes(radius, 3);
+		BoxBlur(source, output, width, height, (gaussianBoxes.get(0) - 1) / 2);
+		BoxBlur(output, source, width, height, (gaussianBoxes.get(1) - 1) / 2);
+		BoxBlur(source, output, width, height, (gaussianBoxes.get(2) - 1) / 2);
+	}
+
+	public static ArrayList<Integer> CreateGausianBoxes(double sigma, int n) {
+		double idealFilterWidth = Math.sqrt((12 * sigma * sigma / n) + 1);
+
+		int filterWidth = (int) Math.floor(idealFilterWidth);
+
+		if (filterWidth % 2 == 0) {
+			filterWidth--;
+		}
+
+		int filterWidthU = filterWidth + 2;
+
+		double mIdeal = (12 * sigma * sigma - n * filterWidth * filterWidth - 4 * n * filterWidth - 3 * n) / (-4 * filterWidth - 4);
+		double m = Math.round(mIdeal);
+
+		ArrayList<Integer> result = new ArrayList<>();
+
+		for (int i = 0; i < n; i++) {
+			result.add(i < m ? filterWidth : filterWidthU);
+		}
+
+		return result;
+	}
+
+	
+	
 }

@@ -1,5 +1,6 @@
 package deprecatedButIStillWantToKeep;
 
+import worldUtils.OtherUtils;
 import worldUtils.ShortMap;
 import worldUtils.WorldUtils;
 
@@ -7,12 +8,12 @@ public class Temperature {
 	
 	public static short TemperatureDoubleToShort(double doub)
 	{
-		return WorldUtils.DoubleToShort(doub/2);
+		return OtherUtils.DoubleToShort(doub/2);
 	}
 	
 	public static double TemperatureShortToDouble(short shor)
 	{
-		return (WorldUtils.ShortToDouble(shor))*2;
+		return (OtherUtils.ShortToDouble(shor))*2;
 	}
 
 	
@@ -30,7 +31,7 @@ public class Temperature {
 		{
 			for(int y = 0; y < ysize; y++)
 			{
-				double val = WorldUtils.ShortToDouble(height[x][y]);
+				double val = OtherUtils.ShortToDouble(height[x][y]);
 				if(val  < sealevel)
 				{
 					val = sealevel;
