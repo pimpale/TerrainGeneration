@@ -68,7 +68,7 @@ public class WorldUtils {
 		}
 		return new ShortMap(map);		
 	}
-
+	
 	/**
 	 * 
 	 * @param value the level of the surface
@@ -88,6 +88,21 @@ public class WorldUtils {
 		}
 		return new ShortMap(map);
 	}
+	
+	public static ShortMap copy(ShortMap source, int startX, int startY, int endX, int endY)
+	{
+		short[][] sourceMap = source.getMap();
+		short[][] map = new short[endX-startX][endY-startY]; 
+		for(int x = 0; x < map.length; x++)
+		{
+			for(int y = 0; y < map[x].length; y++)
+			{
+				map[x][y] = OtherUtils.DoubleToShort(sourceMap[startX + x][startY + y]);
+			}
+		}
+		return new ShortMap(map);
+	}
+	
 	
 	/**
 	 * 
@@ -148,63 +163,44 @@ public class WorldUtils {
 		return new ShortMap(newMap);
 	}
 	
-	public static ShortMap addOffset(ShortMap map1, ShortMap map2, int xoff, int yoff)
+	
+	public static ShortMap add(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
 	{
-		int xSize1 = map1.getXSize();
-		int ySize1 = map1.getYSize();
-
-		int xSize2 = map2.getXSize();
-		int ySize2 = map2.getYSize();
-		
-		short[][] mapSum = new short[xSize1][ySize1];
-		
-		int sum = 0;
-		int x2,y2; //the coordinates on the second map
-		for(int x = 0; x < xSize1; x++)
-		{
-			for(int y = 0; y < ySize1; y++)
-			{
-				sum = map1.get(x, y);
-				x2 = x-xoff;
-				y2 = y-yoff;
-				if(x2 >= 0 && y2 >= 0 && x2 < xSize2 && y2 < ySize2)
-				{
-					sum += map2.get(x,y);
-				}
-				mapSum[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
-			}
-		}
-		return new ShortMap(mapSum);
+		return add(new ShortMap[] {map1, map2}, startX,startY,endX,endY);
 	}
-	
-	
-
-
 	/**
 	 * 
 	 * @param maps the maps to add (must be same size) 
 	 * @return The sum of the maps (will be clamped between 1 and 0)
 	 */
-	public static ShortMap add(ShortMap[] maps)
+	public static ShortMap add(ShortMap[] maps, int startX, int startY, int endX, int endY)
 	{
-		int xSize = maps[0].getXSize();
-		int ySize = maps[0].getYSize();
-
-		short[][] mapSum = new short[xSize][ySize];
-		long sum = 0;
-		for(int x = 0; x < xSize; x++)
+		
+		
+		short[][][] sourceMaps = new short[maps.length][0][0];
+		
+		for(int i = 0; i < maps.length; i++)
 		{
-			for(int y = 0; y < ySize; y++)
+			sourceMaps[i] = maps[i].getMap();
+		}
+		
+		short[][] newMap = new short[endX-startX][endY-startY];
+		
+		for(int x = 0; x < endX - startX; x++)
+		{
+			for(int y = 0; y < endY -startY; y++)
 			{
-				sum = 0;
+				int sum = 0;
+				
 				for(int i = 0; i < maps.length; i++)
 				{
-					sum += maps[i].get(x, y);
+					sum += sourceMaps[i][x+startX][y+startY];
 				}
-				mapSum[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
-			}
+				
+				newMap[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
+ 			}
 		}
-		return new ShortMap(mapSum);
+		return new ShortMap(newMap);
 	}
 
 	/**
@@ -213,13 +209,13 @@ public class WorldUtils {
 	 * @param weights the weights of each map (Should all add up to 1, with each individual weight being in between 1 and 0)
 	 * @return The average of the maps
 	 */
-	public static ShortMap weightedAverage(ShortMap[] maps, double[] weights)
+	public static ShortMap weightedAverage(ShortMap[] maps, double[] weights, int startX, int startY, int endX, int endY)
 	{
 		for(int i = 0; i < weights.length; i++)
 		{
-			maps[i] = scale(maps[i],weights[i]);
+			maps[i] = scale(maps[i],weights[i], 0,0, maps[i].getXSize(), maps[i].getYSize());
 		}
-		return add(maps);
+		return add(maps, startX, startY, endX, endY);
 	}
 	
 	
