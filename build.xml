@@ -6,10 +6,14 @@
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="terrain-generation">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.8"/>
-    <property name="source" value="1.8"/>
+    <property name="target" value="9"/>
+    <property name="source" value="9"/>
     <path id="terrain-generation.classpath">
         <pathelement location="bin"/>
+        <pathelement location="lib/flow-noise-1.0.0.jar"/>
+    </path>
+    <path id="run.Main.classpath">
+        <path refid="terrain-generation.classpath"/>
         <pathelement location="lib/flow-noise-1.0.0.jar"/>
     </path>
     <target name="init">
@@ -34,9 +38,22 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
     <target name="Main">
-        <java classname="Main" failonerror="true" fork="yes">
-            <classpath refid="terrain-generation.classpath"/>
+        <java classname="tester.Main" failonerror="true" fork="yes">
+            <classpath refid="run.Main.classpath"/>
         </java>
     </target>
 </project>
