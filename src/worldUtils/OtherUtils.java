@@ -25,7 +25,7 @@ public class OtherUtils {
 		return ((double)s)/Short.MAX_VALUE;
 	}
 
-	public static short doubleToUShort(double d)
+	public static short uDoubleToShort(double d)
 	{
 		return (short)(d*65536 + Short.MIN_VALUE);
 	}

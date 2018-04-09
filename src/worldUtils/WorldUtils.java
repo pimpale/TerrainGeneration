@@ -94,7 +94,7 @@ public class WorldUtils {
 		{
 			for(int y = 0; y <ySize; y++)
 			{
-				map[x][y] = OtherUtils.doubleToShort((double)(x-xSize/2)/xSize);
+				map[x][y] = OtherUtils.doubleToShort(((double)(x))/xSize);
 			}
 		}
 		

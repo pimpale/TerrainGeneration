@@ -138,6 +138,7 @@ public class ShortMap {
 	{
 		int xSize = map.length;
 		int ySize = map[0].length;
+		
 		BufferedImage img = new BufferedImage(xSize,ySize, BufferedImage.TYPE_USHORT_GRAY);
 		WritableRaster r = img.getRaster();
 		for (int y = 0; y < ySize; y++) 
