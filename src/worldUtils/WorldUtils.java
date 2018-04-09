@@ -3,10 +3,8 @@ package worldUtils;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
-import com.flowpowered.noise.*;
-import com.flowpowered.noise.model.Plane;
-import com.flowpowered.noise.module.Module;
-import com.flowpowered.noise.module.source.Perlin;
+
+import fastnoise.FastNoise;
 
 
 public class WorldUtils {
@@ -54,17 +52,17 @@ public class WorldUtils {
 	 * @param pl
 	 * @param scale the scale of the noise.
 	 * @param xSize the x size of the shortMap
-	 * @param ySize the y size of the shortMap
+	 * @param ySize the y size of the shortMapgetValue(x, y)
 	 * @return A ShortMap with size xSize by ySize representing the noise
 	 */
-	public static ShortMap noise(Plane pl, int xSize, int ySize)
+	public static ShortMap perlinNoise(FastNoise noise, int xSize, int ySize)
 	{
 		short[][] map = new short[xSize][ySize]; 
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
 			{
-				map[x][y] = OtherUtils.DoubleToShort(pl.getValue(x, y));
+				map[x][y] = OtherUtils.DoubleToShort(noise.GetPerlin(x, y));
 			}
 		}
 		return new ShortMap(map);		

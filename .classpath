@@ -6,6 +6,5 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/flow-noise-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

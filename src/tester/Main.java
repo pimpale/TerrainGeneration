@@ -5,9 +5,7 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
-import com.flowpowered.noise.model.Plane;
-import com.flowpowered.noise.module.source.Perlin;
-
+import fastnoise.FastNoise;
 import worldUtils.ShortMap;
 import worldUtils.WorldUtils;
 
@@ -16,12 +14,13 @@ public class Main
 {
 	
 	public static void main(String[] args) throws InterruptedException 
-	{		
-		Perlin p = new Perlin();
-		Plane pl = new Plane(p);
-		ShortMap sh = WorldUtils.noise(pl, 300, 300);
+	{
+		FastNoise n = new FastNoise();
 		
-		WorldUtils.scale(sh, 50, 0, 0, sh.getXSize(), sh.getYSize());
+		
+		ShortMap sh = WorldUtils.perlinNoise(n, 300, 300);
+		
+	//	WorldUtils.scale(sh, 10, 0, 0, sh.getXSize(), sh.getYSize());
 		
 		JFrame frame = new JFrame("test");
 		Canvas canvas = new Canvas();
