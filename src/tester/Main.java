@@ -1,7 +1,7 @@
 package tester;
 import java.io.File;
 
-import com.flowpowered.noise.module.source.Billow;
+import com.flowpowered.noise.module.source.Perlin;
 
 import worldUtils.ShortMap;
 import worldUtils.WorldUtils;
@@ -12,9 +12,11 @@ public class Main
 	
 	public static void main(String[] args) throws InterruptedException 
 	{		
-		System.out.println(System.getProperty("java.class.path"));
 		
-		ShortMap sh = WorldUtils.noise(new Billow(), 300, 300);
+		Perlin p = new Perlin();
+		
+		ShortMap sh = WorldUtils.constantValue(0.5, 300, 300);
+		//WorldUtils.scale(sh, 50, 0, 0, 300, 300);
 		sh.Export("/home/fidgetsinner/img.png");
 	}
 
