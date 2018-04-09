@@ -15,18 +15,26 @@ public class OtherUtils {
 	}
 
 	//65536 is the numbers in a short
-	public static short DoubleToShort(double doub)
+	public static short doubleToShort(double d)
 	{
-		return (short)(doub*Short.MAX_VALUE);
-		//return (short)(doub*65536 + Short.MIN_VALUE);
+		return (short)(d*Short.MAX_VALUE);
 	}
 
-	public static double ShortToDouble(short shor)
+	public static double shortToDouble(short s)
 	{
-		return ((double)shor)/Short.MAX_VALUE;
-		//return (((double)shor)-Short.MIN_VALUE)/(65536);
+		return ((double)s)/Short.MAX_VALUE;
 	}
 
+	public static short doubleToUShort(double d)
+	{
+		return (short)(d*65536 + Short.MIN_VALUE);
+	}
+
+	public static double shortToUDouble(short s)
+	{
+		return (((double)s)-Short.MIN_VALUE)/(65536);
+	}
+	
 	public static double clamp(double val, double min, double max)
 	{
 		return Math.max(min, Math.min(max, val));

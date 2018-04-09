@@ -57,16 +57,51 @@ public class WorldUtils {
 	 */
 	public static ShortMap perlinNoise(FastNoise noise, int xSize, int ySize)
 	{
+		double[] t = new double[20];
 		short[][] map = new short[xSize][ySize]; 
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
 			{
-				map[x][y] = OtherUtils.DoubleToShort(noise.GetPerlin(x, y));
+				double thing = (noise.GetPerlin(x, y) -0.1)*1.6;
+				
+				t[(int)(thing*10) + 10]++;
+				
+				System.out.println(thing);
+				
+				map[x][y] = OtherUtils.doubleToShort(noise.GetPerlin(x, y));
 			}
 		}
+		
+		for(int i = 0; i < t.length; i++)
+		{
+			System.out.print(((double)i-10)/10 + ":   ");
+			for(int l = 0; l < Math.sqrt(t[i])/5; l++)
+			{
+				System.out.print("x");
+			}
+			System.out.println();
+		}
+		
 		return new ShortMap(map);		
 	}
+	
+	public static ShortMap slope(int xSize, int ySize)
+	{
+		short[][] map = new short[xSize][ySize];
+		
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y <ySize; y++)
+			{
+				map[x][y] = OtherUtils.doubleToShort((double)(x-xSize/2)/xSize);
+			}
+		}
+		
+		return new ShortMap(map);
+		
+	}
+	
 	
 	/**
 	 * 
@@ -82,7 +117,7 @@ public class WorldUtils {
 		{
 			for(int y = 0; y < ySize; y++)
 			{
-				map[x][y] = OtherUtils.DoubleToShort(value);
+				map[x][y] = OtherUtils.doubleToShort(value);
 			}
 		}
 		return new ShortMap(map);
@@ -96,7 +131,7 @@ public class WorldUtils {
 		{
 			for(int y = 0; y < map[x].length; y++)
 			{
-				map[x][y] = OtherUtils.DoubleToShort(sourceMap[startX + x][startY + y]);
+				map[x][y] = OtherUtils.doubleToShort(sourceMap[startX + x][startY + y]);
 			}
 		}
 		return new ShortMap(map);
@@ -139,8 +174,8 @@ public class WorldUtils {
 		{
 			for(int y = startY; y < endY; y++)
 			{
-				value = OtherUtils.ShortToDouble(oldmap[x][y]);
-				newmap[x][y] = OtherUtils.DoubleToShort(Math.pow(value, pow));
+				value = OtherUtils.shortToDouble(oldmap[x][y]);
+				newmap[x][y] = OtherUtils.doubleToShort(Math.pow(value, pow));
 			}
 		}
 		return new ShortMap(oldmap);

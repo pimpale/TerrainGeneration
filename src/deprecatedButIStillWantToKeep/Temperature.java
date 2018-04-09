@@ -8,12 +8,12 @@ public class Temperature {
 	
 	public static short TemperatureDoubleToShort(double doub)
 	{
-		return OtherUtils.DoubleToShort(doub/2);
+		return OtherUtils.doubleToShort(doub/2);
 	}
 	
 	public static double TemperatureShortToDouble(short shor)
 	{
-		return (OtherUtils.ShortToDouble(shor))*2;
+		return (OtherUtils.shortToDouble(shor))*2;
 	}
 
 	
@@ -31,7 +31,7 @@ public class Temperature {
 		{
 			for(int y = 0; y < ysize; y++)
 			{
-				double val = OtherUtils.ShortToDouble(height[x][y]);
+				double val = OtherUtils.shortToDouble(height[x][y]);
 				if(val  < sealevel)
 				{
 					val = sealevel;
