@@ -18,7 +18,7 @@ public class Main
 		FastNoise n = new FastNoise();
 		
 		
-		ShortMap sh = WorldUtils.slope(500, 500);
+		ShortMap sh = WorldUtils.slope(300, 300);
 		
 	//	WorldUtils.scale(sh, 10, 0, 0, sh.getXSize(), sh.getYSize());
 		
