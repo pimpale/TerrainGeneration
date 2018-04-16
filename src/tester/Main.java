@@ -6,6 +6,8 @@ import java.io.File;
 import javax.swing.JFrame;
 
 import fastnoise.FastNoise;
+import fastnoise.FastNoise.CellularDistanceFunction;
+import fastnoise.FastNoise.NoiseType;
 import worldUtils.ShortMap;
 import worldUtils.WorldUtils;
 
@@ -16,11 +18,9 @@ public class Main
 	public static void main(String[] args) throws InterruptedException 
 	{
 		FastNoise n = new FastNoise();
-		
-		ShortMap sh = WorldUtils.perlinNoise(n, 300, 300);
-		
-	//	WorldUtils.scale(sh, 10, 0, 0, sh.getXSize(), sh.getYSize());
-		
+		n.SetNoiseType(NoiseType.Cellular);
+		n.SetCellularDistanceFunction(CellularDistanceFunction.Manhattan);
+		ShortMap sh = WorldUtils.noise(n, 1, 300, 300);
 		JFrame frame = new JFrame("test");
 		Canvas canvas = new Canvas();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

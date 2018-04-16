@@ -46,26 +46,27 @@ public class WorldUtils {
 		//height = fheight;
 		return Math.pow(height, 4);
 	}*/
-
+	
 	/**
-	 * @param scale the scale of the noise.
+	 * @param noise the noise used to generate the map
+	 * @param scale the scale of the noise
 	 * @param xSize the x size of the shortMap
 	 * @param ySize the y size of the shortMapgetValue(x, y)
 	 * @return A ShortMap with size xSize by ySize representing the noise
 	 */
-	public static ShortMap perlinNoise(FastNoise noise, int xSize, int ySize)
+	public static ShortMap noise(FastNoise noise, float scale, int xSize, int ySize)
 	{
-		double[] t = new double[20];
 		short[][] map = new short[xSize][ySize]; 
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
 			{	
-				map[x][y] = OtherUtils.doubleToShort(noise.GetPerlin(x, y));
+				map[x][y] = OtherUtils.doubleToShort(noise.GetNoise(x*scale, y*scale));
 			}
 		}
 		return new ShortMap(map);		
 	}
+	
 	
 	/**
 	 * 
