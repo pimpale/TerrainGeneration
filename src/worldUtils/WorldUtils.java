@@ -48,8 +48,6 @@ public class WorldUtils {
 	}*/
 
 	/**
-	 * 
-	 * @param pl
 	 * @param scale the scale of the noise.
 	 * @param xSize the x size of the shortMap
 	 * @param ySize the y size of the shortMapgetValue(x, y)
@@ -62,27 +60,10 @@ public class WorldUtils {
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
-			{
-				double thing = (noise.GetPerlin(x, y) -0.1)*1.6;
-				
-				t[(int)(thing*10) + 10]++;
-				
-				System.out.println(thing);
-				
+			{	
 				map[x][y] = OtherUtils.doubleToShort(noise.GetPerlin(x, y));
 			}
 		}
-		
-		for(int i = 0; i < t.length; i++)
-		{
-			System.out.print(((double)i-10)/10 + ":   ");
-			for(int l = 0; l < Math.sqrt(t[i])/5; l++)
-			{
-				System.out.print("x");
-			}
-			System.out.println();
-		}
-		
 		return new ShortMap(map);		
 	}
 	
