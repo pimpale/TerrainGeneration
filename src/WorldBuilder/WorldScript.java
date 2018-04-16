@@ -12,12 +12,15 @@ public class WorldScript implements Runnable{
 	private final String script;
 	private Canvas window;
 	private PrintStream out;
-	private int seed;
 	
-	public WorldScript(String script, Canvas window, PrintStream out, int seed)
+	public WorldScript(File script, Canvas window, PrintStream out)
+	{
+		this(new TextFile(script).getContent(), window, out);
+	}
+	
+	public WorldScript(String script, Canvas window, PrintStream out)
 	{
 		this.out = out;
-		this.seed = seed;
 		this.script = script;
 		this.window = window;
 	}
@@ -26,8 +29,7 @@ public class WorldScript implements Runnable{
 	public void run() {
 	try {
 		ScriptEngineManager factory = new ScriptEngineManager();
-		ScriptEngine engine = factory.getEngineByName("JavaScript");
-		engine.put("seed", seed);
+		ScriptEngine engine = factory.getEngineByName("nashorn");
 		engine.put("window", window);
 		engine.put("out", out);
 		engine.eval(script);

@@ -1,15 +1,12 @@
 package tester;
 import java.awt.Canvas;
-import java.awt.Graphics2D;
 import java.io.File;
+import java.io.PrintStream;
 
 import javax.swing.JFrame;
 
-import fastnoise.FastNoise;
-import fastnoise.FastNoise.CellularDistanceFunction;
-import fastnoise.FastNoise.NoiseType;
-import worldUtils.ShortMap;
-import worldUtils.WorldUtils;
+import WorldBuilder.WorldScript;
+import WorldBuilder.WorldTemplate;
 
 @SuppressWarnings("serial")
 public class Main
@@ -17,10 +14,6 @@ public class Main
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
-		FastNoise n = new FastNoise();
-		n.SetNoiseType(NoiseType.Cellular);
-		n.SetCellularDistanceFunction(CellularDistanceFunction.Manhattan);
-		ShortMap sh = WorldUtils.noise(n, 1, 300, 300);
 		JFrame frame = new JFrame("test");
 		Canvas canvas = new Canvas();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,12 +21,12 @@ public class Main
 		frame.add(canvas);
 		frame.setVisible(true);
 		
-		Graphics2D g2d = (Graphics2D) canvas.getGraphics();
-		while(true)
-		{
-			g2d.drawImage(sh.getImage(), 0, 0, null);
-			Thread.sleep(100);
-		}
+		PrintStream p = new PrintStream(System.out);
+		
+		WorldTemplate wt = new WorldTemplate(new File("./Resources/Templates/2PoleContinental"));
+		WorldScript ws = new WorldScript(wt.getMain(), canvas, p);
+		
+		ws.run();
 	}
 
 }

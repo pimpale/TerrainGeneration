@@ -10,11 +10,9 @@
     <property name="source" value="9"/>
     <path id="terrain-generation.classpath">
         <pathelement location="bin"/>
-        <pathelement location="lib/flow-noise-1.0.0.jar"/>
     </path>
     <path id="run.Main.classpath">
         <path refid="terrain-generation.classpath"/>
-        <pathelement location="lib/flow-noise-1.0.0.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>

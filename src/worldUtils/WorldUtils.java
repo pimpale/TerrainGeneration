@@ -49,19 +49,18 @@ public class WorldUtils {
 	
 	/**
 	 * @param noise the noise used to generate the map
-	 * @param scale the scale of the noise
 	 * @param xSize the x size of the shortMap
 	 * @param ySize the y size of the shortMapgetValue(x, y)
 	 * @return A ShortMap with size xSize by ySize representing the noise
 	 */
-	public static ShortMap noise(FastNoise noise, float scale, int xSize, int ySize)
+	public static ShortMap noise(FastNoise noise, int xSize, int ySize)
 	{
 		short[][] map = new short[xSize][ySize]; 
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
 			{	
-				map[x][y] = OtherUtils.doubleToShort(noise.GetNoise(x*scale, y*scale));
+				map[x][y] = OtherUtils.doubleToShort(noise.GetNoise(x, y));
 			}
 		}
 		return new ShortMap(map);		
@@ -189,14 +188,14 @@ public class WorldUtils {
 		{
 			for(int y = 0; y < endY -startY; y++)
 			{
-				int sum = 0;
+				long sum = 0;
 				
 				for(int i = 0; i < maps.length; i++)
 				{
 					sum += sourceMaps[i][x+startX][y+startY];
 				}
 				
-				newMap[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
+				newMap[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE+1, Short.MAX_VALUE);
  			}
 		}
 		return new ShortMap(newMap);
