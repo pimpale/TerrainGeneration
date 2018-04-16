@@ -86,23 +86,6 @@ public class WorldUtils {
 		return new ShortMap(map);		
 	}
 	
-	public static ShortMap slope(int xSize, int ySize)
-	{
-		short[][] map = new short[xSize][ySize];
-		
-		for(int x = 0; x < xSize; x++)
-		{
-			for(int y = 0; y <ySize; y++)
-			{
-				map[x][y] = OtherUtils.doubleToShort(((double)(x-xSize/2))/xSize);
-			}
-		}
-		
-		return new ShortMap(map);
-		
-	}
-	
-	
 	/**
 	 * 
 	 * @param value the level of the surface
