@@ -29,7 +29,7 @@ public class WorldScript implements Runnable{
 	public void run() {
 	try {
 		ScriptEngineManager factory = new ScriptEngineManager();
-		ScriptEngine engine = factory.getEngineByName("nashorn");
+		ScriptEngine engine = factory.getEngineByName("javascript");
 		engine.put("window", window);
 		engine.put("out", out);
 		engine.eval(script);

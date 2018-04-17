@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 
 import WorldBuilder.WorldScript;
 import WorldBuilder.WorldTemplate;
+import fastnoise.FastNoise;
 
 @SuppressWarnings("serial")
 public class Main
@@ -14,6 +15,10 @@ public class Main
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
+	
+		FastNoise n;
+		n.SetNoiseType(NoiseType.);
+		
 		JFrame frame = new JFrame("test");
 		Canvas canvas = new Canvas();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,7 +29,7 @@ public class Main
 		PrintStream p = new PrintStream(System.out);
 		
 		WorldTemplate wt = new WorldTemplate(new File("./Resources/Templates/2PoleContinental"));
-		WorldScript ws = new WorldScript(wt.getMain(), canvas, p);
+		WorldScript ws = new WorldScript(wt.getMain(), canvas, System.out);
 		
 		ws.run();
 	}
