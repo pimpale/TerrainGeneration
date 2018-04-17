@@ -55,7 +55,7 @@ public class WorldHistoryDisplay implements Runnable{
 		window = new Canvas();
 		baos = new ByteArrayOutputStream();
 		out = new PrintStream(baos);
-		script = new WorldScript(new TextFile(t.getMain()).getContent(), window, out, 0);
+		script = new WorldScript(t.getMain(), window, out);
 		status = new JTextArea("");
 		statusScroll = new JScrollPane(status);
 		startButton = new JButton("Start");
