@@ -154,7 +154,28 @@ public class WorldUtils {
 		return new ShortMap(newmap);
 	}
 
-	
+	public static ShortMap threshold(ShortMap map, double threshold, int startX, int startY, int endX, int endY)
+	{
+		short sthreshold = OtherUtils.doubleToShort(threshold);
+		
+		short[][] oldmap = map.getMap();
+		short[][] newmap = new short[endX-startX][endY-startY];
+		for(int x = startX; x < endX; x++)
+		{
+			for(int y = startY; y < endY; y++)
+			{
+				if(oldmap[x][y] > sthreshold)
+				{
+					newmap[x][y] = Short.MAX_VALUE;
+				}
+				else
+				{
+					newmap[x][y] = Short.MIN_VALUE;
+				}
+			}
+		}
+		return new ShortMap(newmap);
+	}
 
 	/**
 	 * Raise all values on the map by a certain amount;

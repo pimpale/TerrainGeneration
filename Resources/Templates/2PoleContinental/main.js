@@ -1,6 +1,6 @@
 //Fundamental stuff
-var xSize = window.getWidth();
-var ySize = window.getHeight();
+var xSize = 600;
+var ySize = 600;
 var graphics = window.getGraphics();
 //declare classes
 var int_Array = Java.type("int[]");
@@ -16,14 +16,14 @@ var ShortMap = Java.type("worldUtils.ShortMap");
 var ShortMap_Array = Java.type("worldUtils.ShortMap[]");
 
 //configure my various types of noise 
-var randomNoise_FastNoise = new FastNoise();
+var randomNoise_FastNoise = new FastNoise(0);
 randomNoise_FastNoise.SetNoiseType(NoiseType.SimplexFractal);
 
-var continentNoise_FastNoise = new FastNoise();
+var continentNoise_FastNoise = new FastNoise(1);
 continentNoise_FastNoise.SetNoiseType(NoiseType.Simplex);
+continentNoise_FastNoise.SetFrequency(0.003);
 
-
-var mountainNoise_FastNoise = new FastNoise();
+var mountainNoise_FastNoise = new FastNoise(2);
 mountainNoise_FastNoise.SetNoiseType(NoiseType.Simplex);
 mountainNoise_FastNoise.SetFrequency(0.005);
 
@@ -35,7 +35,7 @@ var mountainNoise_ShortMap = WorldUtils.noise(mountainNoise_FastNoise, xSize, yS
 
 mountainNoise_ShortMap = WorldUtils.abs(mountainNoise_ShortMap, 0,0, xSize,ySize)
 mountainNoise_ShortMap = WorldUtils.negate(mountainNoise_ShortMap, 0,0, xSize,ySize)
-mountainNoise_ShortMap = WorldUtils.add(mountainNoise_ShortMap, 1, 0,0, xSize,ySize)
+mountainNoise_ShortMap = WorldUtils.add(mountainNoise_ShortMap, 0.5, 0,0, xSize,ySize)
 
 
 var noise_ShortMap_Array = new ShortMap_Array(3);
