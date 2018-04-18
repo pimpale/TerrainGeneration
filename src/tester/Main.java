@@ -16,8 +16,9 @@ public class Main
 	public static void main(String[] args) throws InterruptedException 
 	{
 	
-		//FastNoise n;
-		//n.SetNoiseType(NoiseType.);
+		FastNoise n = new FastNoise();
+		//n.setFr
+		//n.SetNoiseType(NoiseType.Fra);
 		
 		JFrame frame = new JFrame("test");
 		Canvas canvas = new Canvas();

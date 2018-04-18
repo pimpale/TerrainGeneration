@@ -2,7 +2,10 @@ package worldUtils;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 import fastnoise.FastNoise;
 
@@ -45,6 +48,37 @@ public class WorldUtils {
 		float height = mheight*0.2f  + fheight*0.1f + rheight*0.45f + cheight*0.45f;
 		//height = fheight;
 		return Math.pow(height, 4);
+	}*/
+	
+	//LEts not mess with the lambdas there might be a C port later on
+	/*
+	public static DoubleStream toLossyDoubleStream(ShortMap map)
+	{
+		short[][] shortMap = map.getMap();
+		double[][] doubleMap = new double[shortMap.length][shortMap[0].length];
+		
+		for(int x = 0; x < shortMap.length; x++)
+		{
+			for(int y = 0; y < shortMap[0].length; y++)
+			{
+				doubleMap[x][y] = OtherUtils.shortToDouble(shortMap[x][y]);
+			}
+		}
+		
+		return Arrays.stream(doubleMap).flatMapToDouble(x -> Arrays.stream(x));	
+	}
+	
+	public static ShortMap fromDoubleStream(DoubleStream ds, int xSize, int ySize)
+	{
+		short[][] shortMap = new short[xSize][ySize];
+		
+		for(int y = 0; y < ySize; y++)
+		{
+			for(int x = 0; x < xSize; x++)
+			{
+				shortMap[x][y] = 
+			}
+		}
 	}*/
 	
 	/**
@@ -117,7 +151,7 @@ public class WorldUtils {
 				newmap[x][y] = (short) -oldmap[x][y];
 			}
 		}
-		return new ShortMap(oldmap);
+		return new ShortMap(newmap);
 	}
 
 	
@@ -147,20 +181,34 @@ public class WorldUtils {
 
 	public static ShortMap scale(ShortMap map, double scalar, int startX, int startY, int endX, int endY)
 	{
-		short[][] oldmap = map.getMap();
+		short[][] oldMap = map.getMap();
 		short[][] newMap = new short[endX-startX][endY-startY];
 
-		for(int x = 0; x < endX; x++)
+		for(int x = startX; x < endX; x++)
 		{
 			for(int y = startY; y < endY; y++)
 			{
-				newMap[x][y] =  (short)OtherUtils.clamp(oldmap[x][y]*scalar, Short.MIN_VALUE, Short.MAX_VALUE);
+				newMap[x][y] =  (short)OtherUtils.clamp(oldMap[x][y]*scalar, Short.MIN_VALUE, Short.MAX_VALUE);
 			}
 		}
 		return new ShortMap(newMap);
 	}
 
 
+	public static ShortMap abs(ShortMap map, int startX, int startY, int endX, int endY)
+	{
+		short[][] oldMap = map.getMap();
+		short[][] newMap = new short[endX-startX][endY-startY];
+		
+		for(int x = startX; x < endX; x++)
+		{
+			for(int y = startY; y < endY; y++)
+			{
+				newMap[x][y] = (short)Math.abs(oldMap[x][y]);
+			}
+		}
+		return new ShortMap(newMap);
+	}
 	
 	public static ShortMap max(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
 	{
@@ -248,6 +296,15 @@ public class WorldUtils {
  			}
 		}
 		return new ShortMap(newMap);
+	}
+
+	
+	
+	public static ShortMap add(ShortMap map, double add, int startX, int startY, int endX, int endY)
+	{
+		int dx = endX - startX;
+		int dy = endY - startY;
+		return add(new ShortMap[] {map, WorldUtils.constantValue(add, dx, dy)}, startX, startY, endX, endY);
 	}
 	
 	public static ShortMap add(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
