@@ -68,7 +68,6 @@ public class WorldUtils {
 	
 	
 	/**
-	 * 
 	 * @param value the level of the surface
 	 * @param xSize the x size of the ShortMap
 	 * @param ySize the y size of the ShortMap
@@ -160,21 +159,108 @@ public class WorldUtils {
 		}
 		return new ShortMap(newMap);
 	}
+
+
 	
+	public static ShortMap max(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
+	{
+		return max(new ShortMap[] {map1, map2}, startX, startY, endX, endY);
+	}
+	
+	/**
+	 * @param maps the maps to be operated on
+	 * @param startX the x start of the operation
+	 * @param startY the y start of the operation
+	 * @param endX the x end of the operation
+	 * @param endY the y end of the operation
+	 * @return a shortmap that is the minimum of all the givens
+	 */
+	
+	public static ShortMap max(ShortMap[] maps, int startX, int startY, int endX, int endY)
+	{
+		short[][][] sourceMaps = new short[maps.length][0][0];
+		
+		for(int i = 0; i < maps.length; i++)
+		{
+			sourceMaps[i] = maps[i].getMap();
+		}
+		
+		short[][] newMap = new short[endX-startX][endY-startY];
+		
+		for(int x = 0; x < endX - startX; x++)
+		{
+			for(int y = 0; y < endY -startY; y++)
+			{
+				long max = 0;
+				
+				for(int i = 0; i < maps.length; i++)
+				{
+					max = Math.max(max, sourceMaps[i][x+startX][y+startY]);
+				}
+				
+				newMap[x][y] = (short)max;
+ 			}
+		}
+		return new ShortMap(newMap);
+	}
+	
+	
+	
+	
+	
+	public static ShortMap min(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
+	{
+		return min(new ShortMap[] {map1, map2}, startX, startY, endX, endY);
+	}
+	
+	/**
+	 * @param maps the maps to be operated on
+	 * @param startX the x start of the operation
+	 * @param startY the y start of the operation
+	 * @param endX the x end of the operation
+	 * @param endY the y end of the operation
+	 * @return a shortmap that is the minimum of all the givens
+	 */
+	
+	public static ShortMap min(ShortMap[] maps, int startX, int startY, int endX, int endY)
+	{
+		short[][][] sourceMaps = new short[maps.length][0][0];
+		
+		for(int i = 0; i < maps.length; i++)
+		{
+			sourceMaps[i] = maps[i].getMap();
+		}
+		
+		short[][] newMap = new short[endX-startX][endY-startY];
+		
+		for(int x = 0; x < endX - startX; x++)
+		{
+			for(int y = 0; y < endY -startY; y++)
+			{
+				long min = 0;
+				
+				for(int i = 0; i < maps.length; i++)
+				{
+					min = Math.min(min, sourceMaps[i][x+startX][y+startY]);
+				}
+				
+				newMap[x][y] = (short)min;
+ 			}
+		}
+		return new ShortMap(newMap);
+	}
 	
 	public static ShortMap add(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
 	{
 		return add(new ShortMap[] {map1, map2}, startX,startY,endX,endY);
 	}
+	
 	/**
-	 * 
 	 * @param maps the maps to add (must be same size) 
 	 * @return The sum of the maps (will be clamped between 1 and 0)
 	 */
 	public static ShortMap add(ShortMap[] maps, int startX, int startY, int endX, int endY)
 	{
-		
-		
 		short[][][] sourceMaps = new short[maps.length][0][0];
 		
 		for(int i = 0; i < maps.length; i++)

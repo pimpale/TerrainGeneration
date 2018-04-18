@@ -5,8 +5,8 @@ import java.io.PrintStream;
 
 import javax.swing.JFrame;
 
-import WorldBuilder.WorldScript;
-import WorldBuilder.WorldTemplate;
+import worldBuilder.WorldScript;
+import worldBuilder.WorldTemplate;
 import fastnoise.FastNoise;
 
 @SuppressWarnings("serial")
@@ -16,11 +16,12 @@ public class Main
 	public static void main(String[] args) throws InterruptedException 
 	{
 	
-		FastNoise n;
-		n.SetNoiseType(NoiseType.);
+		//FastNoise n;
+		//n.SetNoiseType(NoiseType.);
 		
 		JFrame frame = new JFrame("test");
 		Canvas canvas = new Canvas();
+		canvas.setSize(300, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(300,300);
 		frame.add(canvas);
