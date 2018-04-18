@@ -1,4 +1,4 @@
-package WorldBuilder;
+package worldBuilder;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

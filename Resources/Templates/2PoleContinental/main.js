@@ -8,7 +8,7 @@ var NoiseType = Java.type("fastnoise.FastNoise$NoiseType");
 var FractalType = Java.type("fastnoise.FastNoise$FractalType");
 var CellularDistanceFunction = Java.type("fastnoise.FastNoise$CellularDistanceFunction");
 
-var 
+var ShortMap = Java.type()
 
 var fractal = new FastNoise();
 fractal.SetNoiseType(NoiseType.Perlin);
