@@ -25,7 +25,7 @@ continentNoise_FastNoise.SetNoiseType(NoiseType.Simplex);
 
 var mountainNoise_FastNoise = new FastNoise();
 mountainNoise_FastNoise.SetNoiseType(NoiseType.Simplex);
-mountainNoise_FastNoise.SetFrequency(5.0);
+mountainNoise_FastNoise.SetFrequency(0.005);
 
 var randomNoise_ShortMap = WorldUtils.noise(randomNoise_FastNoise, xSize,ySize);
 var continentNoise_ShortMap = WorldUtils.noise(continentNoise_FastNoise, xSize, ySize);
@@ -44,12 +44,12 @@ noise_ShortMap_Array[1] = continentNoise_ShortMap;
 noise_ShortMap_Array[2] = mountainNoise_ShortMap;
 
 var noise_double_Array = new double_Array(3);
-noise_double_Array[0] = 0.2;
-noise_double_Array[1] = 0.5;
-noise_double_Array[2] = 0.3;
+noise_double_Array[0] = 0.1;
+noise_double_Array[1] = 0.3;
+noise_double_Array[2] = 0.6;
 
 
 sum = WorldUtils.weightedAverage(noise_ShortMap_Array, noise_double_Array, 0, 0, xSize, ySize);
 
 
-graphics.drawImage(mountainNoise_ShortMap.getImage(), 0,0,null);
+graphics.drawImage(sum.getImage(), 0,0,null);
