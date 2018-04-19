@@ -50,36 +50,36 @@ public class WorldUtils {
 		return Math.pow(height, 4);
 	}*/
 	
-	//LEts not mess with the lambdas there might be a C port later on
-	/*
 	public static DoubleStream toLossyDoubleStream(ShortMap map)
 	{
 		short[][] shortMap = map.getMap();
-		double[][] doubleMap = new double[shortMap.length][shortMap[0].length];
-		
-		for(int x = 0; x < shortMap.length; x++)
+		DoubleStream ds = DoubleStream.empty();
+		for(int y = 0; y < shortMap.length; y++)
 		{
-			for(int y = 0; y < shortMap[0].length; y++)
+			for(int x = 0; x < shortMap[0].length; x++)
 			{
-				doubleMap[x][y] = OtherUtils.shortToDouble(shortMap[x][y]);
+				DoubleStream.concat(ds, DoubleStream.of(OtherUtils.shortToDouble(shortMap[x][y])));
 			}
 		}
 		
-		return Arrays.stream(doubleMap).flatMapToDouble(x -> Arrays.stream(x));	
+		return ds;
 	}
 	
 	public static ShortMap fromDoubleStream(DoubleStream ds, int xSize, int ySize)
 	{
 		short[][] shortMap = new short[xSize][ySize];
 		
+		double[] da = ds.toArray();
+		
 		for(int y = 0; y < ySize; y++)
 		{
 			for(int x = 0; x < xSize; x++)
 			{
-				shortMap[x][y] = 
+				shortMap[x][y] = OtherUtils.doubleToShort(da[x + xSize*y]);
 			}
 		}
-	}*/
+		return new ShortMap(shortMap);
+	}
 	
 	/**
 	 * @param noise the noise used to generate the map
