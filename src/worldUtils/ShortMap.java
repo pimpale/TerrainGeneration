@@ -145,7 +145,7 @@ public class ShortMap {
 		{
 			for (int x = 0; x < xSize; x++) 
 			{
-				r.setPixel(x, y, new int[] {map[x][y] + Short.MAX_VALUE});
+				r.setPixel(x, y, new int[] {map[x][y] + Short.MIN_VALUE});
 			}
 		}
 		return img;

@@ -158,6 +158,8 @@ public class WorldUtils {
 	{
 		short sthreshold = OtherUtils.doubleToShort(threshold);
 		
+		System.out.println(sthreshold);
+		
 		short[][] oldmap = map.getMap();
 		short[][] newmap = new short[endX-startX][endY-startY];
 		for(int x = startX; x < endX; x++)
@@ -166,7 +168,7 @@ public class WorldUtils {
 			{
 				if(oldmap[x][y] > sthreshold)
 				{
-					newmap[x][y] = Short.MAX_VALUE;
+					newmap[x][y] = oldmap[x][y];//Short.MAX_VALUE;
 				}
 				else
 				{
@@ -359,7 +361,7 @@ public class WorldUtils {
 					sum += sourceMaps[i][x+startX][y+startY];
 				}
 				
-				newMap[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE+1, Short.MAX_VALUE);
+				newMap[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
  			}
 		}
 		return new ShortMap(newMap);

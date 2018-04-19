@@ -17,10 +17,11 @@ public class Main
 	{
 	
 		FastNoise n = new FastNoise();
-		//n.setFr
+		//n.setO
 		//n.SetNoiseType(NoiseType.Fra);
 		
 		JFrame frame = new JFrame("test");
+		frame.setSize(1024, 1024);
 		Canvas canvas = new Canvas();
 		canvas.setSize(300, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
