@@ -17,9 +17,8 @@ public class Main
 	{
 	
 		FastNoise n = new FastNoise();
-		//n.setO
+		//n.SetFractalType(FractalType.);
 		//n.SetNoiseType(NoiseType.Fra);
-		
 		JFrame frame = new JFrame("test");
 		frame.setSize(1024, 1024);
 		Canvas canvas = new Canvas();

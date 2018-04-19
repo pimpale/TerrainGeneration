@@ -327,23 +327,23 @@ public class WorldUtils {
 	{
 		int dx = endX - startX;
 		int dy = endY - startY;
-		return add(new ShortMap[] {map, WorldUtils.constantValue(add, dx, dy)}, startX, startY, endX, endY);
+		return add(map, WorldUtils.constantValue(add, dx, dy), startX, startY, endX, endY);
 	}
 	
 	public static ShortMap add(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
 	{
-		return add(new ShortMap[] {map1, map2}, startX,startY,endX,endY);
+		return add(new ShortMap[] {map1, map2}, 2, startX,startY,endX,endY);
 	}
 	
 	/**
 	 * @param maps the maps to add (must be same size) 
 	 * @return The sum of the maps (will be clamped between 1 and 0)
 	 */
-	public static ShortMap add(ShortMap[] maps, int startX, int startY, int endX, int endY)
+	public static ShortMap add(ShortMap[] maps, int num, int startX, int startY, int endX, int endY)
 	{
-		short[][][] sourceMaps = new short[maps.length][0][0];
+		short[][][] sourceMaps = new short[num][0][0];
 		
-		for(int i = 0; i < maps.length; i++)
+		for(int i = 0; i < num; i++)
 		{
 			sourceMaps[i] = maps[i].getMap();
 		}
@@ -356,7 +356,7 @@ public class WorldUtils {
 			{
 				long sum = 0;
 				
-				for(int i = 0; i < maps.length; i++)
+				for(int i = 0; i < num; i++)
 				{
 					sum += sourceMaps[i][x+startX][y+startY];
 				}
@@ -373,13 +373,13 @@ public class WorldUtils {
 	 * @param weights the weights of each map (Should all add up to 1, with each individual weight being in between 1 and 0)
 	 * @return The average of the maps
 	 */
-	public static ShortMap weightedAverage(ShortMap[] maps, double[] weights, int startX, int startY, int endX, int endY)
+	public static ShortMap weightedAverage(ShortMap[] maps, double[] weights, int num, int startX, int startY, int endX, int endY)
 	{
 		for(int i = 0; i < weights.length; i++)
 		{
 			maps[i] = scale(maps[i],weights[i], 0,0, maps[i].getXSize(), maps[i].getYSize());
 		}
-		return add(maps, startX, startY, endX, endY);
+		return add(maps, num, startX, startY, endX, endY);
 	}
 	
 	
