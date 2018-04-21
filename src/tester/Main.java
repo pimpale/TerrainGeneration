@@ -17,10 +17,7 @@ public class Main
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
-		FastNoise n = new FastNoise();
-		n.SetCellularReturnType(CellularReturnType.Distance2);
-		//n.SetFractalType(FractalType.);
-		//n.SetNoiseType(NoiseType.Fra);
+		
 		JFrame frame = new JFrame("test");
 		frame.setSize(1024, 1024);
 		Canvas canvas = new Canvas();
