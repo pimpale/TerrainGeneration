@@ -7,8 +7,8 @@ import java.io.PrintStream;
 
 import javax.script.*;
 
-public class WorldScript implements Runnable{
-
+public class WorldScript implements Runnable 
+{
 	private final String script;
 	private Canvas window;
 	private PrintStream out;
@@ -27,17 +27,15 @@ public class WorldScript implements Runnable{
 	
 	@Override
 	public void run() {
-	try {
-		ScriptEngineManager factory = new ScriptEngineManager();
-		ScriptEngine engine = factory.getEngineByName("javascript");
-		engine.put("window", window);
-		engine.put("out", out);
-		engine.eval(script);
-	} catch (Exception ex) {
-		ex.printStackTrace();
+		try {
+			ScriptEngineManager factory = new ScriptEngineManager();
+			ScriptEngine engine = factory.getEngineByName("javascript");
+			engine.put("window", window);
+			engine.put("out", out);
+			engine.eval(script);
+		} 
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
-}
-
-
-
 }

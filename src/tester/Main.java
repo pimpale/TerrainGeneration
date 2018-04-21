@@ -2,12 +2,14 @@ package tester;
 import java.awt.Canvas;
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 import worldBuilder.WorldScript;
 import worldBuilder.WorldTemplate;
 import fastnoise.FastNoise;
+import fastnoise.FastNoise.CellularReturnType;
 
 @SuppressWarnings("serial")
 public class Main
@@ -15,8 +17,8 @@ public class Main
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
-	
 		FastNoise n = new FastNoise();
+		n.SetCellularReturnType(CellularReturnType.Distance2);
 		//n.SetFractalType(FractalType.);
 		//n.SetNoiseType(NoiseType.Fra);
 		JFrame frame = new JFrame("test");
