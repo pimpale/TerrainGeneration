@@ -1,6 +1,6 @@
 //Fundamental stuff
 
-var seed = 12;
+var seed = 120;
 
 var xSize = 1024;
 var ySize = 1024;
@@ -30,12 +30,12 @@ function getShortMap(seed, xSize, ySize) {
 	var rnoise = new FastNoise(seed+2); rnoise.SetNoiseType(NoiseType.Simplex);
 	
 	//set scales for continent noise and mountain noise
-	var cscale = Math.pow(2, -9);
-	var mscale = Math.pow(2, -8);
+	var cscale = Math.pow(2, -2);
+	var mscale = Math.pow(2, -2);
 	
 	//weights and sizes for 
-	var sizes   = [Math.pow(2, -7), Math.pow(2, -8), Math.pow(2, -6), Math.pow(2, -5), Math.pow(2, -4), Math.pow(2, -2), Math.pow(2, -1)];
-	var weights = [17,              15,              13,              10,              7,               5,               3              ]; 
+	var sizes   = [Math.pow(2, -1), Math.pow(2,  0), Math.pow(2,  1), Math.pow(2,  2), Math.pow(2,  3), Math.pow(2,  4), Math.pow(2, 5)];
+	var weights = [17,              15,              13,              10,              7,               5,               3             ]; 
 	var weightsum = weights.reduce(function(a, b) { return a + b; }, 0);
 	
 	var map = new ShortMap(xSize, ySize);
@@ -44,16 +44,18 @@ function getShortMap(seed, xSize, ySize) {
 	for(var y = 0; y < ySize; y++) {
 		for(var x = 0; x < xSize; x++) {
 			var cheight = cnoise.GetNoise(x*cscale, y*cscale);
-			var mheight = 1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale));
+			var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),3)-0.2;
 			
 			//fractal noise...
-			var rheight;
+			var rheight = 0;
 			for(var i = 0; i < sizes.length; i++) {
+				rnoise.SetSeed(seed+2+i);
 				rheight += weights[i]*rnoise.GetNoise(x*sizes[i], y*sizes[i]);
 			}
 			rheight = rheight/weightsum;
 			
-			var noiseSum = Math.pow(mheight*0.3 + rheight*0.4 + cheight*0.4, 3);
+			var noiseSum = mheight*0.2 + rheight*0.5 + cheight*0.3;
+			//print(cheight);
 			shortmap[x][y] = OtherUtils.doubleToShort(noiseSum);
 		}
 	}
@@ -61,9 +63,11 @@ function getShortMap(seed, xSize, ySize) {
 }
 
 
-var smap = getShortMap(seed,xSize,ySize);
+var smap = getShortMap(Math.random()*200,xSize,ySize);
+
+smap = WorldUtils.threshold(smap, 0, 0,0,xSize,ySize);
 
 while(true)
 {
-	graphics.drawImage(smap.getImage(), 0,0,null);
+	graphics.drawImage(smap.getImage(), 0 ,0,null);
 }

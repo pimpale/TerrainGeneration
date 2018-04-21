@@ -17,7 +17,6 @@ public class Main
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
-		
 		JFrame frame = new JFrame("test");
 		frame.setSize(1024, 1024);
 		Canvas canvas = new Canvas();
