@@ -25,6 +25,15 @@ public class OtherUtils {
 		return ((double)s)/Short.MAX_VALUE;
 	}
 	
+	public static short celsiusToTemperature(double c)
+	{
+		return (short)(c*10);
+	}
+	
+	public static double temperatureToCelsius(short s)
+	{
+		return ((double)s)*(10.0);
+	}
 	public static double clamp(double val, double min, double max)
 	{
 		return Math.max(min, Math.min(max, val));
