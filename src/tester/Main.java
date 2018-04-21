@@ -2,14 +2,11 @@ package tester;
 import java.awt.Canvas;
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
-
 import javax.swing.JFrame;
+
 
 import worldBuilder.WorldScript;
 import worldBuilder.WorldTemplate;
-import fastnoise.FastNoise;
-import fastnoise.FastNoise.CellularReturnType;
 
 @SuppressWarnings("serial")
 public class Main
@@ -22,7 +19,6 @@ public class Main
 		Canvas canvas = new Canvas();
 		canvas.setSize(300, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(300,300);
 		frame.add(canvas);
 		frame.setVisible(true);
 		

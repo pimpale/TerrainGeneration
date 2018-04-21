@@ -7,6 +7,10 @@ var ySize = 1024;
 var graphics = window.getGraphics();
 //declare classes
 var Math = Java.type("java.lang.Math");
+var Short = Java.type("java.lang.Short");
+var Integer = Java.type("java.lang.Integer");
+var Long = Java.type("java.lang.Long");
+var Double = Java.type("java.lang.Double");
 var int_Array = Java.type("int[]");
 var double_Array = Java.type("double[]");
 var double_Array2D = Java.type("double[][]");
@@ -23,7 +27,7 @@ var OtherUtils = Java.type("worldUtils.OtherUtils");
 var ShortMap = Java.type("worldUtils.ShortMap");
 var ShortMap_Array = Java.type("worldUtils.ShortMap[]");
 
-function getShortMap(seed, xSize, ySize) {
+function getHeightMap(seed, xSize, ySize) {
 	//set up the noise
 	var cnoise = new FastNoise(seed+0); cnoise.SetNoiseType(NoiseType.Simplex);
 	var mnoise = new FastNoise(seed+1); mnoise.SetNoiseType(NoiseType.Simplex);
@@ -47,7 +51,7 @@ function getShortMap(seed, xSize, ySize) {
 			var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),3)-0.2;
 			
 			//fractal noise...
-			var rheight = 0;
+			var rheight = -0.1;
 			for(var i = 0; i < sizes.length; i++) {
 				rnoise.SetSeed(seed+2+i);
 				rheight += weights[i]*rnoise.GetNoise(x*sizes[i], y*sizes[i]);
@@ -61,6 +65,26 @@ function getShortMap(seed, xSize, ySize) {
 	}
 	return map;
 }
+
+//returns surface temperature. Temperature shall be measured from (Short, 1) (0 = freezing) (1 = boiling) (Temp at sea level The actual temperature is determined by simple subtraction) 
+function getTemperature(seed, xSize, ySize) {
+	
+	var noise = new FastNoise(seed);
+	
+	var scale = Math.pow(2,-4);
+	var weight = 0.3;
+	
+	var map = new ShortMap(xSize, ySize);
+	var shortmap = map.getMap();
+	
+	for(var y = 0; y < ySize; y++) {
+		for(var x = 0; x < xSize; x++) {
+			
+		}
+	}
+	
+}
+
 
 
 var smap = getShortMap(Math.random()*200,xSize,ySize);
