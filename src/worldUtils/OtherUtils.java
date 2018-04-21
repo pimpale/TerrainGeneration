@@ -24,16 +24,6 @@ public class OtherUtils {
 	{
 		return ((double)s)/Short.MAX_VALUE;
 	}
-
-	public static short uDoubleToShort(double d)
-	{
-		return (short)(d*65536 + Short.MIN_VALUE);
-	}
-
-	public static double shortToUDouble(short s)
-	{
-		return (((double)s)-Short.MIN_VALUE)/(65536);
-	}
 	
 	public static double clamp(double val, double min, double max)
 	{

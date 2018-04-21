@@ -66,7 +66,15 @@ function getHeightMap(seed, xSize, ySize) {
 	return map;
 }
 
-//returns surface temperature. Temperature shall be measured from (Short, 1) (0 = freezing) (1 = boiling) (Temp at sea level The actual temperature is determined by simple subtraction) 
+function degreesCelsiusToTemperature(c) {
+	return c*1000;
+}
+
+function temperatureToDegreesCelsius(t) {
+	return t/1000;
+}
+
+//returns surface temperature. Temperature shall be measured from (Short.MIN_VALUE, Short.MAX_VALUE) (0 = freezing) (1000 = boiling) (Temp at sea level The actual temperature is determined by simple subtraction) 
 function getTemperature(seed, xSize, ySize) {
 	
 	var noise = new FastNoise(seed);
@@ -79,7 +87,7 @@ function getTemperature(seed, xSize, ySize) {
 	
 	for(var y = 0; y < ySize; y++) {
 		for(var x = 0; x < xSize; x++) {
-			
+			shortmap[x][y]
 		}
 	}
 	
