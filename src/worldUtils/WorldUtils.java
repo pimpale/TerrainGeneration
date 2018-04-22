@@ -383,9 +383,9 @@ public class WorldUtils {
 	
 	
 	
-	public static ShortMap blur(ShortMap map, int radius)
+	public static ShortMap blur(ShortMap map, int radius, int startX, int startY, int endX, int endY)
 	{
-		return new ShortMap(blurImage(map.getImage(), radius));
+		return new ShortMap(blurImage(map.getImage().getSubimage(startX, startY, endX-startX, endY-startY), radius));
 	}
 	
 	private static BufferedImage blurImage(BufferedImage image, int radius) {
