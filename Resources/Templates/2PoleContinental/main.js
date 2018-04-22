@@ -1,9 +1,6 @@
 //Fundamental stuff
-
-var seed = 120;
-
-var xSize = 1024;
-var ySize = 1024;
+var xSize = window.getWidth();
+var ySize = window.getHeight();
 var graphics = window.getGraphics();
 //declare classes
 var Math = Java.type("java.lang.Math");
@@ -11,6 +8,7 @@ var Short = Java.type("java.lang.Short");
 var Integer = Java.type("java.lang.Integer");
 var Long = Java.type("java.lang.Long");
 var Double = Java.type("java.lang.Double");
+var Thread = Java.type("java.lang.Thread");
 var int_Array = Java.type("int[]");
 var double_Array = Java.type("double[]");
 var double_Array2D = Java.type("double[][]");
@@ -29,37 +27,20 @@ var ShortMap_Array = Java.type("worldUtils.ShortMap[]");
 
 function getHeightMap(seed, xSize, ySize) {
 	//set up the noise
-	var cnoise = new FastNoise(seed+0); cnoise.SetNoiseType(NoiseType.Simplex);
-	var mnoise = new FastNoise(seed+1); mnoise.SetNoiseType(NoiseType.Simplex);
-	var rnoise = new FastNoise(seed+2); rnoise.SetNoiseType(NoiseType.Simplex);
+	var mnoise = new FastNoise(seed+1); mnoise.SetNoiseType(NoiseType.SimplexFractal); mnoise.SetFractalOctaves(8);
+	var rnoise = new FastNoise(seed+2); rnoise.SetNoiseType(NoiseType.SimplexFractal); rnoise.SetFractalOctaves(8);
 	
 	//set scales for continent noise and mountain noise
-	var cscale = Math.pow(2, -2);
-	var mscale = Math.pow(2, -2);
-	
-	//weights and sizes for 
-	var sizes   = [Math.pow(2, -1), Math.pow(2,  0), Math.pow(2,  1), Math.pow(2,  2), Math.pow(2,  3), Math.pow(2,  4), Math.pow(2, 5)];
-	var weights = [17,              15,              13,              10,              7,               5,               3             ]; 
-	var weightsum = weights.reduce(function(a, b) { return a + b; }, 0);
-	
+	var mscale = Math.pow(2, -1);
+	var rscale = Math.pow(2, -2);
 	var map = new ShortMap(xSize, ySize);
 	var shortmap = map.getMap();
 	
 	for(var y = 0; y < ySize; y++) {
 		for(var x = 0; x < xSize; x++) {
-			var cheight = cnoise.GetNoise(x*cscale, y*cscale);
-			var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),3)-0.2;
-			
-			//fractal noise...
-			var rheight = -0.1;
-			for(var i = 0; i < sizes.length; i++) {
-				rnoise.SetSeed(seed+2+i);
-				rheight += weights[i]*rnoise.GetNoise(x*sizes[i], y*sizes[i]);
-			}
-			rheight = rheight/weightsum;
-			
-			var noiseSum = mheight*0.2 + rheight*0.5 + cheight*0.3;
-			//print(cheight);
+			var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),3)-0.3;
+			var rheight = rnoise.GetNoise(x*rscale,y*rscale)*1.35;
+			var noiseSum = mheight*0.4 + rheight*0.6;
 			shortmap[x][y] = OtherUtils.doubleToShort(noiseSum);
 		}
 	}
@@ -67,31 +48,33 @@ function getHeightMap(seed, xSize, ySize) {
 }
 
 //returns surface temperature. Temperature shall be measured from (Short.MIN_VALUE, Short.MAX_VALUE) (0 = freezing) (1000 = boiling) (Temp at sea level The actual temperature is determined by simple subtraction) 
-function getTemperature(seed, xSize, ySize) {
+function getTemperatureMap(seed, xSize, ySize) {
 	
 	var noise = new FastNoise(seed);
-	
-	var scale = Math.pow(2,-4);
-	var weight = 0.3;
-	
+	noise.SetNoiseType(NoiseType.SimplexFractal);
+	noise.SetFractalOctaves(10);
+	var scale = Math.pow(2,-3);
 	var map = new ShortMap(xSize, ySize);
 	var shortmap = map.getMap();
 	
 	for(var y = 0; y < ySize; y++) {
+		var percentDown = y/ySize;
 		for(var x = 0; x < xSize; x++) {
-			shortmap[x][y]
+			var celsius = 60*(Math.sin(Math.PI*percentDown)-0.5) + 40*noise.GetNoise(x*scale,y*scale);
+			shortmap[x][y] = OtherUtils.celsiusToTemperature(celsius);
 		}
 	}
-	
+	return map;
 }
 
 
+var tmap = getTemperatureMap(seed,xSize,ySize);
+//var smap = getHeightMap(seed,xSize,ySize);
+//smap = WorldUtils.threshold(smap, 0, 0,0,xSize,ySize);
 
-var smap = getShortMap(Math.random()*200,xSize,ySize);
-
-smap = WorldUtils.threshold(smap, 0, 0,0,xSize,ySize);
-
+var img = tmap.getImage();
 while(true)
 {
-	graphics.drawImage(smap.getImage(), 0 ,0,null);
+	Thread.sleep(20);
+	graphics.drawImage(img, 0 ,0,null);
 }

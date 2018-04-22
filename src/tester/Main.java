@@ -14,10 +14,11 @@ public class Main
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
+		int size = 700;
 		JFrame frame = new JFrame("test");
-		frame.setSize(1024, 1024);
+		frame.setSize(size, size);
 		Canvas canvas = new Canvas();
-		canvas.setSize(300, 300);
+		canvas.setSize(size, size);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(canvas);
 		frame.setVisible(true);
@@ -25,7 +26,7 @@ public class Main
 		PrintStream p = new PrintStream(System.out);
 		
 		WorldTemplate wt = new WorldTemplate(new File("./Resources/Templates/2PoleContinental"));
-		WorldScript ws = new WorldScript(wt.getMain(), canvas, System.out);
+		WorldScript ws = new WorldScript(wt.getMain(), canvas, System.out, (int)(Math.random()*200));
 		
 		ws.run();
 	}

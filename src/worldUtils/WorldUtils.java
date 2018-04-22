@@ -89,6 +89,7 @@ public class WorldUtils {
 	 */
 	public static ShortMap noise(FastNoise noise, int xSize, int ySize)
 	{
+		//noise.setLa
 		short[][] map = new short[xSize][ySize]; 
 		for(int x = 0; x < xSize; x++)
 		{
@@ -157,9 +158,6 @@ public class WorldUtils {
 	public static ShortMap threshold(ShortMap map, double threshold, int startX, int startY, int endX, int endY)
 	{
 		short sthreshold = OtherUtils.doubleToShort(threshold);
-		
-		System.out.println(sthreshold);
-		
 		short[][] oldmap = map.getMap();
 		short[][] newmap = new short[endX-startX][endY-startY];
 		for(int x = startX; x < endX; x++)

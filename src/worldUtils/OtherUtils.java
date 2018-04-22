@@ -27,7 +27,7 @@ public class OtherUtils {
 	
 	public static short celsiusToTemperature(double c)
 	{
-		return (short)(c*10);
+		return (short)(c*500);
 	}
 	
 	public static double temperatureToCelsius(short s)
