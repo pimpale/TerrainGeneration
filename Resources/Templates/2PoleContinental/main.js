@@ -1,6 +1,6 @@
 //Fundamental stuff
-var xSize = window.getWidth();
-var ySize = window.getHeight();
+var xSize = 1024;//window.getWidth();
+var ySize = 1024;//window.getHeight();
 var graphics = window.getGraphics();
 //declare classes
 var Math = Java.type("java.lang.Math");
@@ -38,9 +38,9 @@ function getHeightMap(seed, xSize, ySize) {
 	
 	for(var y = 0; y < ySize; y++) {
 		for(var x = 0; x < xSize; x++) {
-			var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),3)-0.3;
+			var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),1)-0.3;
 			var rheight = rnoise.GetNoise(x*rscale,y*rscale)*1.35;
-			var noiseSum = mheight*0.4 + rheight*0.6;
+			var noiseSum = mheight*0.3 + rheight*0.7;
 			shortmap[x][y] = OtherUtils.doubleToShort(noiseSum);
 		}
 	}
@@ -68,11 +68,11 @@ function getTemperatureMap(seed, xSize, ySize) {
 }
 
 
-var tmap = getTemperatureMap(seed,xSize,ySize);
-//var smap = getHeightMap(seed,xSize,ySize);
-//smap = WorldUtils.threshold(smap, 0, 0,0,xSize,ySize);
+//var tmap = getTemperatureMap(seed,xSize,ySize);
+var smap = getHeightMap(seed,xSize,ySize);
+smap = WorldUtils.threshold(smap, 0, 0,0,xSize,ySize);
 
-var img = tmap.getImage();
+var img = smap.getImage();
 while(true)
 {
 	Thread.sleep(20);
