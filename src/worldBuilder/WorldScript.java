@@ -9,16 +9,25 @@ import javax.script.*;
 
 public class WorldScript implements Runnable 
 {
-	private final JavaScript script;
+	private JavaScript script;
 	private Canvas window;
-	private PrintStream out;
 	private int seed;
 	
 	public WorldScript(JavaScript script, Canvas window, int seed)
 	{
 		this.script = script;
-		this.window = window;
-		
+		setCanvas(window);
+		setSeed(seed);
+	}
+	
+	public void setScript(JavaScript script)
+	{
+		this.script = script; 
+	}
+
+	public JavaScript getScript()
+	{
+		return script;
 	}
 	
 	public void setCanvas(Canvas c)
@@ -44,12 +53,7 @@ public class WorldScript implements Runnable
 	@Override
 	public void run() {
 		try {
-			ScriptEngineManager factory = new ScriptEngineManager();
-			ScriptEngine engine = factory.getEngineByName("javascript");
-			engine.put("seed", seed);
-			engine.put("window", window);
-			engine.put("out", out);
-			engine.eval(script);
+			script.eval();
 		} 
 		catch (Exception ex) {
 			ex.printStackTrace();
