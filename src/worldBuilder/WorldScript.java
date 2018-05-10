@@ -9,20 +9,36 @@ import javax.script.*;
 
 public class WorldScript implements Runnable 
 {
-	private final String script;
+	private final JavaScript script;
 	private Canvas window;
 	private PrintStream out;
 	private int seed;
-	public WorldScript(File script, Canvas window, PrintStream out, int seed)
-	{
-		this(new TextFile(script).getContent(), window, out,seed);
-	}
 	
-	public WorldScript(String script, Canvas window, PrintStream out, int seed)
+	public WorldScript(JavaScript script, Canvas window, int seed)
 	{
-		this.out = out;
 		this.script = script;
 		this.window = window;
+		
+	}
+	
+	public void setCanvas(Canvas c)
+	{
+		window = c;
+	}
+	
+	public Canvas getCanvas()
+	{
+		return window;
+	}
+	
+	public void setSeed(int seed)
+	{
+		this.seed = seed;
+	}
+	
+	public int getSeed()
+	{
+		return seed;
 	}
 	
 	@Override
