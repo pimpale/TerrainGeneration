@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.PrintStream;
 import javax.swing.JFrame;
 
-
+import worldBuilder.JavaScript;
+import worldBuilder.TextFile;
 import worldBuilder.WorldScript;
 import worldBuilder.WorldTemplate;
 
@@ -26,7 +27,10 @@ public class Main
 		PrintStream p = new PrintStream(System.out);
 		
 		WorldTemplate wt = new WorldTemplate(new File("./Resources/Templates/2PoleContinental"));
-		WorldScript ws = new WorldScript(wt.getMain(), canvas, System.out, (int)(Math.random()*200));
+		WorldScript ws = new WorldScript(
+				new JavaScript(new TextFile(wt.getMain()).getContent(), System.out),
+				canvas, 
+				(int)(Math.random()*200));
 		
 		ws.run();
 	}

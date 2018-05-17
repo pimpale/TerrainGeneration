@@ -15,9 +15,12 @@ public class WorldScript implements Runnable
 	
 	public WorldScript(JavaScript script, Canvas window, int seed)
 	{
-		this.script = script;
+		System.out.println(script.getScript());
+		setScript(script);
 		setCanvas(window);
 		setSeed(seed);
+		script.put("window", window);
+		script.put("seed", seed);
 	}
 	
 	public void setScript(JavaScript script)

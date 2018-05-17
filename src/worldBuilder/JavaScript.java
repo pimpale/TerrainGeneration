@@ -7,13 +7,15 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 public class JavaScript {
-	private final ScriptEngine engine = new ScriptEngineManager().getEngineByName("javscript");
+	private final ScriptEngine engine; 
 	private String script;
 	private final PrintStream out;
 	public JavaScript(String code, PrintStream out)
 	{
-		script = code;
+		engine = new ScriptEngineManager().getEngineByName("javascript");
+		setScript(code);
 		this.out = out;
+		put("out",out);
 	}
 	
 	public String getScript()
