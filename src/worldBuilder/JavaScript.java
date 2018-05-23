@@ -36,6 +36,4 @@ public class JavaScript {
 	{
 		engine.eval(script);
 	}
-	
-	
 }
