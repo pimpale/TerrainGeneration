@@ -17,10 +17,10 @@ public class Database {
 	public static final String PASS = "password";
 
 	
+	private Connection conn = null;
+	private Statement stmt = null;
 	
 	public Database() {
-		Connection conn = null;
-		Statement stmt = null;
 		try{
 			//STEP 2: Register JDBC driver
 			Class.forName("com.mysql.jdbc.Driver");
@@ -77,4 +77,4 @@ public class Database {
 		System.out.println("Goodbye!");
 	}//end main
 }
-}
+
