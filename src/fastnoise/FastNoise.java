@@ -2195,4 +2195,26 @@ public class FastNoise {
 }
 
 
+class Vector2f {
+	
+	float x, y;
+	
+	public Vector2f(float x, float y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+}
+
+class Vector3f {
+
+	float x,y,z;
+	
+	public Vector3f(float x, float y, float z)
+	{
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+}
 
