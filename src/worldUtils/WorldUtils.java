@@ -50,7 +50,7 @@ public class WorldUtils {
 		return Math.pow(height, 4);
 	}*/
 	
-	public static DoubleStream toLossyDoubleStream(ShortMap map)
+	public static DoubleStream toLossyDoubleStream(HeightMap map)
 	{
 		short[][] shortMap = map.getMap();
 		DoubleStream ds = DoubleStream.empty();
@@ -65,7 +65,7 @@ public class WorldUtils {
 		return ds;
 	}
 	
-	public static ShortMap fromDoubleStream(DoubleStream ds, int xSize, int ySize)
+	public static HeightMap fromDoubleStream(DoubleStream ds, int xSize, int ySize)
 	{
 		short[][] shortMap = new short[xSize][ySize];
 		
@@ -78,16 +78,16 @@ public class WorldUtils {
 				shortMap[x][y] = OtherUtils.doubleToShort(da[x + xSize*y]);
 			}
 		}
-		return new ShortMap(shortMap);
+		return new HeightMap(shortMap);
 	}
 	
 	/**
 	 * @param noise the noise used to generate the map
 	 * @param xSize the x size of the shortMap
 	 * @param ySize the y size of the shortMapgetValue(x, y)
-	 * @return A ShortMap with size xSize by ySize representing the noise
+	 * @return A HeightMap with size xSize by ySize representing the noise
 	 */
-	public static ShortMap noise(FastNoise noise, int xSize, int ySize)
+	public static HeightMap noise(FastNoise noise, int xSize, int ySize)
 	{
 		//noise.setLa
 		short[][] map = new short[xSize][ySize]; 
@@ -98,17 +98,17 @@ public class WorldUtils {
 				map[x][y] = OtherUtils.doubleToShort(noise.GetNoise(x, y));
 			}
 		}
-		return new ShortMap(map);		
+		return new HeightMap(map);		
 	}
 	
 	
 	/**
 	 * @param value the level of the surface
-	 * @param xSize the x size of the ShortMap
-	 * @param ySize the y size of the ShortMap
-	 * @return a ShortMap which is flat
+	 * @param xSize the x size of the HeightMap
+	 * @param ySize the y size of the HeightMap
+	 * @return a HeightMap which is flat
 	 */
-	public static ShortMap constantValue(double value, int xSize, int ySize)
+	public static HeightMap constantValue(double value, int xSize, int ySize)
 	{
 		short[][] map = new short[xSize][ySize]; 
 		for(int x = 0; x < xSize; x++)
@@ -118,10 +118,10 @@ public class WorldUtils {
 				map[x][y] = OtherUtils.doubleToShort(value);
 			}
 		}
-		return new ShortMap(map);
+		return new HeightMap(map);
 	}
 	
-	public static ShortMap copy(ShortMap source, int startX, int startY, int endX, int endY)
+	public static HeightMap copy(HeightMap source, int startX, int startY, int endX, int endY)
 	{
 		short[][] sourceMap = source.getMap();
 		short[][] map = new short[endX-startX][endY-startY]; 
@@ -132,7 +132,7 @@ public class WorldUtils {
 				map[x][y] = OtherUtils.doubleToShort(sourceMap[startX + x][startY + y]);
 			}
 		}
-		return new ShortMap(map);
+		return new HeightMap(map);
 	}
 	
 	
@@ -141,7 +141,7 @@ public class WorldUtils {
 	 * @param map the map to be processed
 	 * @return returns a map that has been negated
 	 */
-	public static ShortMap negate(ShortMap map, int startX, int startY, int endX, int endY)
+	public static HeightMap negate(HeightMap map, int startX, int startY, int endX, int endY)
 	{
 		short[][] oldmap = map.getMap();
 		short[][] newmap = new short[endX-startX][endY-startY];
@@ -152,10 +152,10 @@ public class WorldUtils {
 				newmap[x][y] = (short) -oldmap[x][y];
 			}
 		}
-		return new ShortMap(newmap);
+		return new HeightMap(newmap);
 	}
 
-	public static ShortMap threshold(ShortMap map, double threshold, int startX, int startY, int endX, int endY)
+	public static HeightMap threshold(HeightMap map, double threshold, int startX, int startY, int endX, int endY)
 	{
 		short sthreshold = OtherUtils.doubleToShort(threshold);
 		short[][] oldmap = map.getMap();
@@ -174,7 +174,7 @@ public class WorldUtils {
 				}
 			}
 		}
-		return new ShortMap(newmap);
+		return new HeightMap(newmap);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class WorldUtils {
 	 * @param pow
 	 * @return
 	 */
-	public static ShortMap pow(ShortMap map, double pow, int startX, int startY, int endX, int endY)
+	public static HeightMap pow(HeightMap map, double pow, int startX, int startY, int endX, int endY)
 	{ 
 		short[][] oldmap = map.getMap();
 		short[][] newmap = new short[endX-startX][endY-startY]; 
@@ -196,11 +196,11 @@ public class WorldUtils {
 				newmap[x][y] = OtherUtils.doubleToShort(Math.pow(value, pow));
 			}
 		}
-		return new ShortMap(oldmap);
+		return new HeightMap(oldmap);
 	}
 
 
-	public static ShortMap scale(ShortMap map, double scalar, int startX, int startY, int endX, int endY)
+	public static HeightMap scale(HeightMap map, double scalar, int startX, int startY, int endX, int endY)
 	{
 		short[][] oldMap = map.getMap();
 		short[][] newMap = new short[endX-startX][endY-startY];
@@ -212,11 +212,11 @@ public class WorldUtils {
 				newMap[x][y] =  (short)OtherUtils.clamp(oldMap[x][y]*scalar, Short.MIN_VALUE, Short.MAX_VALUE);
 			}
 		}
-		return new ShortMap(newMap);
+		return new HeightMap(newMap);
 	}
 
 
-	public static ShortMap abs(ShortMap map, int startX, int startY, int endX, int endY)
+	public static HeightMap abs(HeightMap map, int startX, int startY, int endX, int endY)
 	{
 		short[][] oldMap = map.getMap();
 		short[][] newMap = new short[endX-startX][endY-startY];
@@ -228,12 +228,12 @@ public class WorldUtils {
 				newMap[x][y] = (short)Math.abs(oldMap[x][y]);
 			}
 		}
-		return new ShortMap(newMap);
+		return new HeightMap(newMap);
 	}
 	
-	public static ShortMap max(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
+	public static HeightMap max(HeightMap map1, HeightMap map2, int startX, int startY, int endX, int endY)
 	{
-		return max(new ShortMap[] {map1, map2}, startX, startY, endX, endY);
+		return max(new HeightMap[] {map1, map2}, startX, startY, endX, endY);
 	}
 	
 	/**
@@ -245,7 +245,7 @@ public class WorldUtils {
 	 * @return a shortmap that is the minimum of all the givens
 	 */
 	
-	public static ShortMap max(ShortMap[] maps, int startX, int startY, int endX, int endY)
+	public static HeightMap max(HeightMap[] maps, int startX, int startY, int endX, int endY)
 	{
 		short[][][] sourceMaps = new short[maps.length][0][0];
 		
@@ -270,16 +270,16 @@ public class WorldUtils {
 				newMap[x][y] = (short)max;
  			}
 		}
-		return new ShortMap(newMap);
+		return new HeightMap(newMap);
 	}
 	
 	
 	
 	
 	
-	public static ShortMap min(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
+	public static HeightMap min(HeightMap map1, HeightMap map2, int startX, int startY, int endX, int endY)
 	{
-		return min(new ShortMap[] {map1, map2}, startX, startY, endX, endY);
+		return min(new HeightMap[] {map1, map2}, startX, startY, endX, endY);
 	}
 	
 	/**
@@ -291,7 +291,7 @@ public class WorldUtils {
 	 * @return a shortmap that is the minimum of all the givens
 	 */
 	
-	public static ShortMap min(ShortMap[] maps, int startX, int startY, int endX, int endY)
+	public static HeightMap min(HeightMap[] maps, int startX, int startY, int endX, int endY)
 	{
 		short[][][] sourceMaps = new short[maps.length][0][0];
 		
@@ -316,28 +316,28 @@ public class WorldUtils {
 				newMap[x][y] = (short)min;
  			}
 		}
-		return new ShortMap(newMap);
+		return new HeightMap(newMap);
 	}
 
 	
 	
-	public static ShortMap add(ShortMap map, double add, int startX, int startY, int endX, int endY)
+	public static HeightMap add(HeightMap map, double add, int startX, int startY, int endX, int endY)
 	{
 		int dx = endX - startX;
 		int dy = endY - startY;
 		return add(map, WorldUtils.constantValue(add, dx, dy), startX, startY, endX, endY);
 	}
 	
-	public static ShortMap add(ShortMap map1, ShortMap map2, int startX, int startY, int endX, int endY)
+	public static HeightMap add(HeightMap map1, HeightMap map2, int startX, int startY, int endX, int endY)
 	{
-		return add(new ShortMap[] {map1, map2}, 2, startX,startY,endX,endY);
+		return add(new HeightMap[] {map1, map2}, 2, startX,startY,endX,endY);
 	}
 	
 	/**
 	 * @param maps the maps to add (must be same size) 
 	 * @return The sum of the maps (will be clamped between 1 and 0)
 	 */
-	public static ShortMap add(ShortMap[] maps, int num, int startX, int startY, int endX, int endY)
+	public static HeightMap add(HeightMap[] maps, int num, int startX, int startY, int endX, int endY)
 	{
 		short[][][] sourceMaps = new short[num][0][0];
 		
@@ -362,7 +362,7 @@ public class WorldUtils {
 				newMap[x][y] = (short)OtherUtils.clamp(sum, Short.MIN_VALUE, Short.MAX_VALUE);
  			}
 		}
-		return new ShortMap(newMap);
+		return new HeightMap(newMap);
 	}
 
 	/**
@@ -371,7 +371,7 @@ public class WorldUtils {
 	 * @param weights the weights of each map (Should all add up to 1, with each individual weight being in between 1 and 0)
 	 * @return The average of the maps
 	 */
-	public static ShortMap weightedAverage(ShortMap[] maps, double[] weights, int num, int startX, int startY, int endX, int endY)
+	public static HeightMap weightedAverage(HeightMap[] maps, double[] weights, int num, int startX, int startY, int endX, int endY)
 	{
 		for(int i = 0; i < weights.length; i++)
 		{
@@ -383,9 +383,9 @@ public class WorldUtils {
 	
 	
 	
-	public static ShortMap blur(ShortMap map, int radius, int startX, int startY, int endX, int endY)
+	public static HeightMap blur(HeightMap map, int radius, int startX, int startY, int endX, int endY)
 	{
-		return new ShortMap(blurImage(map.getImage().getSubimage(startX, startY, endX-startX, endY-startY), radius));
+		return new HeightMap(blurImage(map.getImage().getSubimage(startX, startY, endX-startX, endY-startY), radius));
 	}
 	
 	private static BufferedImage blurImage(BufferedImage image, int radius) {

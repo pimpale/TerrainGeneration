@@ -60,7 +60,7 @@ package deprecatedButIStillWantToKeep;
 //						(ysize/digestysize)*y,
 //						Noise1,Noise2,Noise3
 //						);*/
-//				short height = ShortMap.DoubleToShort(Math.random());
+//				short height = HeightMap.DoubleToShort(Math.random());
 //				map[x][y] = height;
 //				//	System.out.println(System.nanoTime() - startTime);
 //			}
@@ -100,7 +100,7 @@ package deprecatedButIStillWantToKeep;
 //		{
 //			for(int y = 0; y < map[0].length; y++)
 //			{
-//				int val = (int)(255*ShortMap.ShortToDouble(map[x][y]));
+//				int val = (int)(255*HeightMap.ShortToDouble(map[x][y]));
 //				c = new Color(val,val,val);
 //				for(int x1 = 0; x1 < size; x1++)
 //				{	
@@ -129,7 +129,7 @@ package deprecatedButIStillWantToKeep;
 //		short[][] map = makeContinentDigestArray(xsize, ysize, seed);
 //		int xsizem = map.length;
 //		int ysizem = map[0].length;
-//		ShortMap srt = new ShortMap(map);
+//		HeightMap srt = new HeightMap(map);
 //		srt = srt.blur(0);
 //		map = srt.getMap();
 //		draw(1,map);
@@ -139,7 +139,7 @@ package deprecatedButIStillWantToKeep;
 //		//we make an array that tells to which point water will flow
 //		byte[][][] flowstowhere = new byte[xsizem][ysizem][2];
 //		//Then we fill holes and tell the water where to go
-//		final int slevel = ShortMap.DoubleToShort(sealevel);
+//		final int slevel = HeightMap.DoubleToShort(sealevel);
 //		int plevel = (slevel-4000);
 //		byte[][] exploremap = new byte[xsizem][ysizem];//explored, tells what has been touched, and what not
 //		byte[][] replacementmap = new byte[xsizem][ysizem];//
@@ -185,7 +185,7 @@ package deprecatedButIStillWantToKeep;
 //								if(map[rx][ry] < plevel)
 //								{
 //									replacementmap[rx][ry] = 1;
-//										float v = (float)(ShortMap.ShortToDouble((short)plevel)*8);
+//										float v = (float)(HeightMap.ShortToDouble((short)plevel)*8);
 //										Color c = Color.getHSBColor(v, 1, 0.5f);
 //										Main.g2d.setPaint(c);
 //										Main.g2d.fillRect(rx, ry, 1, 1);
@@ -212,13 +212,13 @@ package deprecatedButIStillWantToKeep;
 //				}
 //			}
 //		}
-//		ShortMap b = new ShortMap(map);
+//		HeightMap b = new HeightMap(map);
 //		map = b.getMap();
 //		for(int x = 0; x < map.length; x++)
 //		{
 //			for(int y = 0; y < map[0].length; y++)
 //			{	short h = map[x][y];
-//					short val = (short) (255*ShortMap.ShortToDouble(h));
+//					short val = (short) (255*HeightMap.ShortToDouble(h));
 //					if(h < slevel)
 //					{
 //						val = 0;
@@ -229,7 +229,7 @@ package deprecatedButIStillWantToKeep;
 //		}
 //		draw(cmap);	
 //		kill();
-//		new ShortMap(map).Export("./WorldSave/Elevation.png");
+//		new HeightMap(map).Export("./WorldSave/Elevation.png");
 //		Screen.wind();
 //		
 //		
@@ -372,7 +372,7 @@ package deprecatedButIStillWantToKeep;
 //				short h = map[x][y];
 //				short hval = //(short)(1+ Math.min(254,rivScore[x][y]/20));
 //
-//						(short) (255*ShortMap.ShortToDouble(h)); 
+//						(short) (255*HeightMap.ShortToDouble(h)); 
 //				if(h < slevel)
 //				{
 //					hval = 0;
@@ -408,12 +408,12 @@ package deprecatedButIStillWantToKeep;
 //		Color[][] colormap = new Color[xsizem][ysizem];
 //		
 //		/*Temperature.getTemperature(map, seed, sealevel);
-//		ShortMap rmap = new ShortMap("./WorldSave/Temperature.png");
+//		HeightMap rmap = new HeightMap("./WorldSave/Temperature.png");
 //		for(int x = 0; x < xsizem; x++)
 //		{
 //			for(int y = 0; y < ysizem; y++)
 //			{
-//				if(map[x][y] > ShortMap.DoubleToShort(sealevel))
+//				if(map[x][y] > HeightMap.DoubleToShort(sealevel))
 //				{
 //					if(rmap.get(x, y) > 20)
 //					{
@@ -453,34 +453,34 @@ package deprecatedButIStillWantToKeep;
 //		draw(colormap);
 //		//*/
 //		//*
-//		ShortMap rmap = new ShortMap("./WorldSave/RainMap.png");
+//		HeightMap rmap = new HeightMap("./WorldSave/RainMap.png");
 //		for(int x = 0; x < xsizem; x++)
 //		{
 //			for(int y = 0; y < ysizem; y++)
 //			{
-//				if(map[x][y] > ShortMap.DoubleToShort(sealevel))
+//				if(map[x][y] > HeightMap.DoubleToShort(sealevel))
 //				{
-//					if(ShortMap.ShortToDouble(rmap.get(x, y)) > 0.6)
+//					if(HeightMap.ShortToDouble(rmap.get(x, y)) > 0.6)
 //					{
 //						colormap[x][y] = Color.green.darker().darker();
 //					}
-//					else if(ShortMap.ShortToDouble(rmap.get(x, y)) > 0.5)
+//					else if(HeightMap.ShortToDouble(rmap.get(x, y)) > 0.5)
 //					{
 //						colormap[x][y] = Color.green;
 //					}
-//					else if(ShortMap.ShortToDouble(rmap.get(x, y)) > 0.4)
+//					else if(HeightMap.ShortToDouble(rmap.get(x, y)) > 0.4)
 //					{
 //						colormap[x][y] = Color.green.brighter().brighter();
 //					}
-//					else if(ShortMap.ShortToDouble(rmap.get(x, y)) > 0.3)
+//					else if(HeightMap.ShortToDouble(rmap.get(x, y)) > 0.3)
 //					{
 //						colormap[x][y] = new Color(255,255,0);
 //					}
-//					else if(ShortMap.ShortToDouble(rmap.get(x, y)) > 0.2)
+//					else if(HeightMap.ShortToDouble(rmap.get(x, y)) > 0.2)
 //					{
 //						colormap[x][y] = new Color(255,255,0).brighter();
 //					}
-//					else if(ShortMap.ShortToDouble(rmap.get(x, y)) > 0.1)
+//					else if(HeightMap.ShortToDouble(rmap.get(x, y)) > 0.1)
 //					{
 //						colormap[x][y] = new Color(200,200,200);
 //					}

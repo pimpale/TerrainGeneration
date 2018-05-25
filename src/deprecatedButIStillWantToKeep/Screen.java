@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import worldUtils.OtherUtils;
-import worldUtils.ShortMap;
+import worldUtils.HeightMap;
 import worldUtils.WorldUtils;
 
 import java.awt.image.BufferedImage;
@@ -70,8 +70,8 @@ public class Screen
 				}		
 			}
 		}
-		ShortMap xm = new ShortMap(xvec);
-		ShortMap ym = new ShortMap(yvec);
+		HeightMap xm = new HeightMap(xvec);
+		HeightMap ym = new HeightMap(yvec);
 		String s = "./Resources/Templates/2PoleContinental/";
 		xm = WorldUtils.blur(xm, 8, 0,0,xSize,ySize);
 		try {
@@ -104,15 +104,15 @@ public class Screen
 		
 		Rectangle r = new Rectangle();
 		
-		ShortMap hmap = new ShortMap("./WorldSave/Elevation.png");
+		HeightMap hmap = new HeightMap("./WorldSave/Elevation.png");
 		xSize = hmap.getXSize();
 		ySize = hmap.getYSize();
 		gravXvector = new double[xSize][ySize];
 		gravYvector = new double[xSize][ySize];
 		rain = new double[xSize][ySize];
 		String s = "./Resources/Templates/2PoleContinental/";
-		ShortMap hx = new ShortMap(s+"WindX.png");
-		ShortMap hy = new ShortMap(s+"WindY.png");
+		HeightMap hx = new HeightMap(s+"WindX.png");
+		HeightMap hy = new HeightMap(s+"WindY.png");
 		hx = hx.scale(xSize, ySize);
 		hy = hy.scale(xSize, ySize);
 		for(int x = 0; x < xSize; x ++)
@@ -181,8 +181,8 @@ public class Screen
 		}
 		executor.shutdown();  
 		while (!executor.isTerminated()) {}  
-		ShortMap wxm = new ShortMap(xSize, ySize);
-		ShortMap wym = new ShortMap(xSize, ySize);
+		HeightMap wxm = new HeightMap(xSize, ySize);
+		HeightMap wym = new HeightMap(xSize, ySize);
 		double maxval = WindShortToDouble((short)(Short.MAX_VALUE-1));
 		double minval = WindShortToDouble((short)(Short.MIN_VALUE+1));
 		double xwind;
@@ -218,9 +218,9 @@ public class Screen
 	static int timer = 0;
 	public static int run()
 	{
-		ShortMap hmap = new ShortMap("./WorldSave/Elevation.png");
-		ShortMap wxm  = new ShortMap("./WorldSave/WindX.png");
-		ShortMap wym  = new ShortMap("./WorldSave/WindY.png");
+		HeightMap hmap = new HeightMap("./WorldSave/Elevation.png");
+		HeightMap wxm  = new HeightMap("./WorldSave/WindX.png");
+		HeightMap wym  = new HeightMap("./WorldSave/WindY.png");
 
 		xSize = hmap.getXSize();
 		ySize = hmap.getYSize();
@@ -350,7 +350,7 @@ public class Screen
 						rainmap[x][y] = OtherUtils.doubleToShort(val);
 					}
 				}
-				ShortMap m = new ShortMap(rainmap);
+				HeightMap m = new HeightMap(rainmap);
 				System.out.println("ok... plz wait");
 				m = WorldUtils.blur(m, 16,0,0,xSize,ySize);
 				m.Export("./WorldSave/RainMap.png");

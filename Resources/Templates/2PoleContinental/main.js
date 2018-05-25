@@ -22,8 +22,8 @@ var CellularReturnType = Java.type("fastnoise.FastNoise$CellularReturnType");
 
 var WorldUtils = Java.type("worldUtils.WorldUtils");
 var OtherUtils = Java.type("worldUtils.OtherUtils");
-var ShortMap = Java.type("worldUtils.ShortMap");
-var ShortMap_Array = Java.type("worldUtils.ShortMap[]");
+var ShortMap = Java.type("worldUtils.HeightMap");
+var ShortMap_Array = Java.type("worldUtils.HeightMap[]");
 
 function getHeightMap(seed, xSize, ySize) {
 	//set up the noise
