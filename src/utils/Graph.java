@@ -27,7 +27,7 @@ public class Graph {
       this.edges = new HashMap<Integer, Edge>();
        
       for(Vertex v: vertices){
-          this.vertices.put(v.getLabel(), v);
+          this.vertices.put(v.getLabel().toString(), v);
       }
        
   }
@@ -146,7 +146,7 @@ public class Graph {
       }
        
        
-      vertices.put(vertex.getLabel(), vertex);
+      vertices.put(vertex.getLabel().toString(), vertex);
       return true;
   }
    

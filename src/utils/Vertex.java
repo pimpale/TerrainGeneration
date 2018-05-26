@@ -2,12 +2,12 @@ package utils;
 import java.util.ArrayList;
 public class Vertex {
   private ArrayList<Edge> neighborhood;
-  private String label;
+  private Object label;
    
   /**
    * @param label The unique label associated with this Vertex
    */
-  public Vertex(String label){
+  public Vertex(Object label){
       this.label = label;
       this.neighborhood = new ArrayList<Edge>();
   }
@@ -76,12 +76,15 @@ public class Vertex {
    
   /**
    *
-   * @return String The label of this Vertex
+   * @return Object The label of this Vertex
    */
-  public String getLabel(){
+  public Object getLabel(){
       return this.label;
   }
    
+  public void setLabel(Object o) {
+	  this.label = o;
+  }
    
   /**
    *

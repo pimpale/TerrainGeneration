@@ -21,7 +21,7 @@ public class Edge implements Comparable<Edge> {
    * @param weight The weight of this Edge
    */
   public Edge(Vertex one, Vertex two, int weight){
-      this.one = (one.getLabel().compareTo(two.getLabel()) <= 0) ? one : two;
+      this.one = (one.getLabel().toString().compareTo(two.getLabel().toString()) <= 0) ? one : two;
       this.two = (this.one == one) ? two : one;
       this.weight = weight;
   }
@@ -102,7 +102,7 @@ public class Edge implements Comparable<Edge> {
    * @return int The hash code for this Edge
    */
   public int hashCode(){
-      return (one.getLabel() + two.getLabel()).hashCode();
+      return (one.getLabel().toString() + two.getLabel().toString()).hashCode();
   }
    
   /**
