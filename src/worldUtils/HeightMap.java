@@ -7,13 +7,15 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
 public class HeightMap {
 	private final int xSize;
 	private final int ySize;
-	private final short[][] map;
+	private final double[][] map;
 	public int getXSize()
 	{
 		return xSize;
@@ -24,7 +26,7 @@ public class HeightMap {
 		return ySize;
 	}
 
-	public HeightMap(short[][] newmap)
+	public HeightMap(double[][] newmap)
 	{
 		map  = newmap;
 		xSize = map.length;
@@ -35,14 +37,7 @@ public class HeightMap {
 	{
 		xSize = xsize;
 		ySize = ysize;
-		map = new short[xSize][ySize];
-	}
-
-	public HeightMap(BufferedImage img)
-	{
-		map = getValues(img);
-		xSize = map.length;
-		ySize = map[0].length;
+		map = new double[xSize][ySize];
 	}
 
 	public HeightMap(String filelocation)
@@ -60,31 +55,36 @@ public class HeightMap {
 		ySize = map[0].length;
 	}
 
-	public short[][] getMap()
+	public HeightMap(Stream<Height> stream, int xsize, int ysize)
+	{
+		xSize = xsize;
+		ySize = ysize;
+		map = new double[xSize][ySize];
+		
+		Height[] heights = (Height[]) stream.toArray();
+		
+		for(Height h : heights)
+		{
+			map[h.x][h.y] = h.val;
+		}
+		
+	}
+	
+	public double[][] getMap()
 	{
 		return map;
 	}
 
-	public short get(int x, int y)
+	public double get(int x, int y)
 	{
 		return map[x][y];
 	}
 
-	public void set(int x, int y, short val)
+	public void set(int x, int y, double val)
 	{
 		map[x][y] = val;
 	}
 
-	private static BufferedImage scale(BufferedImage imageToScale, int dWidth, int dHeight) {
-		BufferedImage scaledImage = null;
-		if (imageToScale != null) {
-			scaledImage = new BufferedImage(dWidth, dHeight, imageToScale.getType());
-			Graphics2D graphics2D = scaledImage.createGraphics();
-			graphics2D.drawImage(imageToScale, 0, 0, dWidth, dHeight, null);
-			graphics2D.dispose();
-		}
-		return scaledImage;
-	}
 	
 	public HeightMap clone()
 	{
@@ -122,49 +122,24 @@ public class HeightMap {
 		}
 	}
 
-	public void toHeightStream()
+	public Stream<Height> toHeightStream()
 	{
-		
-	}
-
-	public static BufferedImage getImage(short[][] map)
-	{
-		int xSize = map.length;
-		int ySize = map[0].length;
-		
-		BufferedImage img = new BufferedImage(xSize,ySize, BufferedImage.TYPE_USHORT_GRAY);
-		WritableRaster r = img.getRaster();
-		for (int y = 0; y < ySize; y++) 
+		Stream<Height> sst = Stream.empty();
+		for(int x = 0; x < xSize; x++)
 		{
-			for (int x = 0; x < xSize; x++) 
+			for(int y = 0; y < xSize; y++)
 			{
-				r.setPixel(x, y, new int[] {map[x][y] + Short.MIN_VALUE});
+				Stream.concat(sst, Stream.of(new Height(x,y,map[x][y])));
 			}
 		}
-		return img;
+		return sst;
 	}
-
+	
 	public BufferedImage getImage()
 	{
 		return getImage(map);
 	}
 
-	public static short[][] getValues(BufferedImage img)
-	{
-		int ySize = img.getWidth();
-		int xSize = img.getHeight();
-		DataBufferUShort buffer = (DataBufferUShort) img.getRaster().getDataBuffer(); 
-		// Safe cast as img is of type TYPE_USHORT_GRAY 
-		short[][] map = new short[xSize][ySize];
-		for (int y = 0; y < ySize; y++) 
-		{
-			for (int x = 0; x < xSize; x++) 
-			{
-				map[x][y] = (short)(Short.MAX_VALUE+buffer.getElem(x + y * xSize));
-			}
-		}
-		return map;
-	}
 	
 }
 

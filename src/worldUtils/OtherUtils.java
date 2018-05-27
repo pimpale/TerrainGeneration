@@ -1,5 +1,8 @@
 package worldUtils;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
 public class OtherUtils {
 	public static short BytesToShort(byte b1, byte b2)
 	{
@@ -43,4 +46,34 @@ public class OtherUtils {
 	{
 		return Math.max(min, Math.min(max, val));
 	}
+	
+	
+	public static BufferedImage scale(BufferedImage imageToScale, int dWidth, int dHeight) {
+		BufferedImage scaledImage = null;
+		if (imageToScale != null) {
+			scaledImage = new BufferedImage(dWidth, dHeight, imageToScale.getType());
+			Graphics2D graphics2D = scaledImage.createGraphics();
+			graphics2D.drawImage(imageToScale, 0, 0, dWidth, dHeight, null);
+			graphics2D.dispose();
+		}
+		return scaledImage;
+	}
+	
+	public static short[][] getValues(BufferedImage img)
+	{
+		int ySize = img.getWidth();
+		int xSize = img.getHeight();
+		DataBufferUShort buffer = (DataBufferUShort) img.getRaster().getDataBuffer(); 
+		// Safe cast as img is of type TYPE_USHORT_GRAY 
+		short[][] map = new short[xSize][ySize];
+		for (int y = 0; y < ySize; y++) 
+		{
+			for (int x = 0; x < xSize; x++) 
+			{
+				map[x][y] = (short)(Short.MAX_VALUE+buffer.getElem(x + y * xSize));
+			}
+		}
+		return map;
+	}
+	
 }
