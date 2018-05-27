@@ -13,6 +13,11 @@ public class OtherUtils {
 		b[0] = (byte) ((s >> 8) & 0xff);
 		return b;
 	}
+	
+	public static long arrayOffset(int x, int y, int xsize, int ysize)
+	{
+		return (x*ysize + y);
+	}
 
 	//65536 is the numbers in a short
 	public static short doubleToShort(double d)

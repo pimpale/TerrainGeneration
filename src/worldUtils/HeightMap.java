@@ -122,17 +122,10 @@ public class HeightMap {
 		}
 	}
 
-	public static long Offset(int x, int y, int xsize, int ysize)
+	public void toHeightStream()
 	{
-		return (x*ysize + y);
+		
 	}
-
-	public static long ByteOffset(int x, int y, int xsize, int ysize)
-	{
-		return Offset(x,y,xsize,ysize)*2;
-	}
-
-	
 
 	public static BufferedImage getImage(short[][] map)
 	{
@@ -173,4 +166,14 @@ public class HeightMap {
 		return map;
 	}
 	
+}
+
+class Height {
+	public final int x ,y;
+	public double val;
+	public Height(int x, int y, double val) {
+		this.x = x;
+		this.y = y;
+		this.val = val;
+	}
 }

@@ -4,13 +4,10 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import utils.Edge;
-import utils.Graph;
 
 public class HeightGraph {
 	
 	private Hashtable<Point,Double> vertexes;
-	private ArrayList<Edge> edges;
 	
 	private boolean meshIntact;
 	
@@ -18,7 +15,6 @@ public class HeightGraph {
 	public HeightGraph()
 	{
 		vertexes = new Hashtable<Point,Double>();
-		edges = new ArrayList<Edge>();
 		meshIntact = true;
 	}
 	
