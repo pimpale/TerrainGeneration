@@ -1,18 +1,14 @@
 package worldUtils;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferUShort;
 import java.awt.image.WritableRaster;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
-public class HeightMap implements Cloneable {
+public class HeightMap implements Cloneable, Serializable
+{
 	private final int xSize;
 	private final int ySize;
 	private final double[][] map;
@@ -40,21 +36,6 @@ public class HeightMap implements Cloneable {
 		map = new double[xSize][ySize];
 	}
 
-	public HeightMap(String filelocation)
-	{
-		BufferedImage img = null;
-		try {
-			File f = new File(filelocation);
-			img = ImageIO.read(f);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		map = getValues(img);
-		xSize = map.length;
-		ySize = map[0].length;
-	}
-
 	public HeightMap(Stream<Height> stream, int xsize, int ysize)
 	{
 		xSize = xsize;
@@ -65,7 +46,7 @@ public class HeightMap implements Cloneable {
 		
 		for(Height h : heights)
 		{
-			map[h.x][h.y] = h.val;
+			map[h.x][h.y] += h.val;
 		}
 		
 	}
@@ -99,19 +80,6 @@ public class HeightMap implements Cloneable {
 		return new HeightMap(newMap);
 	}
 	
-	public void export(String filelocation)
-	{
-		try
-		{
-			File f = new File(filelocation);
-			ImageIO.write(getImage(), "png", f);
-		}
-		catch(Throwable e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 	public Stream<Height> toHeightStream()
 	{
 		Stream<Height> sst = Stream.empty();
