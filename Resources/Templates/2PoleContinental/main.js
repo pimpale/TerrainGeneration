@@ -1,6 +1,6 @@
 //Fundamental stuff
-var xSize = 1024;//window.getWidth();
-var ySize = 1024;//window.getHeight();
+var xSize = window.getWidth();
+var ySize = window.getHeight();
 var graphics = window.getGraphics();
 //declare classes
 var Math = Java.type("java.lang.Math");
@@ -23,6 +23,7 @@ var CellularReturnType = Java.type("fastnoise.FastNoise$CellularReturnType");
 var WorldUtils = Java.type("worldUtils.WorldUtils");
 var OtherUtils = Java.type("worldUtils.OtherUtils");
 var HeightMap = Java.type("worldUtils.HeightMap");
+var Height = Java.type("worldUtils.Height");
 
 function getHeightMap(seed, xSize, ySize) {
 	//set up the noise
@@ -34,14 +35,13 @@ function getHeightMap(seed, xSize, ySize) {
 	var rscale = Math.pow(2, -2);
 	return new HeightMap(new HeightMap(xSize, ySize)
 		.stream()
-		.map(function(height) {
-			//print(height);
-			var x = height.x;
-			var y = height.y;
+		.map(function(h) {
+			var x = h.getX();
+			var y = h.getY();
 			var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),1)-0.3;
-			var rheight = rnoise.GetNoise(x*rscale,y*rscale)*1.35;
-			height.val = mheight*0.3 + rheight*0.7;
-			return height;
+			var rheight = rnoise.GetNoise(x*rscale,y*rscale);
+			h.setVal(mheight*0.3 + rheight*0.7);
+			return h;
 		}));
 }
 

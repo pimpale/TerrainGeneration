@@ -27,7 +27,7 @@ public class OtherUtils {
 	//65536 is the numbers in a short
 	public static short doubleToShort(double d)
 	{
-		return (short)(d*Short.MAX_VALUE);
+		return (short)(d*(Short.MAX_VALUE-Short.MIN_VALUE));
 	}
 
 	public static double shortToDouble(short s)

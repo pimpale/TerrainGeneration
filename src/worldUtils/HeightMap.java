@@ -43,8 +43,8 @@ public class HeightMap implements Cloneable, Serializable
 		int yMax = 0;
 		for(Object h : heights)
 		{
-			xMax = Math.max(xMax, ((Height)h).x);
-			yMax = Math.max(yMax, ((Height)h).y);
+			xMax = Math.max(xMax, ((Height)h).getX());
+			yMax = Math.max(yMax, ((Height)h).getY());
 		}
 		xSize = xMax+1;
 		ySize = yMax+1;
@@ -77,7 +77,7 @@ public class HeightMap implements Cloneable, Serializable
 	
 	public void setHeight(Height h)
 	{
-		map[h.x][h.y] = h.val;
+		map[h.getX()][h.getY()] = h.getVal();
 	}
 	
 	public HeightMap clone()
