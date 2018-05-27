@@ -8,6 +8,7 @@ import worldBuilder.JavaScript;
 import worldBuilder.TextFile;
 import worldBuilder.WorldScript;
 import worldBuilder.WorldTemplate;
+import worldUtils.HeightMap;
 
 @SuppressWarnings("serial")
 public class Main
@@ -31,6 +32,7 @@ public class Main
 				new JavaScript(new TextFile(wt.getMain()).getContent(), System.out),
 				canvas, 
 				(int)(Math.random()*200));
+		
 		
 		ws.run();
 	}

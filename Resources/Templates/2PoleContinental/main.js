@@ -22,8 +22,7 @@ var CellularReturnType = Java.type("fastnoise.FastNoise$CellularReturnType");
 
 var WorldUtils = Java.type("worldUtils.WorldUtils");
 var OtherUtils = Java.type("worldUtils.OtherUtils");
-var ShortMap = Java.type("worldUtils.HeightMap");
-var ShortMap_Array = Java.type("worldUtils.HeightMap[]");
+var HeightMap = Java.type("worldUtils.HeightMap");
 
 function getHeightMap(seed, xSize, ySize) {
 	//set up the noise
@@ -33,18 +32,17 @@ function getHeightMap(seed, xSize, ySize) {
 	//set scales for continent noise and mountain noise
 	var mscale = Math.pow(2, -1);
 	var rscale = Math.pow(2, -2);
-	var map = new ShortMap(xSize, ySize);
-	var shortmap = map.getMap();
-	
-	for(var y = 0; y < ySize; y++) {
-		for(var x = 0; x < xSize; x++) {
+	return new HeightMap(new HeightMap(xSize, ySize)
+		.stream()
+		.map(function(height) {
+			//print(height);
+			var x = height.x;
+			var y = height.y;
 			var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),1)-0.3;
 			var rheight = rnoise.GetNoise(x*rscale,y*rscale)*1.35;
-			var noiseSum = mheight*0.3 + rheight*0.7;
-			shortmap[x][y] = OtherUtils.doubleToShort(noiseSum);
-		}
-	}
-	return map;
+			height.val = mheight*0.3 + rheight*0.7;
+			return height;
+		}));
 }
 
 //returns surface temperature. Temperature shall be measured from (Short.MIN_VALUE, Short.MAX_VALUE) (0 = freezing) (1000 = boiling) (Temp at sea level The actual temperature is determined by simple subtraction) 
@@ -54,14 +52,14 @@ function getTemperatureMap(seed, xSize, ySize) {
 	noise.SetNoiseType(NoiseType.SimplexFractal);
 	noise.SetFractalOctaves(10);
 	var scale = Math.pow(2,-3);
-	var map = new ShortMap(xSize, ySize);
-	var shortmap = map.getMap();
+	var map = new HeightMap(xSize, ySize);
+	var doublemap = map.getMap();
 	
 	for(var y = 0; y < ySize; y++) {
 		var percentDown = y/ySize;
 		for(var x = 0; x < xSize; x++) {
-			var celsius = 60*(Math.sin(Math.PI*percentDown)-0.5) + 40*noise.GetNoise(x*scale,y*scale);
-			shortmap[x][y] = OtherUtils.celsiusToTemperature(celsius);
+			//celsius
+			doublemap[x][y] = 60*(Math.sin(Math.PI*percentDown)-0.5) + 40*noise.GetNoise(x*scale,y*scale);
 		}
 	}
 	return map;
@@ -70,7 +68,12 @@ function getTemperatureMap(seed, xSize, ySize) {
 
 //var tmap = getTemperatureMap(seed,xSize,ySize);
 var smap = getHeightMap(seed,xSize,ySize);
-smap = WorldUtils.threshold(smap, 0, 0,0,xSize,ySize);
+smap = new HeightMap(smap.stream().map(function(height) {
+			if(height.val < 0) {
+				height.val = 0;
+			}
+			return height;
+		}));
 
 var img = smap.getImage();
 while(true)

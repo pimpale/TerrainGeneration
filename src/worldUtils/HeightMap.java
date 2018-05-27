@@ -1,17 +1,17 @@
 package worldUtils;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.File;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.stream.Stream;
-
-import javax.imageio.ImageIO;
 
 public class HeightMap implements Cloneable, Serializable
 {
+	private static final long serialVersionUID = 1L;
 	private final int xSize;
 	private final int ySize;
 	private final double[][] map;
+
 	public int getXSize()
 	{
 		return xSize;
@@ -36,19 +36,23 @@ public class HeightMap implements Cloneable, Serializable
 		map = new double[xSize][ySize];
 	}
 
-	public HeightMap(Stream<Height> stream, int xsize, int ysize)
+	public HeightMap(Stream<Height> stream)
 	{
-		xSize = xsize;
-		ySize = ysize;
-		map = new double[xSize][ySize];
-		
-		Height[] heights = (Height[]) stream.toArray();
-		
-		for(Height h : heights)
+		Object[] heights = stream.toArray();
+		int xMax = 0;
+		int yMax = 0;
+		for(Object h : heights)
 		{
-			map[h.x][h.y] += h.val;
+			xMax = Math.max(xMax, ((Height)h).x);
+			yMax = Math.max(yMax, ((Height)h).y);
 		}
-		
+		xSize = xMax+1;
+		ySize = yMax+1;
+		map = new double[xSize][ySize];
+		for(Object h: heights)
+		{
+			setHeight((Height)h);
+		}
 	}
 	
 	public double[][] getMap()
@@ -60,12 +64,21 @@ public class HeightMap implements Cloneable, Serializable
 	{
 		return map[x][y];
 	}
-
+	
 	public void set(int x, int y, double val)
 	{
 		map[x][y] = val;
 	}
 
+	public Height getHeight(int x, int y)
+	{
+		return new Height(x,y,map[x][y]);
+	}
+	
+	public void setHeight(Height h)
+	{
+		map[h.x][h.y] = h.val;
+	}
 	
 	public HeightMap clone()
 	{
@@ -80,17 +93,17 @@ public class HeightMap implements Cloneable, Serializable
 		return new HeightMap(newMap);
 	}
 	
-	public Stream<Height> toHeightStream()
+	public Stream<Height> stream()
 	{
-		Stream<Height> sst = Stream.empty();
+		Height[] heightArr = new Height[xSize*ySize];
 		for(int x = 0; x < xSize; x++)
 		{
-			for(int y = 0; y < xSize; y++)
+			for(int y = 0; y < ySize; y++)
 			{
-				Stream.concat(sst, Stream.of(new Height(x,y,map[x][y])));
+				heightArr[x*ySize + y] = getHeight(x,y);
 			}
 		}
-		return sst;
+		return Arrays.stream(heightArr);
 	}
 	
 	public BufferedImage getImage()
@@ -102,26 +115,10 @@ public class HeightMap implements Cloneable, Serializable
 		{
 			for(int y = 0; y < ySize; y++)
 			{
-				r[1] = OtherUtils.doubleToShort(map[x][y]);
+				r[0] = OtherUtils.doubleToShort(map[x][y]);
 				raster.setPixel(x, y, r);
 			}
 		}
 		return bimg;
-	}
-}
-
-class Height implements Cloneable {
-	public final int x ,y;
-	public double val;
-	public Height(int x, int y, double val) {
-		this.x = x;
-		this.y = y;
-		this.val = val;
-	}
-	
-	@Override
-	public Height clone()
-	{
-		return new Height(x,y,val);
 	}
 }
