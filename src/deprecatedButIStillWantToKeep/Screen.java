@@ -75,8 +75,8 @@ public class Screen
 		String s = "./Resources/Templates/2PoleContinental/";
 		xm = WorldUtils.blur(xm, 8, 0,0,xSize,ySize);
 		try {
-			xm.Export(s+"WindX.png");
-			ym.Export(s+"WindY.png");
+			xm.export(s+"WindX.png");
+			ym.export(s+"WindY.png");
 			System.out.println("nice");
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
@@ -204,8 +204,8 @@ public class Screen
 			}
 		}
 		wxm = WorldUtils.blur(wxm, 16,0,0,xSize,ySize);
-		wxm.Export("./WorldSave/WindX.png");
-		wym.Export("./WorldSave/WindY.png");
+		wxm.export("./WorldSave/WindX.png");
+		wym.export("./WorldSave/WindY.png");
 		System.out.println("wind generated");
 		run();
 	}
@@ -353,7 +353,7 @@ public class Screen
 				HeightMap m = new HeightMap(rainmap);
 				System.out.println("ok... plz wait");
 				m = WorldUtils.blur(m, 16,0,0,xSize,ySize);
-				m.Export("./WorldSave/RainMap.png");
+				m.export("./WorldSave/RainMap.png");
 				System.out.println("rain complete");
 				return 0;
 			}

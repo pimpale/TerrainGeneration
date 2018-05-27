@@ -2,6 +2,7 @@ package worldUtils;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferUShort;
 
 public class OtherUtils {
 	public static short BytesToShort(byte b1, byte b2)
@@ -17,7 +18,7 @@ public class OtherUtils {
 		return b;
 	}
 	
-	public static long arrayOffset(int x, int y, int xsize, int ysize)
+	public static int arrayOffset(int x, int y, int xsize, int ysize)
 	{
 		return (x*ysize + y);
 	}

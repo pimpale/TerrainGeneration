@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
-public class HeightMap {
+public class HeightMap implements Cloneable {
 	private final int xSize;
 	private final int ySize;
 	private final double[][] map;
@@ -88,7 +88,7 @@ public class HeightMap {
 	
 	public HeightMap clone()
 	{
-		short[][] newMap = new short[xSize][ySize];
+		double[][] newMap = new double[xSize][ySize];
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -99,17 +99,7 @@ public class HeightMap {
 		return new HeightMap(newMap);
 	}
 	
-	public HeightMap scale(int newxsize, int newysize)
-	{
-		return new HeightMap(getValues(scale(getImage(), newxsize, newysize)));
-	}
-
-	public HeightMap truncate(int x, int y, int width, int height)
-	{
-		return new HeightMap(getImage().getSubimage(x, y, width, height));
-	}
-
-	public void Export(String filelocation)
+	public void export(String filelocation)
 	{
 		try
 		{
@@ -137,18 +127,33 @@ public class HeightMap {
 	
 	public BufferedImage getImage()
 	{
-		return getImage(map);
+		BufferedImage bimg = new BufferedImage(xSize, ySize, BufferedImage.TYPE_USHORT_GRAY);
+		WritableRaster raster = bimg.getRaster();
+		int[] r = new int[1];
+		for(int x = 0; x < xSize; x++) 
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				r[1] = OtherUtils.doubleToShort(map[x][y]);
+				raster.setPixel(x, y, r);
+			}
+		}
+		return bimg;
 	}
-
-	
 }
 
-class Height {
+class Height implements Cloneable {
 	public final int x ,y;
 	public double val;
 	public Height(int x, int y, double val) {
 		this.x = x;
 		this.y = y;
 		this.val = val;
+	}
+	
+	@Override
+	public Height clone()
+	{
+		return new Height(x,y,val);
 	}
 }
