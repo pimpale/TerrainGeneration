@@ -26,9 +26,9 @@ public class WorldUtils {
 		//Then we fill holes and tell the water where to go
 		double plevel = seaLevel;
 		byte[][] exploremap = new byte[xSize][ySize];//explored, tells what has been touched, and what not
-		byte[][] replacementmap = new byte[xSize][ySize];//
+		byte[][] explorereplacementmap = new byte[xSize][ySize];//
 
-		//wang & liu algorithm. Starts from any spots that are Under 9000 XDDDDD
+		//wang & liu algorithm. starts from edges and spots underneath the sea 
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -37,7 +37,7 @@ public class WorldUtils {
 				if(map[x][y] < plevel || x==0 ||y==0 ||x==xSize-1||y==ySize-1)
  				{
 					exploremap[x][y] = 1;
-					replacementmap[x][y] = 1;
+					explorereplacementmap[x][y] = 1;
 				}
 			}
 		}
@@ -52,8 +52,7 @@ public class WorldUtils {
 		{
 			keepgoing = false;
 			//raise the water level
-			plevel+=0.001;
-			System.out.println(plevel);
+			plevel+=0.0005;
 			for(int x = 0; x < xSize; x++)
 			{
 				for(int y = 0; y < ySize; y++)
@@ -61,6 +60,7 @@ public class WorldUtils {
 					if(exploremap[x][y] == 1)//if this is an discovered, but unexplored tile
 					{
 						keepgoing = true;//keep going
+						freeedges = 0;//the number of free edges at this particular point
 						for(int i = 0; i < pointlist.size(); i++)
 						{
 							int x1 = pointlist.get(i).x, y1 = pointlist.get(i).y;
@@ -73,14 +73,14 @@ public class WorldUtils {
 								{
 									g2d.setPaint(Color.getHSBColor((float)plevel, 0.7f, 0.7f));
 									g2d.fillRect(rx, ry, 1, 1);
-									replacementmap[rx][ry] = 1;
+									explorereplacementmap[rx][ry] = 1;
 									//The water flows from rx to x
 								}
 							}
 						}
-						if(freeedges < 3)
+						if(freeedges < 1)
 						{
-							replacementmap[x][y] = 2;
+							explorereplacementmap[x][y] = 2;
 							map[x][y] = plevel;
 						}
 					}
@@ -90,7 +90,7 @@ public class WorldUtils {
 			{
 				for(int y = 0; y < map[0].length; y++)
 				{
-					exploremap[x][y] = replacementmap[x][y];
+					exploremap[x][y] = explorereplacementmap[x][y];
 				}
 			}
 		}
