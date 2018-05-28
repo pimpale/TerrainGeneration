@@ -1,6 +1,8 @@
 package worldUtils;
 
-import java.awt.image.BufferedImage;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -8,45 +10,91 @@ import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 import fastnoise.FastNoise;
+import tester.Main;
 
 
 public class WorldUtils {
-	/*//inshortform
-	public static double makecontintentmappoint(int x, int y,
-			OpenSimplexNoise rangeNoise, OpenSimplexNoise shapeNoise, OpenSimplexNoise baseNoise)
+	
+	public static HeightMap fillBasins(HeightMap h, double seaLevel)
 	{
-		double scale = 2<<19;
-		double imountrangesize = 2;
-		double ifisrangesize = 3;
-		double icontinentsize = 1;
-		float mheight = (float) (rangeNoise.eval(((float)x)/(scale/imountrangesize),
-				((float)y)/(scale/imountrangesize)));
-		mheight = 1f-Math.abs(mheight);
-		float fheight = (float) (rangeNoise.eval(((float)(x))/(scale/ifisrangesize),//same scale, different area
-				((float)y)/(scale/ifisrangesize)));
-		fheight =  -(float)Math.pow(1 - Math.abs(fheight),3);
-		float cheight = (float) (shapeNoise.eval(((float)x)/(scale/icontinentsize),
-				((float)y)/(scale/icontinentsize)));
-		cheight = (cheight+1)/2;
-		double[][] LayerWeightsAndiSizes = new double[][]	{
-			{2<<2  , 2<<3  , 2<<4   , 2<<5   , 2<<6   , 2<<7   , 2<<8   ,},	
-			{17    , 15    , 13     , 10     , 7      , 5      , 3      ,}
-		};
-		float layerweighttotal = 0;
-		float rheight = 0;
-		for(int i = 0; i < LayerWeightsAndiSizes[0].length; i++)
+		
+		Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
+		final int xSize = h.getXSize();
+		final int ySize = h.getYSize();
+		double[][] map = h.getMap();
+		
+		//Then we fill holes and tell the water where to go
+		double plevel = seaLevel;
+		byte[][] exploremap = new byte[xSize][ySize];//explored, tells what has been touched, and what not
+		byte[][] replacementmap = new byte[xSize][ySize];//
+
+		//wang & liu algorithm. Starts from any spots that are Under 9000 XDDDDD
+		for(int x = 0; x < xSize; x++)
 		{
-			double layersize = scale/LayerWeightsAndiSizes[0][i];
-			double layerweight =LayerWeightsAndiSizes[1][i];			
-			double lheight = (baseNoise.eval(x/layersize,  (y/layersize)));
-			lheight *= layerweight;
-			rheight += lheight;
-			layerweighttotal += LayerWeightsAndiSizes[1][i];
+			for(int y = 0; y < ySize; y++)
+			{
+				//the points to start exploring from
+				if(map[x][y] < plevel || x==0 ||y==0 ||x==xSize-1||y==ySize-1)
+ 				{
+					exploremap[x][y] = 1;
+					replacementmap[x][y] = 1;
+				}
+			}
 		}
-		rheight = rheight/layerweighttotal;
-		rheight = (rheight+1)/2;
-		float height = mheight*0.2f  + fheight*0.1f + rheight*0.45f + cheight*0.45f;
-		//height = fheight;
-		return Math.pow(height, 4);
-	}*/
+		
+		boolean keepgoing = true;
+		ArrayList<Point> pointlist = new ArrayList<Point>(4);
+		pointlist.add(new Point(-1,0));pointlist.add(new Point(1,0));
+		pointlist.add(new Point(0,-1));pointlist.add(new Point(0,1));
+
+		byte freeedges = 0;//unexplored edges of this tile.
+		while(keepgoing)
+		{
+			keepgoing = false;
+			//raise the water level
+			plevel+=0.001;
+			System.out.println(plevel);
+			for(int x = 0; x < xSize; x++)
+			{
+				for(int y = 0; y < ySize; y++)
+				{
+					if(exploremap[x][y] == 1)//if this is an discovered, but unexplored tile
+					{
+						keepgoing = true;//keep going
+						for(int i = 0; i < pointlist.size(); i++)
+						{
+							int x1 = pointlist.get(i).x, y1 = pointlist.get(i).y;
+							int rx=x+x1, ry=y+y1; 
+							//if it is within range and x or y is zero and the selected target is unexplored
+							if(rx>=0&&ry>=0&&rx<xSize&&ry<ySize&&exploremap[rx][ry] == 0)
+							{
+								freeedges+=1;
+								if(map[rx][ry] < plevel)
+								{
+									g2d.setPaint(Color.getHSBColor((float)plevel, 0.7f, 0.7f));
+									g2d.fillRect(rx, ry, 1, 1);
+									replacementmap[rx][ry] = 1;
+									//The water flows from rx to x
+								}
+							}
+						}
+						if(freeedges < 3)
+						{
+							replacementmap[x][y] = 2;
+							map[x][y] = plevel;
+						}
+					}
+				}
+			}
+			for(int x = 0; x < map.length; x++)
+			{
+				for(int y = 0; y < map[0].length; y++)
+				{
+					exploremap[x][y] = replacementmap[x][y];
+				}
+			}
+		}
+		HeightMap b = new HeightMap(map);
+		return b;
+	}
 }

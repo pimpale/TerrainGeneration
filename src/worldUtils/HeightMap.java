@@ -115,7 +115,7 @@ public class HeightMap implements Cloneable, Serializable
 		{
 			for(int y = 0; y < ySize; y++)
 			{
-				r[0] = OtherUtils.doubleToShort(map[x][y]);
+				r[0] = (short)(map[x][y]*Short.MAX_VALUE + Short.MIN_VALUE);
 				raster.setPixel(x, y, r);
 			}
 		}

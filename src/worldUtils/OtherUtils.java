@@ -24,26 +24,17 @@ public class OtherUtils {
 		return (x*ysize + y);
 	}
 
-	//65536 is the numbers in a short
+	public static final int SHORT_RANGE=Short.MAX_VALUE-Short.MIN_VALUE;
 	public static short doubleToShort(double d)
 	{
-		return (short)(d*(Short.MAX_VALUE-Short.MIN_VALUE));
+		return (short)(d*SHORT_RANGE);
 	}
 
 	public static double shortToDouble(short s)
 	{
-		return ((double)s)/Short.MAX_VALUE;
+		return ((double)s)/SHORT_RANGE;
 	}
 	
-	public static short celsiusToTemperature(double c)
-	{
-		return (short)(c*500);
-	}
-	
-	public static double temperatureToCelsius(short s)
-	{
-		return ((double)s)*(10.0);
-	}
 	public static double clamp(double val, double min, double max)
 	{
 		return Math.max(min, Math.min(max, val));

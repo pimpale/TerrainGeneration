@@ -13,6 +13,8 @@ import worldUtils.HeightMap;
 @SuppressWarnings("serial")
 public class Main
 {
+	public static Canvas c;
+	
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
@@ -24,6 +26,8 @@ public class Main
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(canvas);
 		frame.setVisible(true);
+		
+		c = canvas;
 		
 		PrintStream p = new PrintStream(System.out);
 		
