@@ -2,6 +2,7 @@ package worldUtils;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -29,6 +30,11 @@ public class HeightMap implements Cloneable, Serializable
 		ySize = map[0].length;
 	}
 
+	public HeightMap(ArrayList<Height> heights)
+	{
+		this(heights.toArray());
+	}
+	
 	public HeightMap(int xsize, int ysize)
 	{
 		xSize = xsize;
@@ -36,9 +42,8 @@ public class HeightMap implements Cloneable, Serializable
 		map = new double[xSize][ySize];
 	}
 
-	public HeightMap(Stream<Height> stream)
+	public HeightMap(Object[] heights)
 	{
-		Object[] heights = stream.toArray();
 		int xMax = 0;
 		int yMax = 0;
 		for(Object h : heights)
@@ -53,6 +58,11 @@ public class HeightMap implements Cloneable, Serializable
 		{
 			setHeight((Height)h);
 		}
+	}
+	
+	public HeightMap(Stream<Height> stream)
+	{
+		this(stream.toArray());
 	}
 	
 	public double[][] getMap()

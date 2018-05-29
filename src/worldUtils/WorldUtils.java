@@ -22,7 +22,6 @@ public class WorldUtils {
 		final int xSize = h.getXSize();
 		final int ySize = h.getYSize();
 		double[][] map = h.getMap();
-		
 		//Then we fill holes and tell the water where to go
 		double plevel = seaLevel;
 		byte[][] exploremap = new byte[xSize][ySize];//explored, tells what has been touched, and what not
@@ -42,7 +41,8 @@ public class WorldUtils {
 			}
 		}
 		
-		boolean keepgoing = true;
+		boolean keepgoing = true;//whether to keep going or not
+		boolean saturated = true;//if there are still places to be explored at this water level
 		ArrayList<Point> pointlist = new ArrayList<Point>(4);
 		pointlist.add(new Point(-1,0));pointlist.add(new Point(1,0));
 		pointlist.add(new Point(0,-1));pointlist.add(new Point(0,1));
@@ -52,7 +52,11 @@ public class WorldUtils {
 		{
 			keepgoing = false;
 			//raise the water level
-			plevel+=0.0005;
+			if(saturated)
+			{
+				plevel+=0.001;
+			}
+			saturated = true;
 			for(int x = 0; x < xSize; x++)
 			{
 				for(int y = 0; y < ySize; y++)
@@ -61,20 +65,29 @@ public class WorldUtils {
 					{
 						keepgoing = true;//keep going
 						freeedges = 0;//the number of free edges at this particular point
-						for(int i = 0; i < pointlist.size(); i++)
+						for(int x1 = -1; x1 <= 1; x1++)
 						{
-							int x1 = pointlist.get(i).x, y1 = pointlist.get(i).y;
-							int rx=x+x1, ry=y+y1; 
-							//if it is within range and x or y is zero and the selected target is unexplored
-							if(rx>=0&&ry>=0&&rx<xSize&&ry<ySize&&exploremap[rx][ry] == 0)
+							for(int y1 = -1; y1 <= 1; y1++)
 							{
-								freeedges+=1;
-								if(map[rx][ry] < plevel)
+
+								if(x1 == 0 || y1 == 0)
 								{
-									g2d.setPaint(Color.getHSBColor((float)plevel, 0.7f, 0.7f));
-									g2d.fillRect(rx, ry, 1, 1);
-									explorereplacementmap[rx][ry] = 1;
-									//The water flows from rx to x
+
+									int rx=x+x1, ry=y+y1; 
+
+									//if it is within range and x or y is zero and the selected target is unexplored
+									if(rx>=0&&ry>=0&&rx<xSize&&ry<ySize&&exploremap[rx][ry] == 0)
+									{
+										freeedges+=1;
+										if(map[rx][ry] < plevel)
+										{
+											g2d.setPaint(Color.getHSBColor((float)plevel, 0.7f, 0.7f));
+											g2d.fillRect(rx, ry, 1, 1);
+											explorereplacementmap[rx][ry] = 1;
+											saturated = false;
+											//The water flows from rx to x
+										}
+									}
 								}
 							}
 						}

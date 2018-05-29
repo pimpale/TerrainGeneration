@@ -13,8 +13,8 @@ import worldUtils.HeightMap;
 @SuppressWarnings("serial")
 public class Main
 {
+
 	public static Canvas c;
-	
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
