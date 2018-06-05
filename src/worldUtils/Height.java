@@ -2,7 +2,7 @@ package worldUtils;
 
 import java.io.Serializable;
 
-public class Height implements Cloneable, Serializable {
+public class Height implements Cloneable, Serializable, Comparable<Height> {
 	private static final long serialVersionUID = 3242L;
 	private final int x ,y;
 	private double val;
@@ -51,5 +51,17 @@ public class Height implements Cloneable, Serializable {
 	public Height clone()
 	{
 		return new Height(x,y,val);
+	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		Height h = (Height)other;
+		return (h.getX()==getX()) && (h.getY()==getY()) && (h.getVal()==getVal());
+	}
+
+	@Override
+	public int compareTo(Height arg0) {
+		return (int) Math.rint(getVal() - arg0.getVal());
 	}
 }

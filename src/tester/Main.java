@@ -35,8 +35,7 @@ public class Main
 		WorldScript ws = new WorldScript(
 				new JavaScript(new TextFile(wt.getMain()).getContent(), System.out),
 				canvas, 
-				(int)(Math.random()*200));
-		
+				1);
 		
 		ws.run();
 	}

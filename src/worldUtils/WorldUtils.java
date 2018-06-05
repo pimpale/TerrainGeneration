@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
@@ -14,6 +15,35 @@ import tester.Main;
 
 
 public class WorldUtils {
+	
+	
+	
+	
+	public static HeightMap fillBasins2(HeightMap h, double seaLevel)
+	{
+		Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
+		final int xSize = h.getXSize();
+		final int ySize = h.getYSize();
+		double[][] map = h.getMap();
+		
+		PriorityQueue<Height> pq = new PriorityQueue<>(xSize*ySize);
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				//the points to start exploring from
+				if(map[x][y] < seaLevel || x==0 ||y==0 ||x==xSize-1||y==ySize-1)
+ 				{
+					pq.add(h.getHeight(x, y));
+				}
+			}
+		}
+		
+		
+		return h;
+	}
+	
+	
 	
 	public static HeightMap fillBasins(HeightMap h, double seaLevel)
 	{
@@ -43,18 +73,14 @@ public class WorldUtils {
 		
 		boolean keepgoing = true;//whether to keep going or not
 		boolean saturated = true;//if there are still places to be explored at this water level
-		ArrayList<Point> pointlist = new ArrayList<Point>(4);
-		pointlist.add(new Point(-1,0));pointlist.add(new Point(1,0));
-		pointlist.add(new Point(0,-1));pointlist.add(new Point(0,1));
-
 		byte freeedges = 0;//unexplored edges of this tile.
 		while(keepgoing)
 		{
 			keepgoing = false;
 			//raise the water level
-			if(saturated)
+			//if(saturated)
 			{
-				plevel+=0.001;
+				plevel+=0.0001;
 			}
 			saturated = true;
 			for(int x = 0; x < xSize; x++)
@@ -110,4 +136,7 @@ public class WorldUtils {
 		HeightMap b = new HeightMap(map);
 		return b;
 	}
+	
+	
+	
 }
