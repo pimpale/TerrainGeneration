@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
@@ -40,6 +43,78 @@ public class WorldUtils {
 		return h;
 	}
 	
+	
+	public static ValueMap2D convolve(Kernel k, ValueMap2D v)
+	{
+		int vXSize = v.getXSize();
+		int vYSize = v.getYSize();
+		
+		double[][] vIn = v.getMap();
+		
+		double[][] vOut = new double[vXSize][vYSize];
+		
+		
+		int threadCount = OtherUtils.getThreadCount();
+		ExecutorService exec = Executors.newFixedThreadPool(threadCount);
+		
+		//For multithreading split the ValueMap2D up into as many parts as there are threads and have a thread operate on the rows
+		class ConvolveRows implements Runnable {
+			private final Kernel k;
+			private final double[][] vin;
+			private final double[][] vout;
+			private final int startX;
+			private final int endX;
+			public ConvolveRows(Kernel k, double[][] vin, double[][] vout, int startX, int endX) {
+				this.k = k;
+				this.vin = vin;
+				this.vout = vout;
+				this.startX = startX;
+				this.endX = endX;
+			}
+			
+			@Override
+			public void run()
+			{
+				int kernelElementNum = k.getElementNum();
+				for(int x = startX; x <= endX; x++)
+				{
+					for(int y = 0; y < vYSize; y++)
+					{
+						double accumulator = 0;
+				
+						double[][] kArr = k.kernel;
+						//iterate through all elements in the kernel
+						for(int kx = 0; kx < k.xSize; kx++)
+						{
+							for(int ky = 0; ky < k.ySize; ky++)
+							{
+								//relative vx and vy, for reference to the value map
+								//we clamp the values between 0 and the max size of the array to be convolved
+								int rvx = (int) OtherUtils.clamp(x + kx + k.xOff, 0, vXSize);
+								int rvy = (int) OtherUtils.clamp(y + ky + k.yOff, 0, vYSize);
+								//multiply the corresponding pixel value to the n
+								accumulator += vin[rvx][rvy]*kArr[kx][ky];
+							}
+						}
+						//normalize pixel
+						vout[x][y] = accumulator/kernelElementNum;
+					}
+				}
+			}
+		}
+		
+	
+		for(int i = 0; i < threadCount; i++)
+		{
+			exec.execute(new ConvolveRows(k, vIn, vOut, vX/ ));
+		}
+		
+	}
+
+	public static ValueMap2D inciseFlow(ValueMap2D height, ValueMap2D flow, double thresholdFlow, double radius1)
+	{
+		return null; //TODO
+	}
 	
 	public static ValueMap2D fillBasins(ValueMap2D h, double seaLevel)
 	{

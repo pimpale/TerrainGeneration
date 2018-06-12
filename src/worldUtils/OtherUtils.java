@@ -6,6 +6,13 @@ import java.awt.image.DataBufferUShort;
 import java.util.ArrayList;
 
 public class OtherUtils {
+	
+	public static int getThreadCount()
+	{
+		return Runtime.getRuntime().availableProcessors();
+	}
+	
+	
 	public static short BytesToShort(byte b1, byte b2)
 	{
 		return (short) (b1*255 + b2);
