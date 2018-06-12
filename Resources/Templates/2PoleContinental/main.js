@@ -47,16 +47,6 @@ function getHeightMap(seed, xSize, ySize) {
 			})
 			.collect(HeightMap.getCollector());
 	map = WorldUtils.fillBasins(map,-0.2);
-	map = map
-			.stream()
-			.map(function(h) {
-				var x = h.getX();
-				var y = h.getY();
-				h.setVal(h.getVal() + 0.1*rnoise.GetNoise(x,y));
-				return h;
-			})
-			.collect(HeightMap.getCollector());
-	map = WorldUtils.fillBasins(map,-0.2);
 	return map;
 }
 
@@ -66,7 +56,6 @@ function getTemperatureMap(seed, xSize, ySize) {
 	noise.SetNoiseType(NoiseType.SimplexFractal);
 	noise.SetFractalOctaves(10);
 	var scale = Math.pow(2,-3);
-	var map = new HeightMap(xSize, ySize);
 	return new HeightMap(xSize,ySize)
 				.stream()
 				.map(function(h) {
