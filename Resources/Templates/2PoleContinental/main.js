@@ -25,12 +25,11 @@ var WorldUtils = Java.type("worldUtils.WorldUtils");
 var OtherUtils = Java.type("worldUtils.OtherUtils");
 var HeightMap = Java.type("worldUtils.HeightMap");
 var Height = Java.type("worldUtils.Height");
-var HeightMapCollector = Java.type("worldUtils.HeightMapCollector");
 
 function getHeightMap(seed, xSize, ySize) {
 	//set up the noise
 	var mnoise = new FastNoise(seed+1); mnoise.SetNoiseType(NoiseType.SimplexFractal); mnoise.SetFractalOctaves(8); mnoise.SetFrequency(Math.pow(2,-2));
-	var cnoise = new FastNoise(seed+2); cnoise.SetNoiseType(NoiseType.SimplexFractal); cnoise.SetFractalOctaves(8); mnoise.SetFrequency(Math.pow(2,-5))
+	var cnoise = new FastNoise(seed+2); cnoise.SetNoiseType(NoiseType.SimplexFractal); cnoise.SetFractalOctaves(8); cnoise.SetFrequency(Math.pow(2,-5))
 	var rnoise = new FastNoise(seed+3); rnoise.SetNoiseType(NoiseType.SimplexFractal); rnoise.SetFractalOctaves(8); rnoise.SetFrequency(Math.pow(2,-4))
 	//set scales for continent noise and mountain noise
 
@@ -46,7 +45,7 @@ function getHeightMap(seed, xSize, ySize) {
 				h.setVal(OtherUtils.clamp(fheight,-1,1));
 				return h;
 			})
-			.collect(new HeightMapCollector());
+			.collect(HeightMap.getCollector());
 	map = WorldUtils.fillBasins(map,-0.2);
 	map = map
 			.stream()
@@ -56,7 +55,7 @@ function getHeightMap(seed, xSize, ySize) {
 				h.setVal(h.getVal() + 0.1*rnoise.GetNoise(x,y));
 				return h;
 			})
-			.collect(new HeightMapCollector());
+			.collect(HeightMap.getCollector());
 	map = WorldUtils.fillBasins(map,-0.2);
 	return map;
 }
@@ -77,7 +76,7 @@ function getTemperatureMap(seed, xSize, ySize) {
 					h.setVal(latTemp + randTemp)
 					return h;
 				})
-				.collector(new HeightMapCollector());
+				.collector(HeightMap.getCollector());
 			
 }
 
