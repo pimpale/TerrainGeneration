@@ -2,20 +2,20 @@ package worldUtils;
 
 import java.io.Serializable;
 
-public class Height implements Cloneable, Serializable, Comparable<Height> {
+public class Value2D implements Cloneable, Serializable, Comparable<Value2D> {
 	private static final long serialVersionUID = 3242L;
 	private final int x ,y;
 	private double val;
 	
 	
-	public Height(Height h)
+	public Value2D(Value2D h)
 	{
 		this.x = h.getX();
 		this.y = h.getY();
 		this.val = h.getVal();
 	}
 	
-	public Height(int x, int y, double val) {
+	public Value2D(int x, int y, double val) {
 		this.x = x;
 		this.y = y;
 		this.val = val;
@@ -48,20 +48,20 @@ public class Height implements Cloneable, Serializable, Comparable<Height> {
 	}
 	
 	@Override
-	public Height clone()
+	public Value2D clone()
 	{
-		return new Height(x,y,val);
+		return new Value2D(x,y,val);
 	}
 	
 	@Override
 	public boolean equals(Object other)
 	{
-		Height h = (Height)other;
+		Value2D h = (Value2D)other;
 		return (h.getX()==getX()) && (h.getY()==getY()) && (h.getVal()==getVal());
 	}
 
 	@Override
-	public int compareTo(Height arg0) {
+	public int compareTo(Value2D arg0) {
 		return (int) Math.rint(getVal() - arg0.getVal());
 	}
 }

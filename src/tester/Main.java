@@ -8,7 +8,7 @@ import worldBuilder.JavaScript;
 import worldBuilder.TextFile;
 import worldBuilder.WorldScript;
 import worldBuilder.WorldTemplate;
-import worldUtils.HeightMap;
+import worldUtils.ValueMap2D;
 
 @SuppressWarnings("serial")
 public class Main

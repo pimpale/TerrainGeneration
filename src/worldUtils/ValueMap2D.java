@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public class HeightMap implements Cloneable, Serializable
+public class ValueMap2D implements Cloneable, Serializable
 {
 	private static final long serialVersionUID = 1L;
 	private final int xSize;
@@ -30,44 +30,44 @@ public class HeightMap implements Cloneable, Serializable
 		return ySize;
 	}
 
-	public HeightMap(double[][] newmap)
+	public ValueMap2D(double[][] newmap)
 	{
 		map  = newmap;
 		xSize = map.length;
 		ySize = map[0].length;
 	}
 
-	public HeightMap(ArrayList<Height> heights)
+	public ValueMap2D(ArrayList<Value2D> heights)
 	{
 		this(heights.toArray());
 	}
 	
-	public HeightMap(int xsize, int ysize)
+	public ValueMap2D(int xsize, int ysize)
 	{
 		xSize = xsize;
 		ySize = ysize;
 		map = new double[xSize][ySize];
 	}
 
-	public HeightMap(Object[] heights)
+	public ValueMap2D(Object[] heights)
 	{
 		int xMax = 0;
 		int yMax = 0;
 		for(Object h : heights)
 		{
-			xMax = Math.max(xMax, ((Height)h).getX());
-			yMax = Math.max(yMax, ((Height)h).getY());
+			xMax = Math.max(xMax, ((Value2D)h).getX());
+			yMax = Math.max(yMax, ((Value2D)h).getY());
 		}
 		xSize = xMax+1;
 		ySize = yMax+1;
 		map = new double[xSize][ySize];
 		for(Object h: heights)
 		{
-			setHeight((Height)h);
+			setHeight((Value2D)h);
 		}
 	}
 	
-	public HeightMap(Stream<Height> stream)
+	public ValueMap2D(Stream<Value2D> stream)
 	{
 		this(stream.toArray());
 	}
@@ -87,17 +87,17 @@ public class HeightMap implements Cloneable, Serializable
 		map[x][y] = val;
 	}
 
-	public Height getHeight(int x, int y)
+	public Value2D getHeight(int x, int y)
 	{
-		return new Height(x,y,map[x][y]);
+		return new Value2D(x,y,map[x][y]);
 	}
 	
-	public void setHeight(Height h)
+	public void setHeight(Value2D h)
 	{
 		map[h.getX()][h.getY()] = h.getVal();
 	}
 	
-	public HeightMap clone()
+	public ValueMap2D clone()
 	{
 		double[][] newMap = new double[xSize][ySize];
 		for(int x = 0; x < xSize; x++)
@@ -107,12 +107,12 @@ public class HeightMap implements Cloneable, Serializable
 				newMap[x][y] = map[x][y];
 			}
 		}
-		return new HeightMap(newMap);
+		return new ValueMap2D(newMap);
 	}
 	
-	public Stream<Height> stream()
+	public Stream<Value2D> stream()
 	{
-		Height[] heightArr = new Height[xSize*ySize];
+		Value2D[] heightArr = new Value2D[xSize*ySize];
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -145,10 +145,10 @@ public class HeightMap implements Cloneable, Serializable
 	}
 }
 
-class HeightMapCollector implements Collector<Height, ArrayList<Height>, HeightMap>{
+class HeightMapCollector implements Collector<Value2D, ArrayList<Value2D>, ValueMap2D>{
 
 	@Override
-	public BiConsumer<ArrayList<Height>, Height> accumulator() {
+	public BiConsumer<ArrayList<Value2D>, Value2D> accumulator() {
 		return (list, h) -> list.add(h);
 	}
 
@@ -158,7 +158,7 @@ class HeightMapCollector implements Collector<Height, ArrayList<Height>, HeightM
 	}
 
 	@Override
-	public BinaryOperator<ArrayList<Height>> combiner() {
+	public BinaryOperator<ArrayList<Value2D>> combiner() {
 		return (list1, list2) -> {
 			list1.addAll(list2);
 			return list1;
@@ -166,13 +166,13 @@ class HeightMapCollector implements Collector<Height, ArrayList<Height>, HeightM
 	}
 
 	@Override
-	public Function<ArrayList<Height>, HeightMap> finisher() {
-		return (list) -> new HeightMap(list);
+	public Function<ArrayList<Value2D>, ValueMap2D> finisher() {
+		return (list) -> new ValueMap2D(list);
 	}
 
 	@Override
-	public Supplier<ArrayList<Height>> supplier() {
-		return () -> new ArrayList<Height>();
+	public Supplier<ArrayList<Value2D>> supplier() {
+		return () -> new ArrayList<Value2D>();
 	}
 
 

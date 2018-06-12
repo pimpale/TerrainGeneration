@@ -16,17 +16,14 @@ import tester.Main;
 
 public class WorldUtils {
 	
-	
-	
-	
-	public static HeightMap fillBasins2(HeightMap h, double seaLevel)
+	public static ValueMap2D fillBasins2(ValueMap2D h, double seaLevel)
 	{
 		Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
 		final int xSize = h.getXSize();
 		final int ySize = h.getYSize();
 		double[][] map = h.getMap();
 		
-		PriorityQueue<Height> pq = new PriorityQueue<>(xSize*ySize);
+		PriorityQueue<Value2D> pq = new PriorityQueue<>(xSize*ySize);
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -44,11 +41,10 @@ public class WorldUtils {
 	}
 	
 	
-	
-	public static HeightMap fillBasins(HeightMap h, double seaLevel)
+	public static ValueMap2D fillBasins(ValueMap2D h, double seaLevel)
 	{
 		
-		Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
+		//Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
 		final int xSize = h.getXSize();
 		final int ySize = h.getYSize();
 		double[][] map = h.getMap();
@@ -69,8 +65,7 @@ public class WorldUtils {
 					explorereplacementmap[x][y] = 1;
 				}
 			}
-		}
-		
+		}	
 		boolean keepgoing = true;//whether to keep going or not
 		boolean saturated = true;//if there are still places to be explored at this water level
 		byte freeedges = 0;//unexplored edges of this tile.
@@ -107,8 +102,8 @@ public class WorldUtils {
 										freeedges+=1;
 										if(map[rx][ry] < plevel)
 										{
-											g2d.setPaint(Color.getHSBColor((float)plevel, 0.7f, 0.7f));
-											g2d.fillRect(rx, ry, 1, 1);
+											//g2d.setPaint(Color.getHSBColor((float)plevel, 0.7f, 0.7f));
+											//g2d.fillRect(rx, ry, 1, 1);
 											explorereplacementmap[rx][ry] = 1;
 											saturated = false;
 											//The water flows from rx to x
@@ -133,10 +128,7 @@ public class WorldUtils {
 				}
 			}
 		}
-		HeightMap b = new HeightMap(map);
+		ValueMap2D b = new ValueMap2D(map);
 		return b;
 	}
-	
-	
-	
 }

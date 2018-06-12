@@ -23,17 +23,17 @@ var CellularReturnType = Java.type("fastnoise.FastNoise$CellularReturnType");
 
 var WorldUtils = Java.type("worldUtils.WorldUtils");
 var OtherUtils = Java.type("worldUtils.OtherUtils");
-var HeightMap = Java.type("worldUtils.HeightMap");
-var Height = Java.type("worldUtils.Height");
+var ValueMap2D = Java.type("worldUtils.ValueMap2D");
+var Value2D = Java.type("worldUtils.Value2D");
 
-function getHeightMap(seed, xSize, ySize) {
+function getHeight(seed, xSize, ySize) {
 	//set up the noise
 	var mnoise = new FastNoise(seed+1); mnoise.SetNoiseType(NoiseType.SimplexFractal); mnoise.SetFractalOctaves(8); mnoise.SetFrequency(Math.pow(2,-2));
 	var cnoise = new FastNoise(seed+2); cnoise.SetNoiseType(NoiseType.SimplexFractal); cnoise.SetFractalOctaves(8); cnoise.SetFrequency(Math.pow(2,-5))
 	var rnoise = new FastNoise(seed+3); rnoise.SetNoiseType(NoiseType.SimplexFractal); rnoise.SetFractalOctaves(8); rnoise.SetFrequency(Math.pow(2,-4))
 	//set scales for continent noise and mountain noise
 
-	var map = new HeightMap(xSize, ySize);
+	var map = new ValueMap2D(xSize, ySize);
 	map = map
 			.stream()
 			.map(function(h) {
@@ -45,7 +45,7 @@ function getHeightMap(seed, xSize, ySize) {
 				h.setVal(OtherUtils.clamp(fheight,-1,1));
 				return h;
 			})
-			.collect(HeightMap.getCollector());
+			.collect(ValueMap2D.getCollector());
 	map = WorldUtils.fillBasins(map,-0.2);
 	return map;
 }
@@ -56,7 +56,7 @@ function getTemperatureMap(seed, xSize, ySize) {
 	noise.SetNoiseType(NoiseType.SimplexFractal);
 	noise.SetFractalOctaves(10);
 	var scale = Math.pow(2,-3);
-	return new HeightMap(xSize,ySize)
+	return new ValueMap2D(xSize,ySize)
 				.stream()
 				.map(function(h) {
 					var percentDown = h.getY()/ySize;
@@ -65,14 +65,14 @@ function getTemperatureMap(seed, xSize, ySize) {
 					h.setVal(latTemp + randTemp)
 					return h;
 				})
-				.collector(HeightMap.getCollector());
+				.collector(ValueMap2D.getCollector());
 			
 }
 
 
 //var tmap = getTemperatureMap(seed,xSize,ySize);
-var smap = getHeightMap(seed,xSize,ySize);
-smap = new HeightMap(smap.stream().map(function(height) {
+var smap = getHeight(seed,xSize,ySize);
+smap = new ValueMap2D(smap.stream().map(function(height) {
 	if(height.val < 0) {
 		height.val = -1;
 	}
