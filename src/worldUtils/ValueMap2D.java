@@ -2,6 +2,7 @@ package worldUtils;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -13,12 +14,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public class ValueMap2D implements Cloneable, Serializable
+public class ValueMap2D<E> 
 {
 	private static final long serialVersionUID = 1L;
 	private final int xSize;
 	private final int ySize;
-	private final double[][] map;
+	private final E[][] map;
 
 	public int getXSize()
 	{
@@ -30,76 +31,79 @@ public class ValueMap2D implements Cloneable, Serializable
 		return ySize;
 	}
 
-	public ValueMap2D(double[][] newmap)
+	public ValueMap2D(E[][] newmap)
 	{
 		map  = newmap;
 		xSize = map.length;
 		ySize = map[0].length;
 	}
 
-	public ValueMap2D(ArrayList<Value2D> heights)
+	public ValueMap2D(ArrayList<Value2D<E>> heights)
 	{
 		this(heights.toArray());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ValueMap2D(int xsize, int ysize)
 	{
 		xSize = xsize;
 		ySize = ysize;
-		map = new double[xSize][ySize];
+		map = (E[][]) new Object[xsize][ysize];
 	}
 
+	@SuppressWarnings("unchecked")
 	public ValueMap2D(Object[] heights)
 	{
 		int xMax = 0;
 		int yMax = 0;
 		for(Object h : heights)
 		{
-			xMax = Math.max(xMax, ((Value2D)h).getX());
-			yMax = Math.max(yMax, ((Value2D)h).getY());
+			xMax = Math.max(xMax, ((Value2D<E>)h).getX());
+			yMax = Math.max(yMax, ((Value2D<E>)h).getY());
 		}
 		xSize = xMax+1;
 		ySize = yMax+1;
-		map = new double[xSize][ySize];
+		map = (E[][]) new Object[xSize][ySize];
 		for(Object h: heights)
 		{
-			setHeight((Value2D)h);
+			setHeight((Value2D<E>)h);
 		}
 	}
 	
-	public ValueMap2D(Stream<Value2D> stream)
+	public ValueMap2D(Stream<Value2D<E>> stream)
 	{
 		this(stream.toArray());
 	}
 	
-	public double[][] getMap()
+	public E[][] getMap()
 	{
 		return map;
 	}
 
-	public double get(int x, int y)
+	public E get(int x, int y)
 	{
 		return map[x][y];
 	}
 	
-	public void set(int x, int y, double val)
+	public void set(int x, int y, E val)
 	{
 		map[x][y] = val;
 	}
 
-	public Value2D getHeight(int x, int y)
+	public Value2D<E> getHeight(int x, int y)
 	{
-		return new Value2D(x,y,map[x][y]);
+		return new Value2D<E>(x,y,get(x,y));
 	}
 	
-	public void setHeight(Value2D h)
+	public void setHeight(Value2D<E> h)
 	{
 		map[h.getX()][h.getY()] = h.getVal();
 	}
 	
-	public ValueMap2D clone()
+	public ValueMap2D<E> clone()
 	{
-		double[][] newMap = new double[xSize][ySize];
+		@SuppressWarnings("unchecked")
+		E [][] newMap = (E[][])new Object[xSize][ySize];
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -107,12 +111,13 @@ public class ValueMap2D implements Cloneable, Serializable
 				newMap[x][y] = map[x][y];
 			}
 		}
-		return new ValueMap2D(newMap);
+		return new ValueMap2D<E>(newMap);
 	}
 	
-	public Stream<Value2D> stream()
+	@SuppressWarnings("unchecked")
+	public Stream<Value2D<E>> stream()
 	{
-		Value2D[] heightArr = new Value2D[xSize*ySize];
+		Value2D<E>[] heightArr = (Value2D<E>[]) new Object[xSize*ySize];
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -123,21 +128,6 @@ public class ValueMap2D implements Cloneable, Serializable
 		return Arrays.stream(heightArr);
 	}
 	
-	public BufferedImage getImage()
-	{
-		BufferedImage bimg = new BufferedImage(xSize, ySize, BufferedImage.TYPE_USHORT_GRAY);
-		WritableRaster raster = bimg.getRaster();
-		int[] r = new int[1];
-		for(int x = 0; x < xSize; x++) 
-		{
-			for(int y = 0; y < ySize; y++)
-			{
-				r[0] = (short)(map[x][y]*Short.MAX_VALUE + Short.MIN_VALUE);
-				raster.setPixel(x, y, r);
-			}
-		}
-		return bimg;
-	}
 	
 	public static HeightMapCollector getCollector()
 	{
@@ -145,10 +135,10 @@ public class ValueMap2D implements Cloneable, Serializable
 	}
 }
 
-class HeightMapCollector implements Collector<Value2D, ArrayList<Value2D>, ValueMap2D>{
+class HeightMapCollector<E> implements Collector<Value2D<E>, ArrayList<Value2D<E>>, ValueMap2D<E>>{
 
 	@Override
-	public BiConsumer<ArrayList<Value2D>, Value2D> accumulator() {
+	public BiConsumer<ArrayList<Value2D<E>>, Value2D<E>> accumulator() {
 		return (list, h) -> list.add(h);
 	}
 
@@ -158,7 +148,7 @@ class HeightMapCollector implements Collector<Value2D, ArrayList<Value2D>, Value
 	}
 
 	@Override
-	public BinaryOperator<ArrayList<Value2D>> combiner() {
+	public BinaryOperator<ArrayList<Value2D<E>>> combiner() {
 		return (list1, list2) -> {
 			list1.addAll(list2);
 			return list1;
@@ -166,13 +156,13 @@ class HeightMapCollector implements Collector<Value2D, ArrayList<Value2D>, Value
 	}
 
 	@Override
-	public Function<ArrayList<Value2D>, ValueMap2D> finisher() {
-		return (list) -> new ValueMap2D(list);
+	public Function<ArrayList<Value2D<E>>, ValueMap2D<E>> finisher() {
+		return (list) -> new ValueMap2D<E>(list);
 	}
 
 	@Override
-	public Supplier<ArrayList<Value2D>> supplier() {
-		return () -> new ArrayList<Value2D>();
+	public Supplier<ArrayList<Value2D<E>>> supplier() {
+		return () -> new ArrayList<Value2D<E>>();
 	}
 
 

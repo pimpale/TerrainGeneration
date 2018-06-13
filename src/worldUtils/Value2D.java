@@ -2,31 +2,31 @@ package worldUtils;
 
 import java.io.Serializable;
 
-public class Value2D implements Cloneable, Serializable, Comparable<Value2D> {
+public class Value2D<E> implements Cloneable, Serializable  {
 	private static final long serialVersionUID = 3242L;
 	private final int x ,y;
-	private double val;
+	private E val;
 	
 	
-	public Value2D(Value2D h)
+	public Value2D(Value2D<E> h)
 	{
 		this.x = h.getX();
 		this.y = h.getY();
 		this.val = h.getVal();
 	}
 	
-	public Value2D(int x, int y, double val) {
+	public Value2D(int x, int y, E val) {
 		this.x = x;
 		this.y = y;
 		this.val = val;
 	}
 	
-	public double getVal()
+	public E getVal()
 	{
 		return val;
 	}
 	
-	public void setVal(double val)
+	public void setVal(E val)
 	{
 		this.val = val;
 	}
@@ -48,20 +48,15 @@ public class Value2D implements Cloneable, Serializable, Comparable<Value2D> {
 	}
 	
 	@Override
-	public Value2D clone()
+	public Value2D<E> clone()
 	{
-		return new Value2D(x,y,val);
+		return new Value2D<E>(x,y,val);
 	}
 	
 	@Override
 	public boolean equals(Object other)
 	{
 		Value2D h = (Value2D)other;
-		return (h.getX()==getX()) && (h.getY()==getY()) && (h.getVal()==getVal());
-	}
-
-	@Override
-	public int compareTo(Value2D arg0) {
-		return (int) Math.rint(getVal() - arg0.getVal());
+		return (h.getX()==getX()) && (h.getY()==getY()) && (h.getVal().equals(getVal()));
 	}
 }

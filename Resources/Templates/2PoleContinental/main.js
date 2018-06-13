@@ -29,25 +29,44 @@ var Kernel = Java.type("worldUtils.Kernel");
 
 function getHeight(seed, xSize, ySize) {
 	//set up the noise
-	var mnoise = new FastNoise(seed+1); mnoise.SetNoiseType(NoiseType.SimplexFractal); mnoise.SetFractalOctaves(8); mnoise.SetFrequency(Math.pow(2,-2));
-	var cnoise = new FastNoise(seed+2); cnoise.SetNoiseType(NoiseType.SimplexFractal); cnoise.SetFractalOctaves(8); cnoise.SetFrequency(Math.pow(2,-5))
-	var rnoise = new FastNoise(seed+3); rnoise.SetNoiseType(NoiseType.SimplexFractal); rnoise.SetFractalOctaves(8); rnoise.SetFrequency(Math.pow(2,-4))
+	var mnoise = new FastNoise(seed+1); mnoise.SetNoiseType(NoiseType.SimplexFractal); 
+	var cnoise = new FastNoise(seed+2); cnoise.SetNoiseType(NoiseType.SimplexFractal); 
+	var rnoise = new FastNoise(seed+3); rnoise.SetNoiseType(NoiseType.SimplexFractal); 
 	//set scales for continent noise and mountain noise
 
+	var cscale = Math.pow(2, -2);
+	var mscale = Math.pow(2, -2);
+	
+	//weights and sizes for 
+	var sizes   = [Math.pow(2, -1), Math.pow(2,  0), Math.pow(2,  1), Math.pow(2,  2), Math.pow(2,  3), Math.pow(2,  4), Math.pow(2, 5)];
+	var weights = [17,              15,              13,              10,              7,               5,               3             ]; 
+	var weightsum = weights.reduce(function(a, b) { return a + b; }, 0);
+	
+	
 	var map = new ValueMap2D(xSize, ySize);
 	map = map
 			.stream()
 			.map(function(h) {
 				var x = h.getX();
 				var y = h.getY();
-				//var mheight = Math.pow(1-3*Math.abs(mnoise.GetNoise(x*0.05, y*0.05)),3);
-				var rheight = rnoise.GetNoise(x, y);
-				var fheight = rheight;
-				h.setVal(OtherUtils.clamp(fheight,-1,1));
+				var cheight = cnoise.GetNoise(x*cscale, y*cscale);
+				var mheight = Math.pow(1-2*Math.abs(mnoise.GetNoise(x*mscale, y*mscale)),3)-0.2;
+			
+				//fractal noise...
+				var rheight = 0;
+				for(var i = 0; i < sizes.length; i++) {
+					rnoise.SetSeed(seed+2+i);
+					rheight += weights[i]*rnoise.GetNoise(x*sizes[i], y*sizes[i]);
+				}
+				rheight = rheight/weightsum;
+				
+				
+				var noiseSum = mheight*0.3 + rheight*0.4 + cheight*0.3;
+				h.setVal(OtherUtils.clamp(noiseSum, -1, 1))	;
 				return h;
 			})
 			.collect(ValueMap2D.getCollector());
-	map = WorldUtils.fillBasins(map,-0.2);
+	//map = WorldUtils.fillBasins(map,-0.2);
 	return map;
 }
 
@@ -73,13 +92,14 @@ function getTemperatureMap(seed, xSize, ySize) {
 
 //var tmap = getTemperatureMap(seed,xSize,ySize);
 var smap = getHeight(seed,xSize,ySize);
-smap = new ValueMap2D(smap.stream().map(function(height) {
-	if(height.val < 0) {
-		height.val = -1;
-	}
-	return height;
-}));
-smap = WorldUtils.convolve(Kernel.getIdentity() )
+smap = WorldUtils.convolve(Kernel.GAUSSIAN3, smap);
+smap = smap.stream().map(function(height) {
+		if(height.val < 0) {
+			height.val = -1;
+		}
+		return height;
+		})
+	.collect(ValueMap2D.getCollector());
 var img = smap.getImage();
 while(true)
 {

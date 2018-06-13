@@ -3,6 +3,8 @@ package worldUtils;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
@@ -19,39 +21,16 @@ import tester.Main;
 
 public class WorldUtils {
 	
-	public static ValueMap2D fillBasins2(ValueMap2D h, double seaLevel)
-	{
-		Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
-		final int xSize = h.getXSize();
-		final int ySize = h.getYSize();
-		double[][] map = h.getMap();
-		
-		PriorityQueue<Value2D> pq = new PriorityQueue<>(xSize*ySize);
-		for(int x = 0; x < xSize; x++)
-		{
-			for(int y = 0; y < ySize; y++)
-			{
-				//the points to start exploring from
-				if(map[x][y] < seaLevel || x==0 ||y==0 ||x==xSize-1||y==ySize-1)
- 				{
-					pq.add(h.getHeight(x, y));
-				}
-			}
-		}
-		
-		
-		return h;
-	}
 	
 	
-	public static ValueMap2D convolve(Kernel k, ValueMap2D v)
+	public static ValueMap2D<Double> convolve(Kernel k, ValueMap2D<Double> v)
 	{
 		int vXSize = v.getXSize();
 		int vYSize = v.getYSize();
 		
-		double[][] vIn = v.getMap();
+		Double[][] vIn = v.getMap();
 		
-		double[][] vOut = new double[vXSize][vYSize];
+		Double[][] vOut = new Double[vXSize][vYSize];
 		
 		
 		int threadCount = OtherUtils.getThreadCount();
@@ -60,11 +39,11 @@ public class WorldUtils {
 		//For multithreading split the ValueMap2D up into as many parts as there are threads and have a thread operate on the rows
 		class ConvolveRows implements Runnable {
 			private final Kernel k;
-			private final double[][] vin;
-			private final double[][] vout;
+			private final Double[][] vin;
+			private final Double[][] vout;
 			private final int startX;
 			private final int endX;
-			public ConvolveRows(Kernel k, double[][] vin, double[][] vout, int startX, int endX) {
+			public ConvolveRows(Kernel k, Double[][] vin, Double[][] vout, int startX, int endX) {
 				this.k = k;
 				this.vin = vin;
 				this.vout = vout;
@@ -75,8 +54,7 @@ public class WorldUtils {
 			@Override
 			public void run()
 			{
-				int kernelElementNum = k.getElementNum();
-				for(int x = startX; x <= endX; x++)
+				for(int x = startX; x < endX; x++)
 				{
 					for(int y = 0; y < vYSize; y++)
 					{
@@ -90,14 +68,16 @@ public class WorldUtils {
 							{
 								//relative vx and vy, for reference to the value map
 								//we clamp the values between 0 and the max size of the array to be convolved
-								int rvx = (int) OtherUtils.clamp(x + kx + k.xOff, 0, vXSize);
-								int rvy = (int) OtherUtils.clamp(y + ky + k.yOff, 0, vYSize);
+								int rvx = (int) OtherUtils.clamp(x + kx - k.xOff, 0, vXSize-1);
+								int rvy = (int) OtherUtils.clamp(y + ky - k.yOff, 0, vYSize-1);
 								//multiply the corresponding pixel value to the n
+								//System.out.println(rvx + " "+ rvy);
 								accumulator += vin[rvx][rvy]*kArr[kx][ky];
 							}
 						}
 						//normalize pixel
-						vout[x][y] = accumulator/kernelElementNum;
+						vout[x][y] = accumulator;///kernelElementNum;
+						System.out.println(vout[x][y]);
 					}
 				}
 			}
@@ -108,21 +88,27 @@ public class WorldUtils {
 		{
 			exec.execute(new ConvolveRows(k, vIn, vOut, i*vXSize/threadCount, (i+1)*vXSize/threadCount));
 		}
-		return new ValueMap2D(vOut);
+		exec.shutdown();
+		while(!exec.isTerminated())
+		{
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return new ValueMap2D<Double>(vOut);
 	}
 
-	public static ValueMap2D inciseFlow(ValueMap2D height, ValueMap2D flow, double thresholdFlow, double radius1)
-	{
-		return null; //TODO
-	}
 	
-	public static ValueMap2D fillBasins(ValueMap2D h, double seaLevel)
+	public static ValueMap2D fillBasins(ValueMap2D<Double> h, double seaLevel)
 	{
 		
 		//Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
 		final int xSize = h.getXSize();
 		final int ySize = h.getYSize();
-		double[][] map = h.getMap();
+		Double[][] map = h.getMap();
 		//Then we fill holes and tell the water where to go
 		double plevel = seaLevel;
 		byte[][] exploremap = new byte[xSize][ySize];//explored, tells what has been touched, and what not
@@ -203,7 +189,32 @@ public class WorldUtils {
 				}
 			}
 		}
-		ValueMap2D b = new ValueMap2D(map);
+		ValueMap2D<Double> b = new ValueMap2D<Double>(map);
 		return b;
 	}
+	
+	
+	public static BufferedImage getImage(ValueMap2D<Double> source)
+	{
+		Double[][] map = source.getMap();
+		int xSize = source.getXSize();
+		int ySize = source.getYSize();
+		
+		BufferedImage bimg = new BufferedImage(xSize, ySize, BufferedImage.TYPE_USHORT_GRAY);
+		WritableRaster raster = bimg.getRaster();
+		int[] r = new int[1];
+		for(int x = 0; x < xSize; x++) 
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				r[0] = (short)(map[x][y]*Short.MAX_VALUE + Short.MIN_VALUE);
+				raster.setPixel(x, y, r);
+			}
+		}
+		return bimg;
+	}
+	
 }
+
+
+
