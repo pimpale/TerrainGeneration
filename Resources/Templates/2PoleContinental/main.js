@@ -25,6 +25,7 @@ var WorldUtils = Java.type("worldUtils.WorldUtils");
 var OtherUtils = Java.type("worldUtils.OtherUtils");
 var ValueMap2D = Java.type("worldUtils.ValueMap2D");
 var Value2D = Java.type("worldUtils.Value2D");
+var Kernel = Java.type("worldUtils.Kernel");
 
 function getHeight(seed, xSize, ySize) {
 	//set up the noise
@@ -78,6 +79,7 @@ smap = new ValueMap2D(smap.stream().map(function(height) {
 	}
 	return height;
 }));
+smap = WorldUtils.convolve(Kernel.getIdentity() )
 var img = smap.getImage();
 while(true)
 {

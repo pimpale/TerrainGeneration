@@ -10,6 +10,15 @@ public class Kernel {
 	final int xOff;
 	final int yOff;
 	
+	public static Kernel getIdentity()
+	{
+		return new Kernel(new double[][] {
+			{0,0,0},
+			{0,1,0},
+			{0,0,0}});
+	}
+	
+	
 	public Kernel(double[][] kern)
 	{
 		kernel = kern;

@@ -106,9 +106,9 @@ public class WorldUtils {
 	
 		for(int i = 0; i < threadCount; i++)
 		{
-			exec.execute(new ConvolveRows(k, vIn, vOut, vX/ ));
+			exec.execute(new ConvolveRows(k, vIn, vOut, i*vXSize/threadCount, (i+1)*vXSize/threadCount));
 		}
-		
+		return new ValueMap2D(vOut);
 	}
 
 	public static ValueMap2D inciseFlow(ValueMap2D height, ValueMap2D flow, double thresholdFlow, double radius1)
