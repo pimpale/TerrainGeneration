@@ -23,8 +23,8 @@ var CellularReturnType = Java.type("fastnoise.FastNoise$CellularReturnType");
 
 var WorldUtils = Java.type("worldUtils.WorldUtils");
 var OtherUtils = Java.type("worldUtils.OtherUtils");
-var ValueMap2D = Java.type("worldUtils.ValueMap2D");
-var Value2D = Java.type("worldUtils.Value2D");
+var DoubleMap2D = Java.type("worldUtils.DoubleMap2D");
+var Double2D = Java.type("worldUtils.Double2D");
 var Kernel = Java.type("worldUtils.Kernel");
 
 function getHeight(seed, xSize, ySize) {
@@ -43,7 +43,7 @@ function getHeight(seed, xSize, ySize) {
 	var weightsum = weights.reduce(function(a, b) { return a + b; }, 0);
 	
 	
-	var map = WorldUtils.getDoubleMap(xSize,ySize)
+	var map = new DoubleMap2D(xSize,ySize)
 			.stream()
 			.map(function(h) {
 				var x = h.getX();
@@ -61,9 +61,9 @@ function getHeight(seed, xSize, ySize) {
 				
 				var noiseSum = mheight*0.3 + rheight*0.4 + cheight*0.3;
 
-				return WorldUtils.getDoubleValue(x,y,OtherUtils.clamp(noiseSum, -1, 1));
+				return new Double2D(x,y,OtherUtils.clamp(noiseSum, -1, 1));
 			})
-			.collect(WorldUtils.doubleValueMap2DCollector());
+			.collect(DoubleMap2D.COLLECTOR);
 	//map = WorldUtils.fillBasins(map,-0.2);
 	return map;
 }
@@ -74,7 +74,7 @@ function getTemperatureMap(seed, xSize, ySize) {
 	noise.SetNoiseType(NoiseType.SimplexFractal);
 	noise.SetFractalOctaves(10);
 	var scale = Math.pow(2,-3);
-	return new ValueMap2D(xSize,ySize)
+	return new DoubleMap2D(xSize,ySize)
 				.stream()
 				.map(function(h) {
 					var percentDown = h.getY()/ySize;
@@ -83,7 +83,7 @@ function getTemperatureMap(seed, xSize, ySize) {
 					h.setVal(latTemp + randTemp)
 					return h;
 				})
-				.collector(WorldUtils.doubleValueMap2DCollector());
+				.collector(DoubleMap2D.COLLECTOR);
 			
 }
 
@@ -97,8 +97,8 @@ smap = smap.stream().map(function(height) {
 		}
 		return height;
 		})
-	.collect(ValueMap2D.getCollector());
-var img = smap.getImage();
+	.collect(DoubleMap2D.COLLECTOR);
+var img = WorldUtils.getImage(smap);
 while(true)
 {
 	Thread.sleep(20);
