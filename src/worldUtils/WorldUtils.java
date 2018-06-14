@@ -22,15 +22,14 @@ import tester.Main;
 public class WorldUtils {
 	
 	
-	
-	public static ValueMap2D<Double> convolve(Kernel k, ValueMap2D<Double> v)
+	public static DoubleMap2D convolve(Kernel k, DoubleMap2D v)
 	{
 		int vXSize = v.getXSize();
 		int vYSize = v.getYSize();
 		
-		Double[][] vIn = v.getMap();
+		double[][] vIn = v.getMap();
 		
-		Double[][] vOut = new Double[vXSize][vYSize];
+		double[][] vOut = new double[vXSize][vYSize];
 		
 		
 		int threadCount = OtherUtils.getThreadCount();
@@ -39,11 +38,11 @@ public class WorldUtils {
 		//For multithreading split the ValueMap2D up into as many parts as there are threads and have a thread operate on the rows
 		class ConvolveRows implements Runnable {
 			private final Kernel k;
-			private final Double[][] vin;
-			private final Double[][] vout;
+			private final double[][] vin;
+			private final double[][] vout;
 			private final int startX;
 			private final int endX;
-			public ConvolveRows(Kernel k, Double[][] vin, Double[][] vout, int startX, int endX) {
+			public ConvolveRows(Kernel k, double[][] vin, double[][] vout, int startX, int endX) {
 				this.k = k;
 				this.vin = vin;
 				this.vout = vout;
@@ -71,13 +70,11 @@ public class WorldUtils {
 								int rvx = (int) OtherUtils.clamp(x + kx - k.xOff, 0, vXSize-1);
 								int rvy = (int) OtherUtils.clamp(y + ky - k.yOff, 0, vYSize-1);
 								//multiply the corresponding pixel value to the n
-								//System.out.println(rvx + " "+ rvy);
 								accumulator += vin[rvx][rvy]*kArr[kx][ky];
 							}
 						}
 						//normalize pixel
-						vout[x][y] = accumulator;///kernelElementNum;
-						System.out.println(vout[x][y]);
+						vout[x][y] = accumulator;
 					}
 				}
 			}
@@ -98,17 +95,17 @@ public class WorldUtils {
 				e.printStackTrace();
 			}
 		}
-		return new ValueMap2D<Double>(vOut);
+		return new DoubleMap2D(vOut);
 	}
 
 	
-	public static ValueMap2D fillBasins(ValueMap2D<Double> h, double seaLevel)
+	public static DoubleMap2D fillBasins(DoubleMap2D h, double seaLevel)
 	{
 		
 		//Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
 		final int xSize = h.getXSize();
 		final int ySize = h.getYSize();
-		Double[][] map = h.getMap();
+		double[][] map = h.getMap();
 		//Then we fill holes and tell the water where to go
 		double plevel = seaLevel;
 		byte[][] exploremap = new byte[xSize][ySize];//explored, tells what has been touched, and what not
@@ -189,14 +186,14 @@ public class WorldUtils {
 				}
 			}
 		}
-		ValueMap2D<Double> b = new ValueMap2D<Double>(map);
+		DoubleMap2D b = new DoubleMap2D(map);
 		return b;
 	}
 	
 	
-	public static BufferedImage getImage(ValueMap2D<Double> source)
+	public static BufferedImage getImage(DoubleMap2D source)
 	{
-		Double[][] map = source.getMap();
+		double[][] map = source.getMap();
 		int xSize = source.getXSize();
 		int ySize = source.getYSize();
 		

@@ -43,8 +43,7 @@ function getHeight(seed, xSize, ySize) {
 	var weightsum = weights.reduce(function(a, b) { return a + b; }, 0);
 	
 	
-	var map = new ValueMap2D(xSize, ySize);
-	map = map
+	var map = WorldUtils.getDoubleMap(xSize,ySize)
 			.stream()
 			.map(function(h) {
 				var x = h.getX();
@@ -60,12 +59,11 @@ function getHeight(seed, xSize, ySize) {
 				}
 				rheight = rheight/weightsum;
 				
-				
 				var noiseSum = mheight*0.3 + rheight*0.4 + cheight*0.3;
-				h.setVal(OtherUtils.clamp(noiseSum, -1, 1))	;
-				return h;
+
+				return WorldUtils.getDoubleValue(x,y,OtherUtils.clamp(noiseSum, -1, 1));
 			})
-			.collect(ValueMap2D.getCollector());
+			.collect(WorldUtils.doubleValueMap2DCollector());
 	//map = WorldUtils.fillBasins(map,-0.2);
 	return map;
 }
@@ -85,7 +83,7 @@ function getTemperatureMap(seed, xSize, ySize) {
 					h.setVal(latTemp + randTemp)
 					return h;
 				})
-				.collector(ValueMap2D.getCollector());
+				.collector(WorldUtils.doubleValueMap2DCollector());
 			
 }
 
