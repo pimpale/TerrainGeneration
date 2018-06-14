@@ -38,9 +38,10 @@ public class ValueMap2D<E>
 		ySize = map[0].length;
 	}
 
-	public ValueMap2D(ArrayList<Value2D<E>> heights)
+	@SuppressWarnings("unchecked")
+	public ValueMap2D(ArrayList<Value2D<E>> values)
 	{
-		this(heights.toArray());
+		this((Value2D<E>[])(values.toArray((Value2D<E>[])new Object[values.size()])));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -52,11 +53,11 @@ public class ValueMap2D<E>
 	}
 
 	@SuppressWarnings("unchecked")
-	public ValueMap2D(Object[] heights)
+	public ValueMap2D(Value2D<E>[] values)
 	{
 		int xMax = 0;
 		int yMax = 0;
-		for(Object h : heights)
+		for(Object h : values)
 		{
 			xMax = Math.max(xMax, ((Value2D<E>)h).getX());
 			yMax = Math.max(yMax, ((Value2D<E>)h).getY());
@@ -64,15 +65,15 @@ public class ValueMap2D<E>
 		xSize = xMax+1;
 		ySize = yMax+1;
 		map = (E[][]) new Object[xSize][ySize];
-		for(Object h: heights)
+		for(Value2D<E> h: values)
 		{
-			setHeight((Value2D<E>)h);
+			setHeight(h);
 		}
 	}
 	
 	public ValueMap2D(Stream<Value2D<E>> stream)
 	{
-		this(stream.toArray());
+		this(stream.toArray(size -> (Value2D<E>[])new Object[size]));
 	}
 	
 	public E[][] getMap()
