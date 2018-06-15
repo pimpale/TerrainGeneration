@@ -37,7 +37,7 @@ function getHeight(seed, xSize, ySize) {
 	var cscale = Math.pow(2, -2);
 	var mscale = Math.pow(2, -2);
 	
-	//weights and sizes for 
+	//weights and sizes for the initial 
 	var sizes   = [Math.pow(2, -1), Math.pow(2,  0), Math.pow(2,  1), Math.pow(2,  2), Math.pow(2,  3), Math.pow(2,  4), Math.pow(2, 5)];
 	var weights = [17,              15,              13,              10,              7,               5,               3             ]; 
 	var weightsum = weights.reduce(function(a, b) { return a + b; }, 0);
@@ -66,7 +66,17 @@ function getHeight(seed, xSize, ySize) {
 			})
 			.sequential()
 			.collect(DoubleMap2D.COLLECTOR);
-	//map = WorldUtils.fillBasins(map,-0.2);
+	
+	
+	
+	map = WorldUtils.fillBasins(map,-0.2)
+			.stream()
+			.map(function(h) {
+				var x = h.getX();
+				var y = h.getY();
+				var
+			})
+			
 	return map;
 }
 

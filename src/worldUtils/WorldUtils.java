@@ -132,6 +132,77 @@ public class WorldUtils {
 	}
 	
 
+	public static BooleanMap2D threshold(DoubleMap2D map1, double threshold)
+	{
+		int xsize = map1.getXSize();
+		int ysize = map1.getYSize();
+		BooleanMap2D out = new BooleanMap2D(xsize,ysize);
+		for(int x = 0; x < xsize; x++)
+		{
+			for(int y = 0; y < ysize; y++)
+			{
+				out.set(x, y, map1.get(x, y) > threshold);
+			}
+		}
+		return out;
+	}
+	
+	
+	public static void getFlowDirection(DoubleMap2D map)
+	{
+		int xsize = map.getXSize();
+		int ysize = map.getYSize();
+		double[][] in = map.getMap();
+		
+		int[][] out = new int[xsize][ysize];
+		
+		class DetermineFlow extends Runnable {
+			private int[][] out;
+			private double[][] in;
+			private final int xsize, ysize;
+			private final int startx,endx;
+			
+			public DetermineFlow(double[][] in, int[][] out, int startx, int endx)
+			{
+				this.in = in;
+				this.out = out;
+				this.startx = startx;
+				this.endx = endx;
+				this.xsize = in.length;
+				this.ysize = in[0].length;
+			}
+			
+			@Override
+			public void run()
+			{
+				byte result;
+				double lowest;
+				int rx,ry;
+				for(int x = startx; x < endx; x++)
+				{
+					for(int y = 0; y < ysize; y++)
+					{
+						lowest = 0;
+						result = 0;
+						for(int cx = -1; cx <= 1; cx++)
+						{
+							for(int cy = -1; cy <= 1; cy++)
+							{
+								if(cy != 0 && cx != 0)
+								{
+									rx = x + cx;
+									ry = y + cy;
+									if(OtherUtils.wit)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
 	public static DoubleMap2D mask(DoubleMap2D map1, DoubleMap2D map2, BooleanMap2D mask)
 	{
 		int xSize = map1.getXSize();

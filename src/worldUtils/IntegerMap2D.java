@@ -16,12 +16,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public class DoubleMap2D
+public class IntegerMap2D
 {
 	private static final long serialVersionUID = 1L;
 	private final int xSize;
 	private final int ySize;
-	private final double[][] map;
+	private final int[][] map;
 
 	public int getXSize()
 	{
@@ -34,22 +34,22 @@ public class DoubleMap2D
 	}
 
 
-	public DoubleMap2D(Stream<Double2D> stream)
+	public IntegerMap2D(Stream<Integer2D> stream)
 	{
-		this(stream.toArray(size -> new Double2D[size]));
+		this(stream.toArray(size -> new Integer2D[size]));
 	}
 
-	public DoubleMap2D(Collection<Double2D> values)
+	public IntegerMap2D(Collection<Integer2D> values)
 	{
-		this(values.toArray(new Double2D[values.size()]));
+		this(values.toArray(new Integer2D[values.size()]));
 	}
 	
-	public DoubleMap2D(int xsize, int ysize)
+	public IntegerMap2D(int xsize, int ysize)
 	{
-		this(new double[xsize][ysize]);
+		this(new int[xsize][ysize]);
 	}
 	
-	public DoubleMap2D(double[][] newmap)
+	public IntegerMap2D(int[][] newmap)
 	{
 		map  = newmap;
 		xSize = map.length;
@@ -58,54 +58,54 @@ public class DoubleMap2D
 	}
 
 
-	public DoubleMap2D(Double2D[] values)
+	public IntegerMap2D(Integer2D[] values)
 	{
 		int xMax = 0;
 		int yMax = 0;
-		for(Double2D h : values)
+		for(Integer2D h : values)
 		{
 			xMax = Math.max(xMax, h.getX());
 			yMax = Math.max(yMax, h.getY());
 		}
 		xSize = xMax+1;
 		ySize = yMax+1;
-		map = new double[xSize][ySize];
-		for(Double2D h: values)
+		map = new int[xSize][ySize];
+		for(Integer2D h: values)
 		{
 			setHeight(h);
 		}
 	}
 	
 	
-	public double[][] getMap()
+	public int[][] getMap()
 	{
 		return map;
 	}
 
-	public double get(int x, int y)
+	public int get(int x, int y)
 	{
 		return map[x][y];
 	}
 	
-	public void set(int x, int y, double val)
+	public void set(int x, int y, int val)
 	{
 		map[x][y] = val;
 	}
 
-	public Double2D getHeight(int x, int y)
+	public Integer2D getHeight(int x, int y)
 	{
-		return new Double2D(x,y,get(x,y));
+		return new Integer2D(x,y,get(x,y));
 	}
 	
-	public void setHeight(Double2D h)
+	public void setHeight(Integer2D h)
 	{
 		map[h.getX()][h.getY()] = h.get();
 	}
 	
-	public DoubleMap2D clone()
+	public IntegerMap2D clone()
 	{
 		@SuppressWarnings("unchecked")
-		double[][] newMap = new double[xSize][ySize];
+		int[][] newMap = new int[xSize][ySize];
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -113,12 +113,12 @@ public class DoubleMap2D
 				newMap[x][y] = map[x][y];
 			}
 		}
-		return new DoubleMap2D(newMap);
+		return new IntegerMap2D(newMap);
 	}
 	
-	public Stream<Double2D> stream()
+	public Stream<Integer2D> stream()
 	{
-		Double2D[] heightArr = new Double2D[xSize*ySize];
+		Integer2D[] heightArr = new Integer2D[xSize*ySize];
 		for(int x = 0; x < xSize; x++)
 		{
 			for(int y = 0; y < ySize; y++)
@@ -130,13 +130,13 @@ public class DoubleMap2D
 	}
 	
 	
-	public static DoubleMap2DCollector COLLECTOR = new DoubleMap2DCollector();
+	public static IntegerMap2DCollector COLLECTOR = new IntegerMap2DCollector();
 }
 
-class DoubleMap2DCollector implements Collector<Double2D, ArrayList<Double2D>, DoubleMap2D>{
+class IntegerMap2DCollector implements Collector<Integer2D, ArrayList<Integer2D>, IntegerMap2D>{
 
 	@Override
-	public BiConsumer<ArrayList<Double2D>, Double2D> accumulator() {
+	public BiConsumer<ArrayList<Integer2D>, Integer2D> accumulator() {
 		return (list, h) -> list.add(h);
 	}
 
@@ -146,7 +146,7 @@ class DoubleMap2DCollector implements Collector<Double2D, ArrayList<Double2D>, D
 	}
 
 	@Override
-	public BinaryOperator<ArrayList<Double2D>> combiner() {
+	public BinaryOperator<ArrayList<Integer2D>> combiner() {
 		return (list1, list2) -> {
 			list1.addAll(list2);
 			return list1;
@@ -154,13 +154,13 @@ class DoubleMap2DCollector implements Collector<Double2D, ArrayList<Double2D>, D
 	}
 
 	@Override
-	public Function<ArrayList<Double2D>, DoubleMap2D> finisher() {
-		return (list) -> new DoubleMap2D(list);
+	public Function<ArrayList<Integer2D>, IntegerMap2D> finisher() {
+		return (list) -> new IntegerMap2D(list);
 	}
 
 	@Override
-	public Supplier<ArrayList<Double2D>> supplier() {
-		return () -> new ArrayList<Double2D>();
+	public Supplier<ArrayList<Integer2D>> supplier() {
+		return () -> new ArrayList<Integer2D>();
 	}
 
 
