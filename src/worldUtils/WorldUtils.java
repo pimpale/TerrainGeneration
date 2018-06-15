@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
@@ -21,8 +22,106 @@ import tester.Main;
 
 public class WorldUtils {
 	
+	public static DoubleMap2D blur(DoubleMap2D i, double radius)
+	{
+		class BlurLine implements Runnable {
+			private final int radius;
+			private final boolean horizontal;
+			private double[][] in;
+			private double[][] out;
+			private final int start;
+			private final int end;
+			private final int xSize;
+			private final int ySize;
+			public BlurLine(double[][] in, double[][] out, int radius, boolean horizontal, int start, int end)
+			{
+				this.in = in;
+				this.out = out;
+				this.radius = radius;
+				this.horizontal = horizontal;
+				this.start = start;
+				this.end = end;
+				this.xSize = in.length;
+				this.ySize = in[0].length;
+			}
+			
+			@Override
+			public void run()
+			{
+				if(horizontal)
+				{
+					//means that certain rows will be blurred
+					for(int y = start; y < end; y++)
+					{
+						for(int x = 0; x < xSize; x++)
+						{
+							double sum = 0;
+							for(int sx = radius; sx < radius; x++)
+							{
+								int rx = (int)OtherUtils.clamp(x+sx, 0, xSize);
+								sum += in[rx][y];
+							}
+							out[x][y] = sum/(radius*2);
+						}
+					}
+				}
+				else //vertical
+				{
+					//means that certain columns will be blurred
+					for(int x = start; x < end; x++)
+					{
+						for(int y = 0; y < ySize; y++)
+						{
+							double sum = 0;
+							for(int sy = radius; sy < radius; y++)
+							{
+								int ry = (int)OtherUtils.clamp(y+sy, 0, ySize);
+								sum += in[x][ry];
+							}
+							out[x][y] = sum/(radius*2);
+						}
+					}
+				}
+			}
+
+		}
+	}
 	
-	public static DoubleMap2D convolve(Kernel k, DoubleMap2D v)
+	
+	public static DoubleMap2D applyMask(Function<Double2D, Double2D> f, DoubleMap2D i, BooleanMap2D m)
+	{
+		int xSize = i.getXSize();
+		int ySize = i.getYSize();
+		
+		DoubleMap2D o = new DoubleMap2D(xSize,ySize);
+		
+		for(int x = 0; x < xSize; x++)
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				if(m.get(x, y))
+				{
+					o.setHeight(f.apply(i.getHeight(x, y)));
+				}
+				else
+				{
+					o.setHeight(i.getHeight(x, y));
+				}
+			}
+		}
+		return o;
+	}
+	
+	public DoubleMap2D apply(Function<Double2D, Double2D> f, DoubleMap2D i)
+	{
+		return applyMask(f,i,
+				new BooleanMap2D(i.getXSize(),i.getYSize())
+				.stream()
+				.map(b -> new Boolean2D(b.getX(), b.getY(), true))
+				.collect(BooleanMap2D.COLLECTOR));
+	}
+	
+	public static DoubleMap2D convolveMask(Kernel k, DoubleMap2D v, BooleanMap2D m)
 	{
 		int vXSize = v.getXSize();
 		int vYSize = v.getYSize();
@@ -42,12 +141,16 @@ public class WorldUtils {
 			private final double[][] vout;
 			private final int startX;
 			private final int endX;
+			private final int xSize;
+			private final int ySize;
 			public ConvolveRows(Kernel k, double[][] vin, double[][] vout, int startX, int endX) {
 				this.k = k;
 				this.vin = vin;
 				this.vout = vout;
 				this.startX = startX;
 				this.endX = endX;
+				xSize = vin.length;
+				ySize = vin[0].length;
 			}
 			
 			@Override
@@ -55,26 +158,32 @@ public class WorldUtils {
 			{
 				for(int x = startX; x < endX; x++)
 				{
-					for(int y = 0; y < vYSize; y++)
+					for(int y = 0; y < ySize; y++)
 					{
-						double accumulator = 0;
-				
-						double[][] kArr = k.kernel;
-						//iterate through all elements in the kernel
-						for(int kx = 0; kx < k.xSize; kx++)
+						if(m.get(x, y))
 						{
-							for(int ky = 0; ky < k.ySize; ky++)
+							double accumulator = 0;
+							double[][] kArr = k.kernel;
+							//iterate through all elements in the kernel
+							for(int kx = 0; kx < k.xSize; kx++)
 							{
-								//relative vx and vy, for reference to the value map
-								//we clamp the values between 0 and the max size of the array to be convolved
-								int rvx = (int) OtherUtils.clamp(x + kx - k.xOff, 0, vXSize-1);
-								int rvy = (int) OtherUtils.clamp(y + ky - k.yOff, 0, vYSize-1);
-								//multiply the corresponding pixel value to the n
-								accumulator += vin[rvx][rvy]*kArr[kx][ky];
+								for(int ky = 0; ky < k.ySize; ky++)
+								{
+									//relative vx and vy, for reference to the value map
+									//we clamp the values between 0 and the max size of the array to be convolved
+									int rvx = (int) OtherUtils.clamp(x + kx - k.xOff, 0, xSize-1);
+									int rvy = (int) OtherUtils.clamp(y + ky - k.yOff, 0, ySize-1);
+									//multiply the corresponding pixel value to the n
+									accumulator += vin[rvx][rvy]*kArr[kx][ky];
+								}
 							}
+							//normalize pixel
+							vout[x][y] = accumulator;
 						}
-						//normalize pixel
-						vout[x][y] = accumulator;
+						else
+						{
+							vout[x][y] = vin[x][y];
+						}
 					}
 				}
 			}
@@ -96,6 +205,15 @@ public class WorldUtils {
 			}
 		}
 		return new DoubleMap2D(vOut);
+	}
+	
+	public static DoubleMap2D convolve(Kernel k, DoubleMap2D v)
+	{
+		return convolveMask(k,v,
+				new BooleanMap2D(v.getXSize(),v.getYSize())
+				.stream()
+				.map(b -> new Boolean2D(b.getX(), b.getY(), true))
+				.collect(BooleanMap2D.COLLECTOR));
 	}
 
 	
