@@ -22,7 +22,7 @@ import tester.Main;
 
 public class WorldUtils {
 	
-	public static DoubleMap2D blur(DoubleMap2D i, double radius)
+	public static DoubleMap2D blur(DoubleMap2D input, int radius)
 	{
 		class BlurLine implements Runnable {
 			private final int radius;
@@ -56,9 +56,9 @@ public class WorldUtils {
 						for(int x = 0; x < xSize; x++)
 						{
 							double sum = 0;
-							for(int sx = radius; sx < radius; x++)
+							for(int sx = -radius; sx <= radius; sx++)
 							{
-								int rx = (int)OtherUtils.clamp(x+sx, 0, xSize);
+								int rx = (int)OtherUtils.clamp(x+sx, 0, xSize-1);
 								sum += in[rx][y];
 							}
 							out[x][y] = sum/(radius*2);
@@ -73,9 +73,9 @@ public class WorldUtils {
 						for(int y = 0; y < ySize; y++)
 						{
 							double sum = 0;
-							for(int sy = radius; sy < radius; y++)
+							for(int sy = -radius; sy <= radius; sy++)
 							{
-								int ry = (int)OtherUtils.clamp(y+sy, 0, ySize);
+								int ry = (int)OtherUtils.clamp(y+sy, 0, ySize-1);
 								sum += in[x][ry];
 							}
 							out[x][y] = sum/(radius*2);
@@ -83,45 +83,86 @@ public class WorldUtils {
 					}
 				}
 			}
-
 		}
+		int xSize = input.getXSize();
+		int ySize = input.getYSize();
+		
+		double[][] in = input.getMap();
+		double[][] horizontalBlur = new double[xSize][ySize];
+		double[][] out = new double[xSize][ySize];
+		
+		int threadCount = OtherUtils.getThreadCount();
+		
+		
+		ExecutorService horizontalExec = Executors.newFixedThreadPool(threadCount);
+		//first blur horizontally
+		for(int i = 0; i < threadCount; i++)
+		{
+			horizontalExec.execute(new BlurLine(in, horizontalBlur, radius, true, i*ySize/threadCount, (i+1)*ySize/threadCount));
+		}
+		horizontalExec.shutdown();
+		while(!horizontalExec.isTerminated())
+		{
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		ExecutorService verticalExec = Executors.newFixedThreadPool(threadCount);
+		//first blur vertically
+		for(int i = 0; i < threadCount; i++)
+		{
+			verticalExec.execute(new BlurLine(horizontalBlur, out, radius, false, i*xSize/threadCount, (i+1)*xSize/threadCount));
+		}
+		verticalExec.shutdown();
+		while(!verticalExec.isTerminated())
+		{
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return new DoubleMap2D(out);
 	}
 	
-	
-	public static DoubleMap2D applyMask(Function<Double2D, Double2D> f, DoubleMap2D i, BooleanMap2D m)
+
+	public static DoubleMap2D mask(DoubleMap2D map1, DoubleMap2D map2, BooleanMap2D mask)
 	{
-		int xSize = i.getXSize();
-		int ySize = i.getYSize();
-		
-		DoubleMap2D o = new DoubleMap2D(xSize,ySize);
-		
+		int xSize = map1.getXSize();
+		int ySize = map2.getYSize();
+		double[][] out = new double[xSize][ySize];
+		double[][] in1 = map1.getMap();
+		double[][] in2 = map2.getMap();
 		for(int x = 0; x < xSize; x++)
 		{
-			for(int y = 0; y < ySize; y++)
+			for(int y = 0 ; y < ySize; y++)
 			{
-				if(m.get(x, y))
+				if(mask.get(x, y))
 				{
-					o.setHeight(f.apply(i.getHeight(x, y)));
+					out[x][y] = in1[x][y];
 				}
 				else
 				{
-					o.setHeight(i.getHeight(x, y));
+					out[x][y] = in2[x][y];
 				}
 			}
 		}
-		return o;
+		return new DoubleMap2D(out);
 	}
 	
-	public DoubleMap2D apply(Function<Double2D, Double2D> f, DoubleMap2D i)
+	public static DoubleMap2D apply(Function<Double2D, Double2D> f, DoubleMap2D i)
 	{
-		return applyMask(f,i,
-				new BooleanMap2D(i.getXSize(),i.getYSize())
-				.stream()
-				.map(b -> new Boolean2D(b.getX(), b.getY(), true))
-				.collect(BooleanMap2D.COLLECTOR));
+		return i.stream().map(f).collect(DoubleMap2D.COLLECTOR);
 	}
 	
-	public static DoubleMap2D convolveMask(Kernel k, DoubleMap2D v, BooleanMap2D m)
+	
+	public static DoubleMap2D convolve(Kernel k, DoubleMap2D v)
 	{
 		int vXSize = v.getXSize();
 		int vYSize = v.getYSize();
@@ -160,30 +201,23 @@ public class WorldUtils {
 				{
 					for(int y = 0; y < ySize; y++)
 					{
-						if(m.get(x, y))
+						double accumulator = 0;
+						double[][] kArr = k.kernel;
+						//iterate through all elements in the kernel
+						for(int kx = 0; kx < k.xSize; kx++)
 						{
-							double accumulator = 0;
-							double[][] kArr = k.kernel;
-							//iterate through all elements in the kernel
-							for(int kx = 0; kx < k.xSize; kx++)
+							for(int ky = 0; ky < k.ySize; ky++)
 							{
-								for(int ky = 0; ky < k.ySize; ky++)
-								{
-									//relative vx and vy, for reference to the value map
-									//we clamp the values between 0 and the max size of the array to be convolved
-									int rvx = (int) OtherUtils.clamp(x + kx - k.xOff, 0, xSize-1);
-									int rvy = (int) OtherUtils.clamp(y + ky - k.yOff, 0, ySize-1);
-									//multiply the corresponding pixel value to the n
-									accumulator += vin[rvx][rvy]*kArr[kx][ky];
-								}
+								//relative vx and vy, for reference to the value map
+								//we clamp the values between 0 and the max size of the array to be convolved
+								int rvx = (int) OtherUtils.clamp(x + kx - k.xOff, 0, xSize-1);
+								int rvy = (int) OtherUtils.clamp(y + ky - k.yOff, 0, ySize-1);
+								//multiply the corresponding pixel value to the n
+								accumulator += vin[rvx][rvy]*kArr[kx][ky];
 							}
-							//normalize pixel
-							vout[x][y] = accumulator;
 						}
-						else
-						{
-							vout[x][y] = vin[x][y];
-						}
+						//normalize pixel
+						vout[x][y] = accumulator;
 					}
 				}
 			}
@@ -206,16 +240,6 @@ public class WorldUtils {
 		}
 		return new DoubleMap2D(vOut);
 	}
-	
-	public static DoubleMap2D convolve(Kernel k, DoubleMap2D v)
-	{
-		return convolveMask(k,v,
-				new BooleanMap2D(v.getXSize(),v.getYSize())
-				.stream()
-				.map(b -> new Boolean2D(b.getX(), b.getY(), true))
-				.collect(BooleanMap2D.COLLECTOR));
-	}
-
 	
 	public static DoubleMap2D fillBasins(DoubleMap2D h, double seaLevel)
 	{

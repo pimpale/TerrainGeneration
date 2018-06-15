@@ -45,6 +45,7 @@ function getHeight(seed, xSize, ySize) {
 	
 	var map = new DoubleMap2D(xSize,ySize)
 			.stream()
+			.parallel()
 			.map(function(h) {
 				var x = h.getX();
 				var y = h.getY();
@@ -63,6 +64,7 @@ function getHeight(seed, xSize, ySize) {
 
 				return new Double2D(x,y,OtherUtils.clamp(noiseSum, -1, 1));
 			})
+			.sequential()
 			.collect(DoubleMap2D.COLLECTOR);
 	//map = WorldUtils.fillBasins(map,-0.2);
 	return map;
@@ -90,7 +92,6 @@ function getTemperatureMap(seed, xSize, ySize) {
 
 //var tmap = getTemperatureMap(seed,xSize,ySize);
 var smap = getHeight(seed,xSize,ySize);
-smap = WorldUtils.convolve(Kernel.GAUSSIAN3, smap);
 smap = smap.stream().map(function(height) {
 		if(height.val < 0) {
 			height.val = -1;

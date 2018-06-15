@@ -126,7 +126,7 @@ public class DoubleMap2D
 				heightArr[x*ySize + y] = getHeight(x,y);
 			}
 		}
-		return Arrays.stream(heightArr).parallel();
+		return Arrays.stream(heightArr);
 	}
 	
 	
@@ -142,7 +142,7 @@ class DoubleMap2DCollector implements Collector<Double2D, ArrayList<Double2D>, D
 
 	@Override
 	public Set<Characteristics> characteristics() {
-		 return EnumSet.of(Characteristics.UNORDERED);
+		 return EnumSet.of(Characteristics.CONCURRENT, Characteristics.UNORDERED);
 	}
 
 	@Override
