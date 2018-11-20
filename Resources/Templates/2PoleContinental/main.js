@@ -74,8 +74,8 @@ function getHeight(seed, xSize, ySize) {
 			.map(function(h) {
 				var x = h.getX();
 				var y = h.getY();
-				var
-			})
+				return new Double2D(x,y,)
+			});
 			
 	return map;
 }

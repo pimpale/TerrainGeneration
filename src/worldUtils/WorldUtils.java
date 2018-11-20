@@ -147,7 +147,7 @@ public class WorldUtils {
 		return out;
 	}
 	
-	
+	/*
 	public static void getFlowDirection(DoubleMap2D map)
 	{
 		int xsize = map.getXSize();
@@ -156,7 +156,7 @@ public class WorldUtils {
 		
 		int[][] out = new int[xsize][ysize];
 		
-		class DetermineFlow extends Runnable {
+		class DetermineFlow implements Runnable {
 			private int[][] out;
 			private double[][] in;
 			private final int xsize, ysize;
@@ -192,7 +192,7 @@ public class WorldUtils {
 								{
 									rx = x + cx;
 									ry = y + cy;
-									if(OtherUtils.wit)
+									if(OtherUtils.)
 								}
 							}
 						}
@@ -202,7 +202,7 @@ public class WorldUtils {
 		}
 		
 	}
-	
+	*/
 	public static DoubleMap2D mask(DoubleMap2D map1, DoubleMap2D map2, BooleanMap2D mask)
 	{
 		int xSize = map1.getXSize();
