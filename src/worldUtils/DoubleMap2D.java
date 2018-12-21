@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 public class DoubleMap2D
 {
-	private static final long serialVersionUID = 1L;
 	private final int xSize;
 	private final int ySize;
 	private final double[][] map;
@@ -104,7 +103,6 @@ public class DoubleMap2D
 	
 	public DoubleMap2D clone()
 	{
-		@SuppressWarnings("unchecked")
 		double[][] newMap = new double[xSize][ySize];
 		for(int x = 0; x < xSize; x++)
 		{

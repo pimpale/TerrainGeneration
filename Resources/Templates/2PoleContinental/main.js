@@ -62,21 +62,20 @@ function getHeight(seed, xSize, ySize) {
 				
 				var noiseSum = mheight*0.3 + rheight*0.4 + cheight*0.3;
 
-				return new Double2D(x,y,OtherUtils.clamp(noiseSum, -1, 1));
+				return new Double2D(x,y,OtherUtils.clamp(noiseSum, -1.0, 1.0));
 			})
 			.sequential()
 			.collect(DoubleMap2D.COLLECTOR);
 	
 	
 	
-	map = WorldUtils.fillBasins(map,-0.2)
-			.stream()
-			.map(function(h) {
-				var x = h.getX();
-				var y = h.getY();
-				return new Double2D(x,y,)
-			});
-			
+	map = WorldUtils.fillBasins(map,-0.2);
+//			.stream()
+//			.map(function(h) {
+//				var x = h.getX();
+//				var y = h.getY();
+//				return new Double2D(x,y);
+//			}).collect(DoubleMap2D.COLLECTOR);
 	return map;
 }
 
@@ -103,7 +102,7 @@ function getTemperatureMap(seed, xSize, ySize) {
 //var tmap = getTemperatureMap(seed,xSize,ySize);
 var smap = getHeight(seed,xSize,ySize);
 smap = smap.stream().map(function(height) {
-		if(height.val < 0) {
+		if(height.val < 0.5) {
 			height.val = -1;
 		}
 		return height;
@@ -113,5 +112,5 @@ var img = WorldUtils.getImage(smap);
 while(true)
 {
 	Thread.sleep(20);
-	graphics.drawImage(img, 0 ,0,null);
+	graphics.drawImage(img, 0 ,0, null);
 }
