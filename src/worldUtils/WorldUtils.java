@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferUShort;
+import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +14,7 @@ import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
@@ -22,7 +25,7 @@ import tester.Main;
 
 public class WorldUtils {
 	
-	public static DoubleMap2D blur(DoubleMap2D input, int radius)
+	public static ValueMap2D blur(ValueMap2D input, int radius)
 	{
 		class BlurLine implements Runnable {
 			private final int radius;
@@ -128,24 +131,10 @@ public class WorldUtils {
 			}
 		}
 		
-		return new DoubleMap2D(out);
+		return new ValueMap2D(out);
 	}
 	
 
-	public static BooleanMap2D threshold(DoubleMap2D map1, double threshold)
-	{
-		int xsize = map1.getXSize();
-		int ysize = map1.getYSize();
-		BooleanMap2D out = new BooleanMap2D(xsize,ysize);
-		for(int x = 0; x < xsize; x++)
-		{
-			for(int y = 0; y < ysize; y++)
-			{
-				out.set(x, y, map1.get(x, y) > threshold);
-			}
-		}
-		return out;
-	}
 	
 	/*
 	public static void getFlowDirection(DoubleMap2D map)
@@ -203,37 +192,9 @@ public class WorldUtils {
 		
 	}
 	*/
-	public static DoubleMap2D mask(DoubleMap2D map1, DoubleMap2D map2, BooleanMap2D mask)
-	{
-		int xSize = map1.getXSize();
-		int ySize = map2.getYSize();
-		double[][] out = new double[xSize][ySize];
-		double[][] in1 = map1.getMap();
-		double[][] in2 = map2.getMap();
-		for(int x = 0; x < xSize; x++)
-		{
-			for(int y = 0 ; y < ySize; y++)
-			{
-				if(mask.get(x, y))
-				{
-					out[x][y] = in1[x][y];
-				}
-				else
-				{
-					out[x][y] = in2[x][y];
-				}
-			}
-		}
-		return new DoubleMap2D(out);
-	}
+
 	
-	public static DoubleMap2D apply(Function<Double2D, Double2D> f, DoubleMap2D i)
-	{
-		return i.stream().map(f).collect(DoubleMap2D.COLLECTOR);
-	}
-	
-	
-	public static DoubleMap2D convolve(Kernel k, DoubleMap2D v)
+	public static ValueMap2D convolve(Kernel k, ValueMap2D v)
 	{
 		int vXSize = v.getXSize();
 		int vYSize = v.getYSize();
@@ -309,10 +270,10 @@ public class WorldUtils {
 				e.printStackTrace();
 			}
 		}
-		return new DoubleMap2D(vOut);
+		return new ValueMap2D(vOut);
 	}
 	
-	public static DoubleMap2D fillBasins(DoubleMap2D h, double seaLevel)
+	public static ValueMap2D fillBasins(ValueMap2D h, double seaLevel)
 	{
 		
 		//Graphics2D g2d = (Graphics2D) Main.c.getGraphics();
@@ -399,12 +360,44 @@ public class WorldUtils {
 				}
 			}
 		}
-		DoubleMap2D b = new DoubleMap2D(map);
+		ValueMap2D b = new ValueMap2D(map);
 		return b;
 	}
 	
+	public static ValueMap2D mapOf(int xsize, int ysize, BiFunction<Integer, Integer, Double> func) {
+		ValueMap2D dest = new ValueMap2D(xsize, ysize);
+		for(int x = 0; x < xsize; x++) {
+			for(int y = 0; y < ysize; y++) {
+				dest.set(x, y, func.apply(x, y));
+			}
+		}
+		return dest;
+	}
 	
-	public static BufferedImage getImage(DoubleMap2D source)
+	public static ValueMap2D apply(ValueMap2D maps[], Function<Double[], Double> func) {
+		if(maps.length == 0) {
+			return null;
+		}
+		
+		int xSize = maps[0].getXSize();
+		int ySize = maps[0].getYSize();
+		
+		ValueMap2D dest = new ValueMap2D(xSize, ySize);
+		
+		Double[] arg = new Double[maps.length];
+
+		for(int x = 0; x < xSize; x++ ) {
+			for(int y = 0; y < ySize; y++) {
+				for(int i = 0; i < maps.length; i++) {
+					arg[i] = maps[i].get(x, y);
+				}
+				dest.set(x, y, func.apply(arg));
+			}
+		}
+		return dest;
+	}
+	
+	public static BufferedImage toImage(ValueMap2D source)
 	{
 		double[][] map = source.getMap();
 		int xSize = source.getXSize();
@@ -422,6 +415,32 @@ public class WorldUtils {
 			}
 		}
 		return bimg;
+	}
+	
+	public static ValueMap2D fromImage(BufferedImage source) {
+		int xSize = source.getWidth();
+		int ySize = source.getHeight();
+		ValueMap2D dest = new ValueMap2D(xSize, ySize);
+		double[][] destMap = dest.getMap();
+		Raster raster = source.getData();
+		int[] r = new int[1];
+		for(int x = 0; x < xSize; x++) 
+		{
+			for(int y = 0; y < ySize; y++)
+			{
+				raster.getPixel(x, y, r);
+				destMap[x][y] = shortToDouble((short)r[0]);
+			}
+		}
+		return dest;
+	}
+	
+	public static short doubleToShort(double d) {
+		return (short) ((d-0.5)*(Short.MAX_VALUE - Short.MIN_VALUE));
+	}
+	
+	public static double shortToDouble(short s) {
+		return  ((double)s)/(Short.MAX_VALUE - Short.MIN_VALUE) + 0.5;
 	}
 	
 }

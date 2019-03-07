@@ -7,20 +7,18 @@ import java.util.ArrayList;
 
 public class OtherUtils {
 
-	
-	
 	public static int getThreadCount()
 	{
 		return Runtime.getRuntime().availableProcessors();
 	}
 	
 	
-	public static short BytesToShort(byte b1, byte b2)
+	public static short bytesToShort(byte b1, byte b2)
 	{
 		return (short) (b1*255 + b2);
 	}
 
-	public static byte[] ShortToBytes(short s)
+	public static byte[] shortToBytes(short s)
 	{
 		byte[] b = new byte[2];
 		b[1] = (byte) (s & 0xff);
@@ -52,6 +50,14 @@ public class OtherUtils {
 	public static int clamp(int val, int min, int max)
 	{
 		return Math.max(min, Math.min(max, val));
+	}
+	
+	public static boolean compareEps(double a, double b, double epsilon) {
+		return Math.abs(a-b) < epsilon;
+	}
+	
+	public static boolean compare(double a, double b) {
+		return compareEps(a,b,0.0000001);
 	}
 	
 	public static BufferedImage scale(BufferedImage imageToScale, int dWidth, int dHeight) {
