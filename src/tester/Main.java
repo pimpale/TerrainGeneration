@@ -61,7 +61,7 @@ public class Main
 	
 	public static void main(String[] args) throws InterruptedException 
 	{
-		int size = 7000;
+		int size = 500;
 		JFrame frame = new JFrame("test");
 		frame.setSize(size, size);
 		Canvas canvas = new Canvas();
