@@ -10,303 +10,159 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class ShortMap {
-	private final int xSize;
-	private final int ySize;
-	private final short[][] map;
-	public int getXSize()
-	{
-		return xSize;
-	}
+  private final int xSize;
+  private final int ySize;
+  private final short[][] map;
 
-	public int getYSize()
-	{
-		return ySize;
-	}
+  public int getXSize() {
+    return xSize;
+  }
 
-	public ShortMap(short[][] newmap)
-	{
-		map  = newmap;
-		xSize = map.length;
-		ySize = map[0].length;
-	}
-	
-	public ShortMap(int xsize, int ysize)
-	{
-		xSize = xsize;
-		ySize = ysize;
-		map = new short[xSize][ySize];
-	}
-	
-	public ShortMap(BufferedImage img)
-	{
-		map = getValues(img);
-		xSize = map.length;
-		ySize = map[0].length;
-	}
-	
-	public ShortMap(String filelocation)
-	{
-		BufferedImage img = null;
-		try {
-			File f = new File(filelocation);
-			img = ImageIO.read(f);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		map = getValues(img);
-		xSize = map.length;
-		ySize = map[0].length;
-	}
-	
-	public short[][] getMap()
-	{
-		return map;
-	}
+  public int getYSize() {
+    return ySize;
+  }
 
-	public short get(int x, int y)
-	{
-		return map[x][y];
-	}
+  public ShortMap(short[][] newmap) {
+    map = newmap;
+    xSize = map.length;
+    ySize = map[0].length;
+  }
 
-	public void set(int x, int y, short val)
-	{
-		map[x][y] = val;
-	}
+  public ShortMap(int xsize, int ysize) {
+    xSize = xsize;
+    ySize = ysize;
+    map = new short[xSize][ySize];
+  }
 
-	private static BufferedImage scale(BufferedImage imageToScale, int dWidth, int dHeight) {
-		BufferedImage scaledImage = null;
-		if (imageToScale != null) {
-			scaledImage = new BufferedImage(dWidth, dHeight, imageToScale.getType());
-			Graphics2D graphics2D = scaledImage.createGraphics();
-			graphics2D.drawImage(imageToScale, 0, 0, dWidth, dHeight, null);
-			graphics2D.dispose();
-		}
-		return scaledImage;
-	}
+  public ShortMap(BufferedImage img) {
+    map = getValues(img);
+    xSize = map.length;
+    ySize = map[0].length;
+  }
 
-	public ShortMap blur(int radius)
-	{	
-		return new ShortMap(ProcessImage(getImage(), radius));
-	}
-	
-	public static BufferedImage ProcessImage(BufferedImage image, int radius) {
-	    int width = image.getWidth();
-	    int height = image.getHeight();
+  public ShortMap(String filelocation) {
+    BufferedImage img = null;
+    try {
+      File f = new File(filelocation);
+      img = ImageIO.read(f);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    map = getValues(img);
+    xSize = map.length;
+    ySize = map[0].length;
+  }
 
-	    int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
-	    int[] changedPixels = new int[pixels.length];
+  public short[][] getMap() {
+    return map;
+  }
 
-	    FastGaussianBlur(pixels, changedPixels, width, height, radius);
+  public short get(int x, int y) {
+    return map[x][y];
+  }
 
-	    BufferedImage newImage = new BufferedImage(width, height, image.getType());
-	    newImage.setRGB(0, 0, width, height, changedPixels, 0, width);
+  public void set(int x, int y, short val) {
+    map[x][y] = val;
+  }
 
-	    return newImage;
-	}
-	
-	public ShortMap scale(int newxsize, int newysize)
-	{
-		return new ShortMap(getValues(scale(getImage(), newxsize, newysize)));
-	}
+  private static BufferedImage scale(BufferedImage imageToScale, int dWidth, int dHeight) {
+    BufferedImage scaledImage = null;
+    if (imageToScale != null) {
+      scaledImage = new BufferedImage(dWidth, dHeight, imageToScale.getType());
+      Graphics2D graphics2D = scaledImage.createGraphics();
+      graphics2D.drawImage(imageToScale, 0, 0, dWidth, dHeight, null);
+      graphics2D.dispose();
+    }
+    return scaledImage;
+  }
 
-	public void Export(String filelocation)
-	{
-		try
-		{
-			File f = new File(filelocation);
-			ImageIO.write(getImage(), "png", f);
-		}
-		catch(Throwable e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	public static void FastGaussianBlur(int[] source, int[] output, int width, int height, int radius) {
-	    ArrayList<Integer> gaussianBoxes = CreateGausianBoxes(radius, 3);
-	    BoxBlur(source, output, width, height, (gaussianBoxes.get(0) - 1) / 2);
-	    BoxBlur(output, source, width, height, (gaussianBoxes.get(1) - 1) / 2);
-	    BoxBlur(source, output, width, height, (gaussianBoxes.get(2) - 1) / 2);
-	}
+  public ShortMap blur(int radius) {
+    short[][] newMap = new short[this.xSize][this.ySize];
+    for (int x = 0; x < this.xSize; x++) {
+      for (int y = 0; y < this.ySize; y++) {
+        // TODO
+        newMap[x][y] = (short) (this.map[x][y]);
+      }
+    }
 
-	public static ArrayList<Integer> CreateGausianBoxes(double sigma, int n) {
-	    double idealFilterWidth = Math.sqrt((12 * sigma * sigma / n) + 1);
+    return new ShortMap(newMap);
+  }
 
-	    int filterWidth = (int) Math.floor(idealFilterWidth);
+  public ShortMap scale(int newxsize, int newysize) {
+    return new ShortMap(getValues(scale(getImage(), newxsize, newysize)));
+  }
 
-	    if (filterWidth % 2 == 0) {
-	        filterWidth--;
-	    }
+  public void Export(String filelocation) {
+    try {
+      File f = new File(filelocation);
+      ImageIO.write(getImage(), "png", f);
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
+  }
 
-	    int filterWidthU = filterWidth + 2;
+  // Maps 0-1 to a short
+  public static short DoubleToShort(double doub) {
+    // return (short)(doub*Short.MAX_VALUE);
+  // 65536 is the numbers in a short
+    return (short) (doub * 65536 + Short.MIN_VALUE);
+  }
 
-	    double mIdeal = (12 * sigma * sigma - n * filterWidth * filterWidth - 4 * n * filterWidth - 3 * n) / (-4 * filterWidth - 4);
-	    double m = Math.round(mIdeal);
+  // Maps a short to 0-1
+  public static double ShortToDouble(short shor) {
+    // return ((double)shor)/Short.MAX_VALUE;
+    return (((double) shor) - Short.MIN_VALUE) / (65536);
+  }
 
-	    ArrayList<Integer> result = new ArrayList<>();
+  public static long Offset(int x, int y, int xsize, int ysize) {
+    return (x * ysize + y);
+  }
 
-	    for (int i = 0; i < n; i++) {
-	        result.add(i < m ? filterWidth : filterWidthU);
-	    }
+  public static long ByteOffset(int x, int y, int xsize, int ysize) {
+    return Offset(x, y, xsize, ysize) * 2;
+  }
 
-	    return result;
-	}
+  public static short BytesToShort(byte b1, byte b2) {
+    return (short) (b1 * 255 + b2);
+  }
 
-	private static void BoxBlur(int[] source, int[] output, int width, int height, int radius) {
-	    System.arraycopy(source, 0, output, 0, source.length);
-	    BoxBlurHorizontal(output, source, width, height, radius);
-	    BoxBlurVertical(source, output, width, height, radius);
-	}
+  public static byte[] ShortToBytes(short s) {
+    byte[] b = new byte[2];
+    b[1] = (byte) (s & 0xff);
+    b[0] = (byte) ((s >> 8) & 0xff);
+    return b;
+  }
 
-	private static void BoxBlurHorizontal(int[] sourcePixels, int[] outputPixels, int width, int height, int radius) {
-	    int resultingColorPixel;
-	    float iarr = 1f / (radius + radius);
-	    for (int i = 0; i < height; i++) {
-	        int outputIndex = i * width;
-	        int li = outputIndex;
-	        int sourceIndex = outputIndex + radius;
+  public static BufferedImage getImage(short[][] map) {
+    int xSize = map.length;
+    int ySize = map[0].length;
+    BufferedImage img = new BufferedImage(xSize, ySize, BufferedImage.TYPE_USHORT_GRAY);
+    WritableRaster r = img.getRaster();
+    for (int y = 0; y < ySize; y++) {
+      for (int x = 0; x < xSize; x++) {
+        r.setPixel(x, y, new int[] { map[x][y] - Short.MAX_VALUE });
+      }
+    }
+    return img;
+  }
 
-	        int fv = Byte.toUnsignedInt((byte) sourcePixels[outputIndex]);
-	        int lv = Byte.toUnsignedInt((byte) sourcePixels[outputIndex + width - 1]);
-	        float val = (radius) * fv;
+  public BufferedImage getImage() {
+    return getImage(map);
+  }
 
-	        for (int j = 0; j < radius; j++) {
-	            val += Byte.toUnsignedInt((byte) (sourcePixels[outputIndex + j]));
-	        }
+  public static short[][] getValues(BufferedImage img) {
+    int ySize = img.getWidth();
+    int xSize = img.getHeight();
+    DataBufferUShort buffer = (DataBufferUShort) img.getRaster().getDataBuffer();
+    // Safe cast as img is of type TYPE_USHORT_GRAY
+    short[][] map = new short[xSize][ySize];
+    for (int y = 0; y < ySize; y++) {
+      for (int x = 0; x < xSize; x++) {
+        map[x][y] = (short) (Short.MAX_VALUE + buffer.getElem(x + y * xSize));
+      }
+    }
+    return map;
+  }
 
-	        for (int j = 0; j < radius; j++) {
-	            val += Byte.toUnsignedInt((byte) sourcePixels[sourceIndex++]) - fv;
-	            resultingColorPixel = Byte.toUnsignedInt(((Integer) Math.round(val * iarr)).byteValue());
-	            outputPixels[outputIndex++] = (0xFF << 24) | (resultingColorPixel << 16) | (resultingColorPixel << 8) | (resultingColorPixel);
-	        }
-
-	        for (int j = (radius + 1); j < (width - radius); j++) {
-	            val += Byte.toUnsignedInt((byte) sourcePixels[sourceIndex++]) - Byte.toUnsignedInt((byte) sourcePixels[li++]);
-	            resultingColorPixel = Byte.toUnsignedInt(((Integer) Math.round(val * iarr)).byteValue());
-	            outputPixels[outputIndex++] = (0xFF << 24) | (resultingColorPixel << 16) | (resultingColorPixel << 8) | (resultingColorPixel);
-	        }
-
-	        for (int j = (width - radius); j < width; j++) {
-	            val += lv - Byte.toUnsignedInt((byte) sourcePixels[li++]);
-	            resultingColorPixel = Byte.toUnsignedInt(((Integer) Math.round(val * iarr)).byteValue());
-	            outputPixels[outputIndex++] = (0xFF << 24) | (resultingColorPixel << 16) | (resultingColorPixel << 8) | (resultingColorPixel);
-	        }
-	    }
-	}
-
-	private static void BoxBlurVertical(int[] sourcePixels, int[] outputPixels, int width, int height, int radius) {
-	    int resultingColorPixel;
-	    float iarr = 1f / (radius + radius + 1);
-	    for (int i = 0; i < width; i++) {
-	        int outputIndex = i;
-	        int li = outputIndex;
-	        int sourceIndex = outputIndex + radius * width;
-
-	        int fv = Byte.toUnsignedInt((byte) sourcePixels[outputIndex]);
-	        int lv = Byte.toUnsignedInt((byte) sourcePixels[outputIndex + width * (height - 1)]);
-	        float val = (radius + 1) * fv;
-
-	        for (int j = 0; j < radius; j++) {
-	            val += Byte.toUnsignedInt((byte) sourcePixels[outputIndex + j * width]);
-	        }
-	        for (int j = 0; j <= radius; j++) {
-	            val += Byte.toUnsignedInt((byte) sourcePixels[sourceIndex]) - fv;
-	            resultingColorPixel = Byte.toUnsignedInt(((Integer) Math.round(val * iarr)).byteValue());
-	            outputPixels[outputIndex] = (0xFF << 24) | (resultingColorPixel << 16) | (resultingColorPixel << 8) | (resultingColorPixel);
-	            sourceIndex += width;
-	            outputIndex += width;
-	        }
-	        for (int j = radius + 1; j < (height - radius); j++) {
-	            val += Byte.toUnsignedInt((byte) sourcePixels[sourceIndex]) - Byte.toUnsignedInt((byte) sourcePixels[li]);
-	            resultingColorPixel = Byte.toUnsignedInt(((Integer) Math.round(val * iarr)).byteValue());
-	            outputPixels[outputIndex] = (0xFF << 24) | (resultingColorPixel << 16) | (resultingColorPixel << 8) | (resultingColorPixel);
-	            li += width;
-	            sourceIndex += width;
-	            outputIndex += width;
-	        }
-	        for (int j = (height - radius); j < height; j++) {
-	            val += lv - Byte.toUnsignedInt((byte) sourcePixels[li]);
-	            resultingColorPixel = Byte.toUnsignedInt(((Integer) Math.round(val * iarr)).byteValue());
-	            outputPixels[outputIndex] = (0xFF << 24) | (resultingColorPixel << 16) | (resultingColorPixel << 8) | (resultingColorPixel);
-	            li += width;
-	            outputIndex += width;
-	        }
-	    }
-	}
-
-	//65536 is the numbers in a short
-	public static short DoubleToShort(double doub)
-	{
-		//return (short)(doub*Short.MAX_VALUE);
-		return (short)(doub*65536 + Short.MIN_VALUE);
-	}
-
-	public static double ShortToDouble(short shor)
-	{
-		//return ((double)shor)/Short.MAX_VALUE;
-		return (((double)shor)-Short.MIN_VALUE)/(65536);
-	}
-
-	public static long Offset(int x, int y, int xsize, int ysize)
-	{
-		return (x*ysize + y);
-	}
-
-	public static long ByteOffset(int x, int y, int xsize, int ysize)
-	{
-		return Offset(x,y,xsize,ysize)*2;
-	}
-
-	public static short BytesToShort(byte b1, byte b2)
-	{
-		return (short) (b1*255 + b2);
-	}
-
-	public static byte[] ShortToBytes(short s)
-	{
-		byte[] b = new byte[2];
-		b[1] = (byte) (s & 0xff);
-		b[0] = (byte) ((s >> 8) & 0xff);
-		return b;
-	}
-
-	public static BufferedImage getImage(short[][] map)
-	{
-		int xSize = map.length;
-		int ySize = map[0].length;
-		BufferedImage img = new BufferedImage(xSize,ySize, BufferedImage.TYPE_USHORT_GRAY);
-		WritableRaster r = img.getRaster();
-		for (int y = 0; y < ySize; y++) 
-		{
-			for (int x = 0; x < xSize; x++) 
-			{
-				r.setPixel(x, y, new int[] {map[x][y]-Short.MAX_VALUE});
-			}
-		}
-		return img;
-	}
-	
-	public BufferedImage getImage()
-	{
-		return getImage(map);
-	}
-	
-	public static short[][] getValues(BufferedImage img)
-	{
-		int ySize = img.getWidth();
-		int xSize = img.getHeight();
-		DataBufferUShort buffer = (DataBufferUShort) img.getRaster().getDataBuffer(); 
-		// Safe cast as img is of type TYPE_USHORT_GRAY 
-		short[][] map = new short[xSize][ySize];
-		for (int y = 0; y < ySize; y++) 
-		{
-			for (int x = 0; x < xSize; x++) 
-			{
-				map[x][y] = (short)(Short.MAX_VALUE+buffer.getElem(x + y * xSize));
-			}
-		}
-		return map;
-	}
-	
 }

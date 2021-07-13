@@ -249,7 +249,6 @@ public class Screen
 			public double Y;
 			public double YMomentum = 0;
 			public double XMomentum = 0;
-			public double Curl = 0;
 			public Entity(double x, double y)
 			{
 				X = x;
@@ -257,15 +256,10 @@ public class Screen
 			}
 		}
 		
-		for(int x = 0; x < xSize; x+=8)
+		for(int i = 0; i < xSize*ySize/64; i++)
 		{
-			for(int y = 0; y < ySize; y+=8)
-			{
-				Entity e = new Entity(x, y);
-//				e.Mass = Math.random()*2;
-				e.Curl = (Math.random()*2-1)/512;
-				EntityList.add(e);
-			}
+			Entity e = new Entity(Math.random()*xSize, Math.random()*ySize);
+			EntityList.add(e);
 		}
 		System.out.println(EntityList.size());
 		AtomicInteger threadcount = new AtomicInteger(ThreadCount);
@@ -295,11 +289,11 @@ public class Screen
 						{
 							e.XMomentum+=gravXvector[x][y];
 							e.YMomentum+=gravYvector[x][y];
-							double mag = Math.sqrt(e.XMomentum*e.XMomentum + e.YMomentum*e.YMomentum);
+							double mag = Math.hypot(e.XMomentum, e.YMomentum);
 							double dir = Math.atan2(e.YMomentum, e.XMomentum);
-						//	Main.g2d.fillRect(x, y, 1, 1);
-							e.XMomentum = Math.cos(dir+e.Curl)*mag;
-							e.YMomentum = Math.sin(dir+e.Curl)*mag;
+							Main.g2d.fillRect(x, y, 1, 1);
+							e.XMomentum = Math.cos(dir)*mag;
+							e.YMomentum = Math.sin(dir)*mag;
 							rain[x][y] += mag;
 							e.X+=e.XMomentum;
 							e.Y+=e.YMomentum;
