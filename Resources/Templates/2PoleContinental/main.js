@@ -58,7 +58,7 @@ function getHeight(seed, xSize, ySize) {
 					rnoise.SetSeed(seed+2+i);
 					rheight += weights[i]*rnoise.GetNoise(x*sizes[i], y*sizes[i]);
 				}
-				rheight = rheight/weightsum;
+				rheight = rheight / weightsum;
 				
 				var noiseSum = mheight*0.3 + rheight*0.4 + cheight*0.3;
 
@@ -88,7 +88,7 @@ function getTemperatureMap(seed, xSize, ySize) {
 	return new DoubleMap2D(xSize,ySize)
 				.stream()
 				.map(function(h) {
-					var percentDown = h.getY()/ySize;
+					var percentDown = h.getY() / ySize;
 					var latTemp = 60*(Math.sin(Math.PI*percentDown)-0.5);
 					var randTemp = 40*noise.GetNoise(x*scale,y*scale);
 					h.setVal(latTemp + randTemp)
